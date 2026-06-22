@@ -1,0 +1,1336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SEL POS - Ticket Admin</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #8b4513;
+        --primary-dark: #5c2e0d;
+        --primary-light: #a0522d;
+        --primary-accent: #d4a574;
+        --primary-soft: #fdf6f0;
+        --secondary: #10b981;
+        --danger: #c03a2b;
+        --warning: #f59e0b;
+        --gray-50: #f8fafc;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
+        --gray-800: #1e293b;
+        --gray-900: #0f172a;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --shadow-sm:
+          0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+        --shadow-md:
+          0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+        --shadow-lg:
+          0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+        --shadow-xl:
+          0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.08);
+        --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background: #faf6f2;
+        color: var(--gray-800);
+        overflow-x: hidden;
+      }
+
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--gray-300);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--gray-400);
+      }
+
+      /* Header */
+      .header {
+        height: 68px;
+        background: #fff;
+        border-bottom: 1px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.95);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .logo {
+        width: 42px;
+        height: 42px;
+        border-radius: var(--radius-md);
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-light)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        color: #fff;
+        font-size: 16px;
+        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.25);
+      }
+
+      .brand-text h1 {
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--gray-900);
+        letter-spacing: -0.3px;
+        line-height: 1.2;
+      }
+
+      .brand-text p {
+        font-size: 12px;
+        color: var(--gray-500);
+        margin-top: 1px;
+        font-weight: 500;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .header-btn {
+        border: none;
+        border-radius: var(--radius-md);
+        padding: 10px 18px;
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--gray-100);
+        color: var(--gray-700);
+      }
+
+      .header-btn:hover {
+        background: var(--gray-200);
+        transform: translateY(-1px);
+      }
+
+      .header-btn i {
+        font-size: 13px;
+      }
+
+      /* Page Layout */
+      .page {
+        padding: 28px 32px;
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 24px;
+        max-width: 1320px;
+        margin: 0 auto;
+      }
+
+      /* Panel Base */
+      .panel {
+        background: #fff;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transition: var(--transition);
+      }
+
+      .panel:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      .panel-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--gray-100);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .panel-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--gray-900);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .panel-title i {
+        color: var(--primary);
+        font-size: 16px;
+      }
+
+      .panel-body {
+        padding: 24px;
+      }
+
+      /* Form Fields */
+      .field {
+        margin-bottom: 18px;
+      }
+
+      .field:last-child {
+        margin-bottom: 0;
+      }
+
+      label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--gray-700);
+        margin-bottom: 7px;
+        letter-spacing: 0.3px;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        outline: none;
+        transition: var(--transition);
+        color: var(--gray-800);
+        background: #fff;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: var(--gray-400);
+        font-weight: 400;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.08);
+      }
+
+      textarea {
+        min-height: 90px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+
+      /* Buttons */
+      .btn {
+        border: none;
+        border-radius: var(--radius-md);
+        padding: 12px 20px;
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        letter-spacing: 0.2px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .btn-primary {
+        width: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(139, 69, 19, 0.3);
+        font-size: 14px;
+        padding: 14px 20px;
+      }
+
+      .btn-primary:hover {
+        box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+      }
+
+      .btn-secondary {
+        background: var(--gray-100);
+        color: var(--gray-700);
+      }
+
+      .btn-secondary:hover {
+        background: var(--gray-200);
+      }
+
+      .btn-danger {
+        background: rgba(192, 58, 43, 0.08);
+        color: var(--danger);
+        border: 1px solid rgba(192, 58, 43, 0.15);
+      }
+
+      .btn-danger:hover {
+        background: rgba(192, 58, 43, 0.15);
+      }
+
+      .btn-small {
+        padding: 7px 12px;
+        font-size: 12px;
+        border-radius: var(--radius-sm);
+      }
+
+      .btn-small i {
+        font-size: 11px;
+      }
+
+      .btn-icon {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border-radius: var(--radius-md);
+        background: var(--gray-100);
+        color: var(--gray-600);
+      }
+
+      .btn-icon:hover {
+        background: var(--gray-200);
+        color: var(--gray-800);
+      }
+
+      /* Package List */
+      .package-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 520px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      .package-card {
+        border: 1.5px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        padding: 18px 20px;
+        cursor: pointer;
+        transition: var(--transition);
+        background: #fff;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .package-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(
+          180deg,
+          var(--primary),
+          var(--primary-light)
+        );
+        opacity: 0;
+        transition: var(--transition);
+        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+      }
+
+      .package-card:hover {
+        border-color: var(--primary-light);
+        box-shadow: var(--shadow-md);
+        transform: translateX(2px);
+      }
+
+      .package-card:hover::before {
+        opacity: 1;
+      }
+
+      .package-card.active {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, var(--primary-soft), #fff8f0);
+        box-shadow: var(--shadow-md);
+      }
+
+      .package-card.active::before {
+        opacity: 1;
+      }
+
+      .package-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .package-meta {
+        font-size: 13px;
+        color: var(--gray-500);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .package-price {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 14px;
+      }
+
+      .package-status {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .status-active {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+      }
+
+      .status-inactive {
+        background: rgba(100, 116, 139, 0.1);
+        color: var(--gray-500);
+      }
+
+      .package-desc {
+        color: var(--gray-500);
+        font-size: 12px;
+        margin-top: 8px;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      /* Workspace */
+      .workspace {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 24px;
+      }
+
+      /* Selected Package Box */
+      .selected-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: #fff;
+        border-radius: var(--radius-xl);
+        padding: 28px 32px;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .selected-box::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 160px;
+        height: 160px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+      }
+
+      .selected-box::after {
+        content: "";
+        position: absolute;
+        bottom: -30px;
+        left: -30px;
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 50%;
+      }
+
+      .selected-box h2 {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+        letter-spacing: -0.3px;
+      }
+
+      .selected-box p {
+        font-size: 14px;
+        opacity: 0.85;
+        position: relative;
+        z-index: 1;
+        font-weight: 500;
+      }
+
+      .selected-box .badge-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 14px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .selected-box .badge {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Game Form */
+      .game-form {
+        display: grid;
+        grid-template-columns: 1fr 110px 130px;
+        gap: 14px;
+        align-items: end;
+      }
+
+      .game-form .field {
+        margin-bottom: 0;
+      }
+
+      .game-form .btn {
+        height: 46px;
+      }
+
+      /* Games Table */
+      .games-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+
+      .games-table th {
+        text-align: left;
+        background: var(--gray-50);
+        padding: 14px 16px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--gray-500);
+        border-bottom: 1px solid var(--gray-200);
+        font-weight: 700;
+      }
+
+      .games-table th:first-child {
+        border-radius: var(--radius-sm) 0 0 0;
+      }
+      .games-table th:last-child {
+        border-radius: 0 var(--radius-sm) 0 0;
+      }
+
+      .games-table td {
+        padding: 16px;
+        font-size: 14px;
+        border-bottom: 1px solid var(--gray-100);
+        color: var(--gray-700);
+        transition: var(--transition);
+      }
+
+      .games-table tbody tr:hover td {
+        background: var(--gray-50);
+      }
+
+      .games-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .games-table tr:last-child td:first-child {
+        border-radius: 0 0 0 var(--radius-sm);
+      }
+      .games-table tr:last-child td:last-child {
+        border-radius: 0 0 var(--radius-sm) 0;
+      }
+
+      .game-cell-name {
+        font-weight: 700;
+        color: var(--gray-900);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .game-cell-name i {
+        color: var(--primary);
+        font-size: 14px;
+        width: 32px;
+        height: 32px;
+        background: var(--primary-soft);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .order-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        font-size: 13px;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 20px;
+      }
+
+      .status-badge.active {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+      }
+
+      .status-badge.inactive {
+        background: rgba(100, 116, 139, 0.1);
+        color: var(--gray-500);
+      }
+
+      .status-badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 56px 20px;
+        color: var(--gray-400);
+      }
+
+      .empty-state i {
+        font-size: 44px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+        display: block;
+      }
+
+      .empty-state h3 {
+        color: var(--gray-700);
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .empty-state p {
+        font-size: 13px;
+        color: var(--gray-500);
+        max-width: 280px;
+        margin: 0 auto;
+        line-height: 1.5;
+      }
+
+      /* Alert */
+      .alert {
+        position: fixed;
+        right: 28px;
+        bottom: 28px;
+        padding: 14px 22px;
+        border-radius: var(--radius-lg);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: var(--shadow-xl);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 50;
+        animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        max-width: 400px;
+        line-height: 1.4;
+      }
+
+      .alert.success {
+        background: linear-gradient(135deg, #10b981, #059669);
+      }
+
+      .alert.error {
+        background: linear-gradient(135deg, #c03a2b, #a03020);
+      }
+
+      .alert i {
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .muted {
+        color: var(--gray-500);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      /* Divider */
+      .divider {
+        height: 1px;
+        background: var(--gray-100);
+        margin: 20px 0;
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .page {
+          grid-template-columns: 1fr;
+          padding: 16px;
+          gap: 16px;
+        }
+
+        .game-form {
+          grid-template-columns: 1fr;
+        }
+
+        .header {
+          padding: 0 16px;
+        }
+
+        .selected-box {
+          padding: 20px 24px;
+        }
+
+        .selected-box h2 {
+          font-size: 18px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .brand-text h1 {
+          font-size: 15px;
+        }
+
+        .brand-text p {
+          display: none;
+        }
+
+        .header-btn span {
+          display: none;
+        }
+
+        .header-btn {
+          padding: 10px 12px;
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./js/supabaseClient.js"></script>
+    <base target="_blank" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <div class="logo"><i class="fas fa-ticket-alt"></i></div>
+        <div class="brand-text">
+          <h1>Ticket Admin</h1>
+          <p>Create ticket packages and assign games</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="header-btn" onclick="loadAllData()">
+          <i class="fas fa-sync-alt"></i>
+          <span>Refresh</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fas fa-layer-group"></i>
+            Ticket Packages
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="field">
+            <label for="packageName">Package Name</label>
+            <input
+              id="packageName"
+              type="text"
+              placeholder="e.g. Premium Pass, Weekend Special"
+            />
+          </div>
+          <div class="field">
+            <label for="packagePrice">Price</label>
+            <input id="packagePrice" type="number" placeholder="e.g. 5000" />
+          </div>
+          <div class="field">
+            <label for="packageDescription">Description</label>
+            <textarea
+              id="packageDescription"
+              placeholder="Optional description of what this package includes..."
+            ></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="createPackage()">
+            <i class="fas fa-plus-circle"></i>
+            Create Package
+          </button>
+
+          <div class="divider"></div>
+          <div id="packageList" class="package-list"></div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <div id="selectedPackageBox" class="selected-box">
+          <h2>
+            <i class="fas fa-hand-pointer" style="margin-right: 8px"></i>No
+            package selected
+          </h2>
+          <p>Select a ticket package on the left, then assign games to it.</p>
+        </div>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <i class="fas fa-gamepad"></i>
+              Assigned Games
+            </div>
+            <span class="muted" id="gamesCount">0 games</span>
+          </div>
+          <div class="panel-body">
+            <div class="game-form">
+              <div class="field" style="margin-bottom: 0">
+                <label for="gameName">Game Name</label>
+                <input
+                  id="gameName"
+                  type="text"
+                  placeholder="e.g. VR Experience, Bowling"
+                />
+              </div>
+              <div class="field" style="margin-bottom: 0">
+                <label for="sortOrder">Display Order</label>
+                <input id="sortOrder" type="number" value="0" />
+              </div>
+              <button class="btn btn-primary" onclick="addGame()">
+                <i class="fas fa-plus"></i>
+                Add Game
+              </button>
+            </div>
+
+            <div class="divider"></div>
+            <div id="gamesContainer"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div id="alertContainer"></div>
+
+    <script>
+      let db = null;
+      let packages = [];
+      let selectedPackage = null;
+      let selectedGames = [];
+
+      const packageNameInput = document.getElementById("packageName");
+      const packagePriceInput = document.getElementById("packagePrice");
+      const packageDescriptionInput =
+        document.getElementById("packageDescription");
+      const packageList = document.getElementById("packageList");
+      const selectedPackageBox = document.getElementById("selectedPackageBox");
+      const gameNameInput = document.getElementById("gameName");
+      const sortOrderInput = document.getElementById("sortOrder");
+      const gamesContainer = document.getElementById("gamesContainer");
+      const gamesCount = document.getElementById("gamesCount");
+      const alertContainer = document.getElementById("alertContainer");
+
+      function getSupabaseClient() {
+        if (window.supabase && typeof window.supabase.from === "function") {
+          return window.supabase;
+        }
+        throw new Error(
+          "Supabase is not connected. Confirm that js/supabaseClient.js exists and exports window.supabase.",
+        );
+      }
+
+      function showAlert(message, type = "success") {
+        const alert = document.createElement("div");
+        alert.className = "alert " + type;
+        alert.innerHTML =
+          '<i class="fas fa-' +
+          (type === "success" ? "check-circle" : "exclamation-circle") +
+          '"></i>' +
+          message;
+        alertContainer.appendChild(alert);
+        setTimeout(() => {
+          alert.style.opacity = "0";
+          alert.style.transform = "translateX(40px)";
+          setTimeout(() => alert.remove(), 300);
+        }, 3500);
+      }
+
+      function formatMoney(value) {
+        return (
+          "&#8358;" +
+          parseFloat(value || 0).toLocaleString("en-NG", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+        );
+      }
+
+      async function loadAllData() {
+        try {
+          db = getSupabaseClient();
+          await loadPackages();
+          if (selectedPackage) {
+            const fresh = packages.find(
+              (item) => item.id === selectedPackage.id,
+            );
+            selectedPackage = fresh || null;
+            if (selectedPackage) {
+              await selectPackage(selectedPackage.id, false);
+            } else {
+              renderSelectedPackage();
+              renderGames();
+            }
+          }
+        } catch (err) {
+          showAlert(err.message, "error");
+          console.error(err);
+        }
+      }
+
+      async function loadPackages() {
+        const { data, error } = await db
+          .from("ticket_packages")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        packages = data || [];
+        renderPackages();
+      }
+
+      function renderPackages() {
+        packageList.innerHTML = "";
+
+        if (packages.length === 0) {
+          packageList.innerHTML =
+            '<div class="empty-state">' +
+            '<i class="fas fa-ticket-alt"></i>' +
+            "<h3>No ticket packages yet</h3>" +
+            "<p>Create your first ticket package using the form above.</p>" +
+            "</div>";
+          return;
+        }
+
+        packages.forEach((pkg) => {
+          const div = document.createElement("div");
+          div.className =
+            "package-card " +
+            (selectedPackage && selectedPackage.id === pkg.id ? "active" : "");
+          div.onclick = () => selectPackage(pkg.id, true);
+          div.innerHTML =
+            '<div class="package-name">' +
+            pkg.package_name +
+            "</div>" +
+            '<div class="package-meta">' +
+            '<span class="package-price">' +
+            formatMoney(pkg.price) +
+            "</span>" +
+            '<span class="package-status ' +
+            (pkg.is_active ? "status-active" : "status-inactive") +
+            '">' +
+            (pkg.is_active ? "Active" : "Inactive") +
+            "</span>" +
+            "</div>" +
+            (pkg.description
+              ? '<div class="package-desc">' + pkg.description + "</div>"
+              : "");
+          packageList.appendChild(div);
+        });
+      }
+
+      async function createPackage() {
+        try {
+          db = db || getSupabaseClient();
+
+          const package_name = packageNameInput.value.trim();
+          const price = parseFloat(packagePriceInput.value);
+          const description = packageDescriptionInput.value.trim();
+
+          if (!package_name) {
+            showAlert("Enter the package name.", "error");
+            return;
+          }
+
+          if (isNaN(price) || price < 0) {
+            showAlert("Enter a valid package price.", "error");
+            return;
+          }
+
+          const { data, error } = await db
+            .from("ticket_packages")
+            .insert([
+              {
+                package_name,
+                price,
+                description,
+                is_active: true,
+              },
+            ])
+            .select()
+            .single();
+
+          if (error) throw error;
+
+          packageNameInput.value = "";
+          packagePriceInput.value = "";
+          packageDescriptionInput.value = "";
+
+          showAlert("Ticket package created successfully.", "success");
+          await loadPackages();
+          await selectPackage(data.id, false);
+        } catch (err) {
+          showAlert(err.message, "error");
+          console.error(err);
+        }
+      }
+
+      async function selectPackage(packageId, showMessage = true) {
+        try {
+          selectedPackage =
+            packages.find((pkg) => pkg.id === packageId) || null;
+          renderPackages();
+          renderSelectedPackage();
+          await loadGames();
+          if (showMessage && selectedPackage) {
+            showAlert(selectedPackage.package_name + " selected.", "success");
+          }
+        } catch (err) {
+          showAlert(err.message, "error");
+          console.error(err);
+        }
+      }
+
+      function renderSelectedPackage() {
+        if (!selectedPackage) {
+          selectedPackageBox.innerHTML =
+            '<h2><i class="fas fa-hand-pointer" style="margin-right: 8px;"></i>No package selected</h2>' +
+            "<p>Select a ticket package on the left, then assign games to it.</p>";
+          return;
+        }
+
+        selectedPackageBox.innerHTML =
+          "<h2>" +
+          selectedPackage.package_name +
+          "</h2>" +
+          "<p>" +
+          formatMoney(selectedPackage.price) +
+          (selectedPackage.description
+            ? " &middot; " + selectedPackage.description
+            : "") +
+          "</p>" +
+          '<div class="badge-row">' +
+          '<span class="badge"><i class="fas fa-check-circle"></i> ' +
+          (selectedPackage.is_active ? "Active" : "Inactive") +
+          "</span>" +
+          '<span class="badge"><i class="fas fa-calendar"></i> Created ' +
+          new Date(selectedPackage.created_at).toLocaleDateString() +
+          "</span>" +
+          "</div>";
+      }
+
+      async function loadGames() {
+        if (!selectedPackage) {
+          selectedGames = [];
+          renderGames();
+          return;
+        }
+
+        const { data, error } = await db
+          .from("ticket_package_games")
+          .select("*")
+          .eq("package_id", selectedPackage.id)
+          .order("sort_order", { ascending: true })
+          .order("created_at", { ascending: true });
+
+        if (error) throw error;
+        selectedGames = data || [];
+        renderGames();
+      }
+
+      function renderGames() {
+        gamesCount.textContent =
+          selectedGames.length +
+          " game" +
+          (selectedGames.length === 1 ? "" : "s");
+
+        if (!selectedPackage) {
+          gamesContainer.innerHTML =
+            '<div class="empty-state">' +
+            '<i class="fas fa-hand-pointer"></i>' +
+            "<h3>Select a package first</h3>" +
+            "<p>Games can only be assigned after selecting a ticket package.</p>" +
+            "</div>";
+          return;
+        }
+
+        if (selectedGames.length === 0) {
+          gamesContainer.innerHTML =
+            '<div class="empty-state">' +
+            '<i class="fas fa-gamepad"></i>' +
+            "<h3>No games assigned yet</h3>" +
+            "<p>Add the games that customers can play with this ticket package.</p>" +
+            "</div>";
+          return;
+        }
+
+        gamesContainer.innerHTML =
+          '<table class="games-table">' +
+          "<thead>" +
+          "<tr>" +
+          '<th style="width: 70px;">Order</th>' +
+          "<th>Game</th>" +
+          '<th style="width: 110px;">Status</th>' +
+          '<th style="width: 110px;">Action</th>' +
+          "</tr>" +
+          "</thead>" +
+          "<tbody>" +
+          selectedGames
+            .map(
+              (game) =>
+                "<tr>" +
+                '<td><span class="order-badge">' +
+                (game.sort_order || 0) +
+                "</span></td>" +
+                '<td><div class="game-cell-name"><i class="fas fa-gamepad"></i>' +
+                game.game_name +
+                "</div></td>" +
+                '<td><span class="status-badge ' +
+                (game.is_active ? "active" : "inactive") +
+                '">' +
+                (game.is_active ? "Active" : "Inactive") +
+                "</span></td>" +
+                '<td><button class="btn btn-danger btn-small" onclick="deleteGame(' +
+                game.id +
+                ')"><i class="fas fa-trash"></i> Remove</button></td>' +
+                "</tr>",
+            )
+            .join("") +
+          "</tbody>" +
+          "</table>";
+      }
+
+      async function addGame() {
+        try {
+          db = db || getSupabaseClient();
+
+          if (!selectedPackage) {
+            showAlert("Select a package before adding games.", "error");
+            return;
+          }
+
+          const game_name = gameNameInput.value.trim();
+          const sort_order = parseInt(sortOrderInput.value || "0", 10);
+
+          if (!game_name) {
+            showAlert("Enter the game name.", "error");
+            return;
+          }
+
+          const { error } = await db.from("ticket_package_games").insert([
+            {
+              package_id: selectedPackage.id,
+              game_name,
+              sort_order,
+              is_active: true,
+            },
+          ]);
+
+          if (error) throw error;
+
+          gameNameInput.value = "";
+          sortOrderInput.value = "0";
+          showAlert("Game assigned to ticket package.", "success");
+          await loadGames();
+        } catch (err) {
+          showAlert(err.message, "error");
+          console.error(err);
+        }
+      }
+
+      async function deleteGame(gameId) {
+        try {
+          if (!confirm("Remove this game from the selected ticket package?"))
+            return;
+
+          const { error } = await db
+            .from("ticket_package_games")
+            .delete()
+            .eq("id", gameId);
+
+          if (error) throw error;
+
+          showAlert("Game removed successfully.", "success");
+          await loadGames();
+        } catch (err) {
+          showAlert(err.message, "error");
+          console.error(err);
+        }
+      }
+
+
+      async function getCurrentTicketUserRole() {
+        db = db || getSupabaseClient();
+
+        const {
+          data: { user },
+          error: userError,
+        } = await db.auth.getUser();
+
+        if (userError || !user) {
+          return null;
+        }
+
+        const metadataRole =
+          (user.app_metadata && user.app_metadata.role) ||
+          (user.user_metadata && user.user_metadata.role);
+
+        if (metadataRole) {
+          return String(metadataRole).trim().toLowerCase();
+        }
+
+        const { data, error } = await db
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (error) {
+          throw error;
+        }
+
+        return data && data.role ? String(data.role).trim().toLowerCase() : null;
+      }
+
+      function renderAccessDenied(role) {
+        document.body.innerHTML =
+          '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#faf6f2;font-family:Inter,Arial,sans-serif;padding:24px;">' +
+          '<div style="max-width:520px;background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:36px;text-align:center;box-shadow:0 20px 25px -5px rgb(0 0 0 / 0.08);">' +
+          '<div style="width:72px;height:72px;border-radius:50%;background:#fdf6f0;color:#8b4513;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:30px;">' +
+          '<i class="fas fa-lock"></i>' +
+          "</div>" +
+          '<h1 style="margin:0 0 10px;font-size:22px;color:#0f172a;">Access restricted</h1>' +
+          '<p style="margin:0;color:#64748b;line-height:1.6;font-size:14px;">The ticket system is available only to users with <strong>admin</strong> or <strong>manager</strong> access.</p>' +
+          '<p style="margin:14px 0 0;color:#94a3b8;font-size:12px;">Current role: ' +
+          (role || "not assigned") +
+          "</p>" +
+          "</div>" +
+          "</div>";
+      }
+
+      async function startTicketAdminWithRoleCheck() {
+        try {
+          db = getSupabaseClient();
+          const role = await getCurrentTicketUserRole();
+
+          if (!["admin", "manager"].includes(role)) {
+            renderAccessDenied(role);
+            return;
+          }
+
+          await loadAllData();
+        } catch (err) {
+          renderAccessDenied("unable to verify");
+          console.error(err);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", startTicketAdminWithRoleCheck);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,3293 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SEL POS Admin Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #8b4513;
+        --primary-dark: #5c2e0d;
+        --primary-light: #a0522d;
+        --secondary: #10b981;
+        --danger: #c03a2b;
+        --warning: #f59e0b;
+        --info: #007bff;
+        --dark: #1e293b;
+        --darker: #0f172a;
+        --gray-50: #f8fafc;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
+        --gray-800: #1e293b;
+        --gray-900: #0f172a;
+        --sidebar-width: 260px;
+        --header-height: 64px;
+        --radius-sm: 6px;
+        --radius-md: 10px;
+        --radius-lg: 14px;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md:
+          0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg:
+          0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background: var(--gray-50);
+        color: var(--gray-800);
+        overflow: hidden;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--gray-300);
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--gray-400);
+      }
+
+      .admin-dashboard {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        background: var(--gray-50);
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: var(--sidebar-width);
+        background: var(--darker);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 100;
+        transition: var(--transition);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .sidebar-header {
+        height: var(--header-height);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        gap: 12px;
+      }
+
+      .sidebar-logo {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-light)
+        );
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+
+      .sidebar-brand {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+
+      .sidebar-brand span {
+        color: var(--primary-light);
+      }
+
+      .sidebar-nav {
+        flex: 1;
+        padding: 16px 12px;
+        overflow-y: auto;
+      }
+
+      .nav-section {
+        margin-bottom: 20px;
+      }
+
+      .nav-section-title {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--gray-500);
+        padding: 0 12px;
+        margin-bottom: 8px;
+      }
+
+      .sidebar button {
+        background: none;
+        border: none;
+        color: var(--gray-400);
+        padding: 10px 14px;
+        text-align: left;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 14px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        transition: var(--transition);
+        position: relative;
+        margin-bottom: 2px;
+        font-family: "Inter", sans-serif;
+      }
+
+      .sidebar button i {
+        width: 20px;
+        text-align: center;
+        font-size: 16px;
+      }
+
+      .sidebar button:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+      }
+
+      .sidebar button.active {
+        background: linear-gradient(
+          90deg,
+          rgba(139, 69, 19, 0.15),
+          transparent
+        );
+        color: #d4a574;
+        font-weight: 600;
+      }
+
+      .sidebar button.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 20px;
+        background: var(--primary);
+        border-radius: 0 3px 3px 0;
+      }
+
+      .sidebar-footer {
+        padding: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .user-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: var(--radius-md);
+      }
+
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-light)
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .user-info {
+        flex: 1;
+      }
+      .user-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #fff;
+      }
+      .user-role {
+        font-size: 11px;
+        color: var(--gray-500);
+      }
+
+      /* Main Wrapper */
+      .main-wrapper {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* Top Header */
+      .top-header {
+        height: var(--header-height);
+        background: #fff;
+        border-bottom: 1px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 28px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .page-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--gray-800);
+        letter-spacing: -0.3px;
+      }
+
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--gray-400);
+      }
+
+      .breadcrumb i {
+        font-size: 10px;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .header-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        background: #fff;
+        color: var(--gray-500);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        position: relative;
+      }
+
+      .header-btn:hover {
+        background: var(--gray-50);
+        border-color: var(--gray-300);
+        color: var(--gray-700);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 18px;
+        height: 18px;
+        background: var(--danger);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #fff;
+      }
+
+      /* Main Panel */
+      .main-panel {
+        flex: 1;
+        padding: 28px;
+        overflow-y: auto;
+        background: var(--gray-50);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .panel-section {
+        display: none;
+        flex-direction: column;
+        gap: 24px;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .panel-section.active {
+        display: flex;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Stats Cards */
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+        margin-bottom: 0;
+      }
+
+      .card {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        border: 1px solid var(--gray-200);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        flex: none;
+        min-width: auto;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--primary),
+          var(--primary-light)
+        );
+        opacity: 0;
+        transition: var(--transition);
+      }
+
+      .card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+      }
+
+      .card:hover::before {
+        opacity: 1;
+      }
+
+      .card h4 {
+        margin: 0 0 12px;
+        font-weight: 600;
+        color: var(--gray-500);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .card span {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--gray-800);
+        letter-spacing: -0.5px;
+        display: block;
+      }
+
+      /* Form Panel */
+      .form-panel,
+      .table-panel {
+        background: #fff;
+        padding: 24px;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gray-200);
+        box-shadow: var(--shadow-sm);
+        overflow: auto;
+      }
+
+      .form-panel input,
+      .form-panel select {
+        width: 100%;
+        padding: 10px 14px;
+        margin: 6px 0 14px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        transition: var(--transition);
+        outline: none;
+        color: var(--gray-800);
+      }
+
+      .form-panel input:focus,
+      .form-panel select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+      }
+
+      .form-panel input::placeholder {
+        color: var(--gray-400);
+      }
+
+      .form-panel button {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-weight: 600;
+        margin-top: 10px;
+        transition: var(--transition);
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 6px -1px rgba(139, 69, 19, 0.3);
+      }
+
+      .form-panel button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 12px -2px rgba(139, 69, 19, 0.4);
+      }
+
+      /* Tables */
+      .data-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+
+      .data-table thead th {
+        background: var(--gray-50);
+        padding: 12px 16px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray-500);
+        border-bottom: 1px solid var(--gray-200);
+        white-space: nowrap;
+        text-align: left;
+      }
+
+      .data-table thead th:first-child {
+        border-radius: var(--radius-sm) 0 0 0;
+      }
+      .data-table thead th:last-child {
+        border-radius: 0 var(--radius-sm) 0 0;
+      }
+
+      .data-table tbody td {
+        padding: 14px 16px;
+        font-size: 13px;
+        color: var(--gray-700);
+        border-bottom: 1px solid var(--gray-100);
+        vertical-align: middle;
+        text-align: left;
+      }
+
+      .data-table tbody tr:hover {
+        background: var(--gray-50);
+      }
+      .data-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      /* Action Buttons */
+      .action-btn {
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+        margin-right: 5px;
+        font-size: 12px;
+        transition: var(--transition);
+        font-family: "Inter", sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .action-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-edit {
+        background: linear-gradient(135deg, var(--info), #0056b3);
+        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+      }
+      .btn-edit:hover {
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+      }
+
+      .btn-delete {
+        background: linear-gradient(135deg, var(--danger), #a03020);
+        box-shadow: 0 2px 4px rgba(192, 58, 43, 0.3);
+      }
+      .btn-delete:hover {
+        box-shadow: 0 4px 8px rgba(192, 58, 43, 0.4);
+      }
+
+      .btn-toggle {
+        background: linear-gradient(135deg, #555, #333);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .btn-toggle:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Alerts */
+      #adminError,
+      #adminSuccess,
+      #csvError,
+      #csvSuccess {
+        margin-top: 12px;
+      }
+
+      .alert-msg {
+        padding: 10px 14px;
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .alert-error {
+        background: rgba(192, 58, 43, 0.08);
+        color: var(--danger);
+        border: 1px solid rgba(192, 58, 43, 0.15);
+      }
+
+      .alert-success {
+        background: rgba(16, 185, 129, 0.08);
+        color: var(--secondary);
+        border: 1px solid rgba(16, 185, 129, 0.15);
+      }
+
+      /* Product Image */
+      img.product-thumb {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-md);
+        object-fit: cover;
+        border: 1px solid var(--gray-200);
+        background: var(--gray-100);
+      }
+
+      /* Sales Filters */
+      .sales-filters {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 16px;
+        background: var(--gray-50);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        margin-bottom: 0;
+      }
+
+      .sales-filters input,
+      .sales-filters select,
+      .sales-filters button {
+        padding: 10px 14px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        font-size: 14px;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        transition: var(--transition);
+        outline: none;
+        color: var(--gray-800);
+      }
+
+      .sales-filters input:focus,
+      .sales-filters select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+      }
+
+      .sales-filters button {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        box-shadow: 0 4px 6px -1px rgba(139, 69, 19, 0.3);
+      }
+
+      .sales-filters button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 12px -2px rgba(139, 69, 19, 0.4);
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--gray-400);
+      }
+
+      .empty-state i {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+
+      .empty-state h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--gray-600);
+        margin-bottom: 8px;
+      }
+
+      .empty-state p {
+        font-size: 13px;
+      }
+
+      /* Card Header */
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .card-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--gray-800);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-title i {
+        color: var(--primary);
+        font-size: 18px;
+      }
+
+      /* Animations */
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .animate-in {
+        animation: slideIn 0.3s ease forwards;
+      }
+
+      /* Sales summary, dropdown filter, and pagination */
+      .filter-shell {
+        position: relative;
+        width: 100%;
+      }
+
+      .filter-toggle {
+        width: 100%;
+        background: #fff !important;
+        color: var(--gray-800) !important;
+        border: 1px solid var(--gray-200) !important;
+        box-shadow: none !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .filter-toggle:hover {
+        background: var(--gray-50) !important;
+        transform: none !important;
+        box-shadow: none !important;
+      }
+
+      .filter-toggle-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .filter-toggle-left i {
+        color: var(--primary);
+      }
+
+      .sales-filter-dropdown {
+        display: none;
+        margin-top: 10px;
+        padding: 16px;
+        background: #fff;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+      }
+
+      .sales-filter-dropdown.show {
+        display: block;
+      }
+
+      .filter-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .custom-date-fields {
+        display: none;
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .custom-date-fields.show {
+        display: grid;
+      }
+
+      .filter-field label,
+      .pagination-size label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--gray-600);
+      }
+
+      .filter-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+
+      .sales-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .sales-summary-card {
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        padding: 16px;
+      }
+
+      .sales-summary-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--gray-500);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+      }
+
+      .sales-summary-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--gray-900);
+        letter-spacing: -0.4px;
+      }
+
+      .sales-summary-subtext {
+        margin-top: 4px;
+        font-size: 12px;
+        color: var(--gray-500);
+      }
+
+      .sales-table-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+
+      .pagination-size select {
+        min-width: 120px;
+        padding: 9px 12px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        outline: none;
+        font-family: "Inter", sans-serif;
+        color: var(--gray-800);
+      }
+
+      .pagination-size select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+      }
+
+      .pagination-controls {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 16px;
+        font-size: 13px;
+        color: var(--gray-600);
+        flex-wrap: wrap;
+      }
+
+      .pagination-controls button {
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--gray-200);
+        background: #fff;
+        color: var(--gray-700);
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+      }
+
+      .pagination-controls button:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .pagination-controls button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .money-value {
+        font-weight: 800;
+        color: var(--gray-900);
+      }
+
+      /* Ticketing System */
+      .ticketing-grid {
+        display: grid;
+        grid-template-columns: minmax(280px, 380px) 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .ticketing-panel textarea {
+        width: 100%;
+        padding: 10px 14px;
+        margin: 6px 0 14px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        transition: var(--transition);
+        outline: none;
+        color: var(--gray-800);
+        min-height: 90px;
+        resize: vertical;
+      }
+
+      .ticketing-panel textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+      }
+
+      .ticket-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+
+      .ticket-actions button {
+        margin-top: 0;
+      }
+
+      .ticket-actions .secondary-ticket-btn {
+        background: var(--gray-100);
+        color: var(--gray-700);
+        box-shadow: none;
+      }
+
+      .ticket-actions .secondary-ticket-btn:hover {
+        box-shadow: none;
+        background: var(--gray-200);
+      }
+
+      .ticket-package-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 520px;
+        overflow-y: auto;
+      }
+
+      .ticket-package-card {
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        padding: 16px;
+        cursor: pointer;
+        transition: var(--transition);
+        background: #fff;
+      }
+
+      .ticket-package-card:hover {
+        border-color: var(--primary-light);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
+      }
+
+      .ticket-package-card.active {
+        border-color: var(--primary);
+        background: rgba(139, 69, 19, 0.06);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .ticket-package-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 8px;
+      }
+
+      .ticket-package-name {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--gray-900);
+      }
+
+      .ticket-package-price {
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--primary);
+        white-space: nowrap;
+      }
+
+      .ticket-package-description {
+        font-size: 12px;
+        color: var(--gray-500);
+        line-height: 1.5;
+        margin-bottom: 10px;
+      }
+
+      .ticket-package-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .ticket-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+
+      .ticket-status.active {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+      }
+
+      .ticket-status.inactive {
+        background: rgba(100, 116, 139, 0.12);
+        color: var(--gray-500);
+      }
+
+      .ticket-status::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      .selected-ticket-box {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: #fff;
+        border-radius: var(--radius-lg);
+        padding: 22px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .selected-ticket-box::after {
+        content: "";
+        position: absolute;
+        top: -35px;
+        right: -35px;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .selected-ticket-box h3 {
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 6px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .selected-ticket-box p {
+        font-size: 13px;
+        opacity: 0.86;
+        position: relative;
+        z-index: 1;
+      }
+
+      .ticket-game-form {
+        display: flex;
+        gap: 14px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+      }
+
+      .ticket-game-form .form-field {
+        flex: 1 1 180px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .ticket-game-form .form-field label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--gray-600);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+
+      .ticket-game-form .form-field.sort-field {
+        flex: 0 0 90px;
+        min-width: 70px;
+      }
+
+      .ticket-game-form .form-field input {
+        width: 100%;
+        margin: 0;
+        padding: 11px 14px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        color: var(--gray-800);
+        background: #fff;
+        transition: var(--transition);
+        outline: none;
+      }
+
+      .ticket-game-form .form-field input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+      }
+
+      .ticket-game-form .form-field input::placeholder {
+        color: var(--gray-400);
+      }
+
+      .ticket-game-form button {
+        height: 44px;
+        margin-top: 0;
+        white-space: nowrap;
+        flex-shrink: 0;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: #fff;
+        padding: 10px 22px;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 6px -1px rgba(139, 69, 19, 0.3);
+        transition: var(--transition);
+      }
+
+      .ticket-game-form button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 12px -2px rgba(139, 69, 19, 0.4);
+      }
+
+      .ticket-game-form button i {
+        font-size: 13px;
+      }
+
+      @media (max-width: 1000px) {
+        .ticketing-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .ticket-game-form {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .ticket-game-form .form-field,
+        .ticket-game-form .form-field.sort-field {
+          flex: 1 1 auto;
+          min-width: auto;
+          width: 100%;
+        }
+
+        .ticket-game-form button {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      .ticket-alert-box {
+        margin-top: 12px;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 72px;
+        }
+        .sidebar-brand,
+        .nav-section-title,
+        .user-info {
+          display: none;
+        }
+        .sidebar button {
+          justify-content: center;
+          padding: 14px;
+        }
+        .sidebar button span {
+          display: none;
+        }
+        .main-wrapper {
+          margin-left: 72px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+        .main-panel {
+          padding: 16px;
+        }
+        .sales-filters {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .sales-filters input,
+        .sales-filters select,
+        .sales-filters button {
+          width: 100%;
+        }
+      }
+
+      /* Sale Detail Modal */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .modal-overlay.show {
+        display: flex;
+      }
+      .modal-box {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        width: 100%;
+        max-width: 720px;
+        max-height: 90vh;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        animation: modalSlideIn 0.25s ease;
+        display: flex;
+        flex-direction: column;
+      }
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--gray-200);
+      }
+      .modal-header h3 {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--gray-900);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .modal-header h3 i {
+        color: var(--primary);
+      }
+      .modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        background: #fff;
+        color: var(--gray-500);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        font-size: 16px;
+      }
+      .modal-close:hover {
+        background: var(--gray-100);
+        color: var(--gray-800);
+      }
+      .modal-body {
+        padding: 24px;
+        overflow-y: auto;
+        flex: 1;
+      }
+      .sale-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .sale-detail-item {
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        padding: 14px 16px;
+      }
+      .sale-detail-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray-500);
+        margin-bottom: 6px;
+      }
+      .sale-detail-value {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--gray-900);
+      }
+      .sale-items-section {
+        margin-top: 8px;
+      }
+      .sale-items-section h4 {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sale-items-section h4 i {
+        color: var(--primary);
+      }
+      .sale-items-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+      .sale-items-table thead th {
+        background: var(--gray-50);
+        padding: 10px 14px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray-500);
+        border-bottom: 1px solid var(--gray-200);
+        text-align: left;
+      }
+      .sale-items-table tbody td {
+        padding: 12px 14px;
+        font-size: 13px;
+        color: var(--gray-700);
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .sale-items-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+      .modal-footer {
+        display: flex;
+        gap: 10px;
+        padding: 16px 24px;
+        border-top: 1px solid var(--gray-200);
+        background: var(--gray-50);
+      }
+      .modal-footer button {
+        padding: 10px 18px;
+        border-radius: var(--radius-md);
+        border: none;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Inter", sans-serif;
+      }
+      .btn-print {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: #fff;
+        box-shadow: 0 4px 6px -1px rgba(139, 69, 19, 0.3);
+      }
+      .btn-print:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 12px -2px rgba(139, 69, 19, 0.4);
+      }
+      .btn-close-modal {
+        background: #fff;
+        color: var(--gray-700);
+        border: 1px solid var(--gray-200);
+      }
+      .btn-close-modal:hover {
+        background: var(--gray-100);
+      }
+      .btn-view {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        box-shadow: 0 2px 4px rgba(139, 69, 19, 0.3);
+      }
+      .btn-view:hover {
+        box-shadow: 0 4px 8px rgba(139, 69, 19, 0.4);
+      }
+      .sale-row {
+        cursor: pointer;
+      }
+      .sale-row:hover {
+        background: rgba(139, 69, 19, 0.04) !important;
+      }
+      @media print {
+        .sidebar,
+        .top-header,
+        .modal-footer,
+        .modal-close {
+          display: none !important;
+        }
+        .modal-overlay {
+          position: static;
+          display: block !important;
+          background: #fff;
+          padding: 0;
+        }
+        .modal-box {
+          box-shadow: none;
+          max-height: none;
+          max-width: 100%;
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./js/supabaseClient.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <base target="_blank" />
+    <base target="_blank" />
+    <base target="_blank" />
+    <base target="_blank" />
+  </head>
+  <body>
+    <div class="admin-dashboard">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">SE</div>
+          <div class="sidebar-brand">SEL <span>POS</span></div>
+        </div>
+
+        <div class="sidebar-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Main Menu</div>
+            <button class="active" onclick="showSection('dashboard')">
+              <i class="fas fa-chart-pie"></i>
+              <span>Dashboard</span>
+            </button>
+            <button onclick="showSection('products')">
+              <i class="fas fa-boxes"></i>
+              <span>Manage Products</span>
+            </button>
+            <button onclick="showSection('sales')">
+              <i class="fas fa-chart-line"></i>
+              <span>Sales Reports</span>
+            </button>
+            <button onclick="showSection('tickets')">
+              <i class="fas fa-ticket-alt"></i>
+              <span>Ticketing System</span>
+            </button>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-section-title">System</div>
+            <button onclick="alert('Settings coming soon')">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </button>
+            <button onclick="alert('Help center coming soon')">
+              <i class="fas fa-question-circle"></i>
+              <span>Help Center</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="user-card">
+            <div class="user-avatar">AD</div>
+            <div class="user-info">
+              <div class="user-name">Admin User</div>
+              <div class="user-role">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Wrapper -->
+      <div class="main-wrapper">
+        <!-- Top Header -->
+        <div class="top-header">
+          <div class="header-left">
+            <h1 class="page-title" id="pageTitle">Dashboard</h1>
+            <div class="breadcrumb">
+              <span>Home</span>
+              <i class="fas fa-chevron-right"></i>
+              <span id="breadcrumbCurrent">Dashboard</span>
+            </div>
+          </div>
+          <div class="header-right">
+            <button
+              class="header-btn"
+              onclick="
+                updateDashboardStats();
+                loadProducts();
+                loadSales();
+              "
+              title="Refresh Data"
+            >
+              <i class="fas fa-sync-alt"></i>
+            </button>
+            <button
+              class="header-btn"
+              style="position: relative"
+              title="Notifications"
+            >
+              <i class="fas fa-bell"></i>
+              <span class="notification-badge">3</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Panel -->
+        <div class="main-panel">
+          <!-- Dashboard -->
+          <div id="dashboard" class="panel-section active">
+            <div class="cards">
+              <div class="card">
+                <h4>Total Products</h4>
+                <span id="totalProducts">0</span>
+              </div>
+              <div class="card">
+                <h4>Total Sales</h4>
+                <span id="totalSales">₦0</span>
+              </div>
+              <div class="card">
+                <h4>Low Stock Alerts</h4>
+                <span id="lowStockProducts">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products -->
+          <div id="products" class="panel-section">
+            <div class="form-panel">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="fas fa-plus-circle"></i>
+                  <span id="productFormTitle">Add / Edit Product</span>
+                </div>
+              </div>
+              <input type="hidden" id="productId" />
+              <input type="text" id="productName" placeholder="Product Name" />
+              <input type="text" id="productSKU" placeholder="SKU / Optional" />
+              <input type="number" id="productPrice" placeholder="Price" />
+              <input
+                type="number"
+                id="productQuantity"
+                placeholder="Quantity"
+              />
+              <input
+                type="number"
+                id="productLowStock"
+                placeholder="Low Stock Threshold"
+              />
+              <select id="productCategory">
+                <option value="">Select Category</option>
+                <option value="Food">Food</option>
+                <option value="Drinks">Drinks</option>
+                <option value="Games">Games</option>
+                <option value="Ticket">Ticket</option>
+              </select>
+              <input type="file" id="productImage" />
+              <button id="saveProductBtn">Save Product</button>
+              <div id="adminError"></div>
+              <div id="adminSuccess"></div>
+            </div>
+
+            <div class="form-panel">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="fas fa-file-csv"></i>
+                  Bulk Import Products (CSV)
+                </div>
+              </div>
+              <input type="file" id="bulkCSV" accept=".csv" />
+              <button id="importCSVBtn">Import CSV</button>
+              <div id="csvError"></div>
+              <div id="csvSuccess"></div>
+            </div>
+
+            <div class="table-panel">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="fas fa-list"></i>
+                  Existing Products
+                </div>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>SKU</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Low Stock</th>
+                    <th>Category</th>
+                    <th>Active</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="productTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Sales -->
+          <div id="sales" class="panel-section">
+            <div class="form-panel">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="fas fa-filter"></i>
+                  Sales Reports
+                </div>
+              </div>
+              <div class="sales-filters">
+                <div class="filter-shell">
+                  <button
+                    type="button"
+                    class="filter-toggle"
+                    id="salesFilterToggle"
+                  >
+                    <span class="filter-toggle-left">
+                      <i class="fas fa-sliders-h"></i>
+                      <span id="selectedFilterLabel">Daily Report</span>
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+
+                  <div class="sales-filter-dropdown" id="salesFilterDropdown">
+                    <div class="filter-row">
+                      <div class="filter-field">
+                        <label for="reportRange">Report Period</label>
+                        <select id="reportRange">
+                          <option value="daily">Daily</option>
+                          <option value="weekly">Weekly</option>
+                          <option value="monthly">Monthly</option>
+                          <option value="custom">Custom Date Range</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="custom-date-fields" id="customDateFields">
+                      <div class="filter-field">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate" />
+                      </div>
+                      <div class="filter-field">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate" />
+                      </div>
+                    </div>
+
+                    <div class="filter-actions">
+                      <button id="generateReportBtn">Generate</button>
+                      <button id="exportPDFBtn">Export PDF</button>
+                      <button id="exportExcelBtn">Export Excel</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sales-summary">
+                <div class="sales-summary-card">
+                  <div class="sales-summary-label" id="reportTotalLabel">
+                    Today's Total Sales
+                  </div>
+                  <div class="sales-summary-value" id="reportTotalSales">
+                    ₦0.00
+                  </div>
+                  <div class="sales-summary-subtext">
+                    Total amount for the selected report period
+                  </div>
+                </div>
+                <div class="sales-summary-card">
+                  <div class="sales-summary-label">Transactions</div>
+                  <div class="sales-summary-value" id="reportTransactions">
+                    0
+                  </div>
+                  <div class="sales-summary-subtext">
+                    Number of completed sales shown below
+                  </div>
+                </div>
+                <div class="sales-summary-card">
+                  <div class="sales-summary-label">Average Sale</div>
+                  <div class="sales-summary-value" id="reportAverageSale">
+                    ₦0.00
+                  </div>
+                  <div class="sales-summary-subtext">
+                    Average value per transaction
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-panel">
+              <div class="sales-table-toolbar">
+                <div class="card-title">
+                  <i class="fas fa-table"></i>
+                  Sales Data
+                </div>
+                <div class="pagination-size">
+                  <label for="salesPageSize">Rows Per Page</label>
+                  <select id="salesPageSize">
+                    <option value="all">All</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Sale Ref</th>
+                    <th>Date</th>
+                    <th>Payment</th>
+                    <th>Total</th>
+                    <th>Sold By</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="salesTableBody"></tbody>
+              </table>
+              <div class="pagination-controls">
+                <span id="salesPaginationInfo">Showing 0 sales</span>
+                <button type="button" id="salesPrevBtn">Previous</button>
+                <span id="salesPageNumber">Page 1 of 1</span>
+                <button type="button" id="salesNextBtn">Next</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ticketing System -->
+          <div id="tickets" class="panel-section">
+            <div class="cards">
+              <div class="card">
+                <h4>Ticket Packages</h4>
+                <span id="ticketPackageCount">0</span>
+              </div>
+              <div class="card">
+                <h4>Active Packages</h4>
+                <span id="activeTicketPackageCount">0</span>
+              </div>
+              <div class="card">
+                <h4>Assigned Games</h4>
+                <span id="assignedTicketGameCount">0</span>
+              </div>
+            </div>
+
+            <div class="ticketing-grid">
+              <div class="form-panel ticketing-panel">
+                <div class="card-header">
+                  <div class="card-title">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span id="ticketPackageFormTitle"
+                      >Create Ticket Package</span
+                    >
+                  </div>
+                </div>
+
+                <input type="hidden" id="ticketPackageId" />
+                <input
+                  type="text"
+                  id="ticketPackageName"
+                  placeholder="Package Name e.g. Premium Ticket"
+                />
+                <input
+                  type="number"
+                  id="ticketPackagePrice"
+                  placeholder="Package Price e.g. 5000"
+                />
+                <textarea
+                  id="ticketPackageDescription"
+                  placeholder="Description / package note optional"
+                ></textarea>
+
+                <div class="ticket-actions">
+                  <button id="saveTicketPackageBtn" type="button">
+                    <i class="fas fa-save"></i>
+                    Save Package
+                  </button>
+                  <button
+                    id="resetTicketPackageBtn"
+                    type="button"
+                    class="secondary-ticket-btn"
+                  >
+                    <i class="fas fa-undo"></i>
+                    Clear
+                  </button>
+                </div>
+
+                <div id="ticketPackageAlert" class="ticket-alert-box"></div>
+
+                <div
+                  class="card-header"
+                  style="
+                    margin-top: 20px;
+                    padding-top: 18px;
+                    border-top: 1px solid var(--gray-100);
+                  "
+                >
+                  <div class="card-title">
+                    <i class="fas fa-layer-group"></i>
+                    Packages
+                  </div>
+                </div>
+                <div id="ticketPackageList" class="ticket-package-list"></div>
+              </div>
+
+              <div class="table-panel ticketing-panel">
+                <div id="selectedTicketPackageBox" class="selected-ticket-box">
+                  <h3>No package selected</h3>
+                  <p>Select a package on the left to assign games to it.</p>
+                </div>
+
+                <div class="card-header">
+                  <div class="card-title">
+                    <i class="fas fa-gamepad"></i>
+                    Assigned Games
+                  </div>
+                </div>
+
+                <div class="ticket-game-form">
+                  <div class="form-field">
+                    <label for="ticketGameName">Game Name</label>
+                    <input
+                      type="text"
+                      id="ticketGameName"
+                      placeholder="e.g. VR Game"
+                    />
+                  </div>
+                  <div class="form-field sort-field">
+                    <label for="ticketGameSortOrder">Order</label>
+                    <input type="number" id="ticketGameSortOrder" value="0" />
+                  </div>
+                  <button id="saveTicketGameBtn" type="button">
+                    <i class="fas fa-plus"></i>
+                    Add Game
+                  </button>
+                </div>
+                <div id="ticketGameAlert" class="ticket-alert-box"></div>
+
+                <table class="data-table" style="margin-top: 18px">
+                  <thead>
+                    <tr>
+                      <th>Game</th>
+                      <th>Order</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ticketGamesTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sidebar navigation
+      function showSection(sectionId) {
+        document
+          .querySelectorAll(".panel-section")
+          .forEach((sec) => sec.classList.remove("active"));
+        document.getElementById(sectionId).classList.add("active");
+        document
+          .querySelectorAll(".sidebar button")
+          .forEach((btn) => btn.classList.remove("active"));
+        document
+          .querySelector('.sidebar button[onclick*="' + sectionId + '"]')
+          .classList.add("active");
+
+        const titles = {
+          dashboard: "Dashboard",
+          products: "Manage Products",
+          sales: "Sales Reports",
+          tickets: "Ticketing System",
+        };
+        document.getElementById("pageTitle").textContent = titles[sectionId];
+        document.getElementById("breadcrumbCurrent").textContent =
+          titles[sectionId];
+
+        if (
+          sectionId === "tickets" &&
+          typeof loadTicketingData === "function"
+        ) {
+          loadTicketingData();
+        }
+      }
+
+      // Dashboard Stats
+      async function updateDashboardStats() {
+        const { data: productsData } = await supabase
+          .from("inventory_items")
+          .select("*");
+        const { data: salesData } = await supabase.from("sales").select("*");
+
+        const products = productsData || [];
+        const sales = salesData || [];
+
+        const lowStock = products.filter(
+          (p) => Number(p.quantity) <= Number(p.low_stock_threshold),
+        ).length;
+        const totalSales = sales.reduce(
+          (sum, s) => sum + (Number(s.total_amount) || 0),
+          0,
+        );
+
+        document.getElementById("totalProducts").textContent =
+          products.length.toLocaleString("en-NG");
+        document.getElementById("totalSales").textContent =
+          typeof formatCurrency === "function"
+            ? formatCurrency(totalSales)
+            : `₦${totalSales.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById("lowStockProducts").textContent =
+          lowStock.toLocaleString("en-NG");
+      }
+
+      // Product Variables
+      const productTableBody = document.getElementById("productTableBody");
+      const productIdInput = document.getElementById("productId");
+      const productNameInput = document.getElementById("productName");
+      const productSKUInput = document.getElementById("productSKU");
+      const productPriceInput = document.getElementById("productPrice");
+      const productQuantityInput = document.getElementById("productQuantity");
+      const productLowStockInput = document.getElementById("productLowStock");
+      const productCategoryInput = document.getElementById("productCategory");
+      const productImageInput = document.getElementById("productImage");
+      const saveProductBtn = document.getElementById("saveProductBtn");
+      const adminError = document.getElementById("adminError");
+      const adminSuccess = document.getElementById("adminSuccess");
+      const importCSVBtn = document.getElementById("importCSVBtn");
+      const bulkCSV = document.getElementById("bulkCSV");
+      const csvError = document.getElementById("csvError");
+      const csvSuccess = document.getElementById("csvSuccess");
+
+      let productsList = [];
+
+      // Load products
+      async function loadProducts() {
+        const { data, error } = await supabase
+          .from("inventory_items")
+          .select("*")
+          .order("name", { ascending: true });
+        if (error) {
+          adminError.innerHTML =
+            '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ' +
+            error.message +
+            "</div>";
+          return;
+        }
+        productsList = data;
+        renderProducts();
+        updateDashboardStats();
+      }
+
+      function renderProducts() {
+        productTableBody.innerHTML = "";
+        productsList.forEach((p) => {
+          const tr = document.createElement("tr");
+          const imgHTML = p.image_url
+            ? `<img src="${p.image_url}" class="product-thumb">`
+            : "";
+          tr.innerHTML = `
+      <td>${imgHTML}</td><td>${p.name}</td><td>${p.sku || ""}</td><td style="font-weight: 700; color: var(--gray-800);">₦${parseFloat(p.price).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td><td>${p.quantity}</td>
+      <td>${p.low_stock_threshold}</td><td>${p.category || ""}</td><td>${p.is_active ? "Yes" : "No"}</td>
+      <td>
+        <button class="action-btn btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-pen"></i> Edit</button>
+        <button class="action-btn btn-toggle" onclick="toggleProduct(${p.id})">${p.is_active ? "Deactivate" : "Activate"}</button>
+        <button class="action-btn btn-delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i> Delete</button>
+      </td>`;
+          productTableBody.appendChild(tr);
+        });
+      }
+
+      // Add/Edit/Delete/Toggle
+      function editProduct(id) {
+        const p = productsList.find((p) => p.id === id);
+        if (!p) return;
+        productIdInput.value = p.id;
+        productNameInput.value = p.name;
+        productSKUInput.value = p.sku || "";
+        productPriceInput.value = p.price;
+        productQuantityInput.value = p.quantity;
+        productLowStockInput.value = p.low_stock_threshold || 0;
+        productCategoryInput.value = p.category || "";
+        document.getElementById("productFormTitle").textContent =
+          "Edit Product";
+        showSection("products");
+        productNameInput.focus();
+      }
+
+      async function deleteProduct(id) {
+        if (!confirm("Delete product?")) return;
+        const { error } = await supabase
+          .from("inventory_items")
+          .delete()
+          .eq("id", id);
+        if (error) {
+          adminError.innerHTML =
+            '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ' +
+            error.message +
+            "</div>";
+          return;
+        }
+        adminSuccess.innerHTML =
+          '<div class="alert-msg alert-success"><i class="fas fa-check-circle"></i> Product deleted successfully</div>';
+        loadProducts();
+      }
+
+      async function toggleProduct(id) {
+        const p = productsList.find((p) => p.id === id);
+        if (!p) return;
+        const { error } = await supabase
+          .from("inventory_items")
+          .update({ is_active: !p.is_active })
+          .eq("id", id);
+        if (error) {
+          adminError.innerHTML =
+            '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ' +
+            error.message +
+            "</div>";
+          return;
+        }
+        adminSuccess.innerHTML =
+          '<div class="alert-msg alert-success"><i class="fas fa-check-circle"></i> Product status updated</div>';
+        loadProducts();
+      }
+
+      // Save Product
+      saveProductBtn.addEventListener("click", async () => {
+        adminError.innerHTML = "";
+        adminSuccess.innerHTML = "";
+        const name = productNameInput.value.trim(),
+          sku = productSKUInput.value.trim();
+        const price = parseFloat(productPriceInput.value),
+          quantity = parseInt(productQuantityInput.value);
+        const lowStock = parseInt(productLowStockInput.value),
+          category = productCategoryInput.value;
+        if (!name || isNaN(price) || isNaN(quantity)) {
+          adminError.innerHTML =
+            '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> Fill required fields</div>';
+          return;
+        }
+        const id = productIdInput.value;
+        let image_url = null;
+        if (productImageInput.files.length > 0) {
+          const file = productImageInput.files[0];
+          const fileExt = file.name.split(".").pop();
+          const fileName = `${Date.now()}.${fileExt}`;
+          const { data, error: uploadError } = await supabase.storage
+            .from("product-images")
+            .upload(fileName, file);
+          if (uploadError) {
+            adminError.innerHTML =
+              '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ' +
+              uploadError.message +
+              "</div>";
+            return;
+          }
+          image_url = `https://YOUR_SUPABASE_BUCKET_URL/${data.path}`;
+        }
+        if (id) {
+          const { error } = await supabase
+            .from("inventory_items")
+            .update({
+              name,
+              sku,
+              price,
+              quantity,
+              low_stock_threshold: lowStock,
+              category,
+              ...(image_url ? { image_url } : {}),
+            })
+            .eq("id", id);
+          if (error) {
+            adminError.innerHTML =
+              '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ' +
+              error.message +
+              "</div>";
+            return;
+          }
+          adminSuccess.innerHTML =
+            '<div class="alert-msg alert-success"><i class="fas fa-check-circle"></i> Product updated successfully</div>';
+        } else {
+          const { error } = await supabase.from("inventory_items").insert([
+            {
+              name,
+              sku,
+              price,
+              quantity,
+              low_stock_threshold: lowStock,
+              category,
+              image_url,
+              is_active: true,
+            },
+          ]);
+          if (error) {
+            adminError.innerHTML =
+              '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ' +
+              error.message +
+              "</div>";
+            return;
+          }
+          adminSuccess.innerHTML =
+            '<div class="alert-msg alert-success"><i class="fas fa-check-circle"></i> Product added successfully</div>';
+        }
+        productIdInput.value = "";
+        productNameInput.value = "";
+        productSKUInput.value = "";
+        productPriceInput.value = "";
+        productQuantityInput.value = "";
+        productLowStockInput.value = "";
+        productCategoryInput.value = "";
+        productImageInput.value = "";
+        document.getElementById("productFormTitle").textContent =
+          "Add / Edit Product";
+        loadProducts();
+      });
+
+      // Bulk CSV
+      importCSVBtn.addEventListener("click", async () => {
+        csvError.innerHTML = "";
+        csvSuccess.innerHTML = "";
+        if (bulkCSV.files.length === 0) {
+          csvError.innerHTML =
+            '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> Select CSV</div>';
+          return;
+        }
+        const text = await bulkCSV.files[0].text();
+        const rows = text.split("\n").filter((r) => r.trim() !== "");
+        for (let i = 1; i < rows.length; i++) {
+          const [name, sku, price, quantity, lowStock, category] =
+            rows[i].split(",");
+          const { error } = await supabase.from("inventory_items").insert([
+            {
+              name: name.trim(),
+              sku: sku.trim(),
+              price: parseFloat(price),
+              quantity: parseInt(quantity),
+              low_stock_threshold: parseInt(lowStock),
+              category: category.trim(),
+              is_active: true,
+            },
+          ]);
+          if (error) {
+            csvError.innerHTML =
+              '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ' +
+              error.message +
+              "</div>";
+            return;
+          }
+        }
+        csvSuccess.innerHTML =
+          '<div class="alert-msg alert-success"><i class="fas fa-check-circle"></i> CSV imported successfully</div>';
+        loadProducts();
+      });
+
+      // ---------- SALES REPORT FUNCTIONS ----------
+      const salesTableBody = document.getElementById("salesTableBody");
+      const reportRange = document.getElementById("reportRange");
+      const startDate = document.getElementById("startDate");
+      const endDate = document.getElementById("endDate");
+      const generateReportBtn = document.getElementById("generateReportBtn");
+      const exportPDFBtn = document.getElementById("exportPDFBtn");
+      const exportExcelBtn = document.getElementById("exportExcelBtn");
+      const salesFilterToggle = document.getElementById("salesFilterToggle");
+      const salesFilterDropdown = document.getElementById(
+        "salesFilterDropdown",
+      );
+      const selectedFilterLabel = document.getElementById(
+        "selectedFilterLabel",
+      );
+      const customDateFields = document.getElementById("customDateFields");
+      const reportTotalLabel = document.getElementById("reportTotalLabel");
+      const reportTotalSales = document.getElementById("reportTotalSales");
+      const reportTransactions = document.getElementById("reportTransactions");
+      const reportAverageSale = document.getElementById("reportAverageSale");
+      const salesPageSize = document.getElementById("salesPageSize");
+      const salesPaginationInfo = document.getElementById(
+        "salesPaginationInfo",
+      );
+      const salesPrevBtn = document.getElementById("salesPrevBtn");
+      const salesNextBtn = document.getElementById("salesNextBtn");
+      const salesPageNumber = document.getElementById("salesPageNumber");
+
+      let currentSalesData = [];
+      let salesCurrentPage = 1;
+
+      function formatCurrency(value) {
+        const amount = Number(value) || 0;
+        return `₦${amount.toLocaleString("en-NG", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+      }
+
+      function getReportLabel() {
+        const labels = {
+          daily: "Daily Report",
+          weekly: "Weekly Report",
+          monthly: "Monthly Report",
+          custom: "Custom Date Report",
+        };
+        return labels[reportRange.value] || "Sales Report";
+      }
+
+      function getTotalSalesLabel() {
+        const labels = {
+          daily: "Today's Total Sales",
+          weekly: "Last 7 Days Total Sales",
+          monthly: "This Month's Total Sales",
+          custom: "Selected Period Total Sales",
+        };
+        return labels[reportRange.value] || "Report Total Sales";
+      }
+
+      function updateFilterUI() {
+        selectedFilterLabel.textContent = getReportLabel();
+        reportTotalLabel.textContent = getTotalSalesLabel();
+
+        if (reportRange.value === "custom") {
+          customDateFields.classList.add("show");
+        } else {
+          customDateFields.classList.remove("show");
+        }
+      }
+
+      function updateSalesSummary(data) {
+        const total = data.reduce(
+          (sum, sale) => sum + (Number(sale.total_amount) || 0),
+          0,
+        );
+        const transactions = data.length;
+        const average = transactions ? total / transactions : 0;
+
+        reportTotalSales.textContent = formatCurrency(total);
+        reportTransactions.textContent = transactions.toLocaleString("en-NG");
+        reportAverageSale.textContent = formatCurrency(average);
+      }
+
+      function getCurrentPageSize() {
+        return salesPageSize.value === "all"
+          ? "all"
+          : parseInt(salesPageSize.value, 10);
+      }
+
+      function updatePaginationControls(totalRows, totalPages) {
+        const pageSize = getCurrentPageSize();
+
+        if (!totalRows) {
+          salesPaginationInfo.textContent = "Showing 0 sales";
+          salesPageNumber.textContent = "Page 1 of 1";
+          salesPrevBtn.disabled = true;
+          salesNextBtn.disabled = true;
+          return;
+        }
+
+        if (pageSize === "all") {
+          salesPaginationInfo.textContent = `Showing all ${totalRows.toLocaleString("en-NG")} sales`;
+          salesPageNumber.textContent = "Page 1 of 1";
+          salesPrevBtn.disabled = true;
+          salesNextBtn.disabled = true;
+          return;
+        }
+
+        const startRow = (salesCurrentPage - 1) * pageSize + 1;
+        const endRow = Math.min(salesCurrentPage * pageSize, totalRows);
+
+        salesPaginationInfo.textContent = `Showing ${startRow.toLocaleString("en-NG")}–${endRow.toLocaleString("en-NG")} of ${totalRows.toLocaleString("en-NG")} sales`;
+        salesPageNumber.textContent = `Page ${salesCurrentPage.toLocaleString("en-NG")} of ${totalPages.toLocaleString("en-NG")}`;
+        salesPrevBtn.disabled = salesCurrentPage <= 1;
+        salesNextBtn.disabled = salesCurrentPage >= totalPages;
+      }
+
+      // Generate sales report based on filter
+      async function loadSales() {
+        updateFilterUI();
+
+        salesTableBody.innerHTML = `
+          <tr><td colspan="6">
+            <div class="empty-state">
+              <i class="fas fa-spinner fa-spin"></i>
+              <h4>Loading sales...</h4>
+            </div>
+          </td></tr>
+        `;
+
+        let query = supabase.from("sales").select("*");
+        const today = new Date();
+
+        if (reportRange.value === "daily") {
+          const startOfDay = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate(),
+          );
+          const endOfDay = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate(),
+            23,
+            59,
+            59,
+            999,
+          );
+          query = query
+            .gte("created_at", startOfDay.toISOString())
+            .lte("created_at", endOfDay.toISOString());
+        } else if (reportRange.value === "weekly") {
+          const start = new Date();
+          start.setDate(today.getDate() - 7);
+          start.setHours(0, 0, 0, 0);
+          query = query.gte("created_at", start.toISOString());
+        } else if (reportRange.value === "monthly") {
+          const start = new Date(today.getFullYear(), today.getMonth(), 1);
+          start.setHours(0, 0, 0, 0);
+          query = query.gte("created_at", start.toISOString());
+        } else if (reportRange.value === "custom") {
+          if (startDate.value) {
+            const start = new Date(startDate.value);
+            start.setHours(0, 0, 0, 0);
+            query = query.gte("created_at", start.toISOString());
+          }
+
+          if (endDate.value) {
+            const end = new Date(endDate.value);
+            end.setHours(23, 59, 59, 999);
+            query = query.lte("created_at", end.toISOString());
+          }
+        }
+
+        const { data, error } = await query.order("created_at", {
+          ascending: false,
+        });
+
+        if (error) {
+          currentSalesData = [];
+          updateSalesSummary(currentSalesData);
+          salesTableBody.innerHTML = `
+            <tr><td colspan="6">
+              <div class="empty-state">
+                <i class="fas fa-exclamation-circle"></i>
+                <h4>Error loading sales</h4>
+                <p>${error.message}</p>
+              </div>
+            </td></tr>
+          `;
+          updatePaginationControls(0, 1);
+          return;
+        }
+
+        currentSalesData = data || [];
+        salesCurrentPage = 1;
+        updateSalesSummary(currentSalesData);
+        renderSalesTable();
+      }
+
+      // Render sales table with comma-formatted amounts and pagination
+      function renderSalesTable() {
+        salesTableBody.innerHTML = "";
+
+        if (!currentSalesData || currentSalesData.length === 0) {
+          salesTableBody.innerHTML = `
+            <tr><td colspan="6">
+              <div class="empty-state">
+                <i class="fas fa-chart-line"></i>
+                <h4>No sales found</h4>
+                <p>Try a different date range or make a sale first</p>
+              </div>
+            </td></tr>
+          `;
+          updatePaginationControls(0, 1);
+          return;
+        }
+
+        const pageSize = getCurrentPageSize();
+        const totalRows = currentSalesData.length;
+        const totalPages =
+          pageSize === "all" ? 1 : Math.max(1, Math.ceil(totalRows / pageSize));
+
+        if (salesCurrentPage > totalPages) {
+          salesCurrentPage = totalPages;
+        }
+
+        const pageData =
+          pageSize === "all"
+            ? currentSalesData
+            : currentSalesData.slice(
+                (salesCurrentPage - 1) * pageSize,
+                salesCurrentPage * pageSize,
+              );
+
+        pageData.forEach((s) => {
+          const tr = document.createElement("tr");
+          tr.className = "sale-row";
+          tr.style.cursor = "pointer";
+          const dateStr = s.created_at
+            ? new Date(s.created_at).toLocaleString()
+            : "-";
+
+          tr.innerHTML = `
+            <td><span style="font-family:monospace; font-weight:600; color:var(--primary); font-size:12px;">${s.sale_reference || "N/A"}</span></td>
+            <td>${dateStr}</td>
+            <td><span style="background:var(--gray-100); padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; color:var(--gray-600);">${s.payment_mode || "Cash"}</span></td>
+            <td class="money-value">${formatCurrency(s.total_amount)}</td>
+            <td>${s.sold_by || "Unknown"}</td>
+            <td><button class="action-btn btn-view" onclick="event.stopPropagation(); viewSaleDetail(${s.id})"><i class="fas fa-eye"></i> View</button></td>
+          `;
+          tr.addEventListener("click", () => viewSaleDetail(s.id));
+          salesTableBody.appendChild(tr);
+        });
+
+        updatePaginationControls(totalRows, totalPages);
+      }
+
+      // PDF Export
+      exportPDFBtn.addEventListener("click", () => {
+        if (!currentSalesData.length) return alert("No sales data to export.");
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const total = currentSalesData.reduce(
+          (sum, sale) => sum + (Number(sale.total_amount) || 0),
+          0,
+        );
+
+        doc.setFontSize(16);
+        doc.text("Sales Report", 14, 20);
+        doc.setFontSize(11);
+        doc.text(`${getTotalSalesLabel()}: ${formatCurrency(total)}`, 14, 28);
+        doc.text(
+          `Transactions: ${currentSalesData.length.toLocaleString("en-NG")}`,
+          14,
+          36,
+        );
+
+        doc.setFontSize(9);
+        let y = 48;
+        doc.text("Ref | Date | Payment | Total | Sold By", 14, y);
+        y += 6;
+
+        currentSalesData.forEach((s) => {
+          const line = `${s.sale_reference || "N/A"} | ${new Date(s.created_at).toLocaleString()} | ${s.payment_mode || "Cash"} | ${formatCurrency(s.total_amount)} | ${s.sold_by || "Unknown"}`;
+          doc.text(line, 14, y);
+          y += 6;
+          if (y > 280) {
+            doc.addPage();
+            y = 20;
+          }
+        });
+        doc.save("sales_report.pdf");
+      });
+
+      // Excel Export
+      exportExcelBtn.addEventListener("click", () => {
+        if (!currentSalesData.length) return alert("No sales data to export.");
+        const total = currentSalesData.reduce(
+          (sum, sale) => sum + (Number(sale.total_amount) || 0),
+          0,
+        );
+
+        const wb = XLSX.utils.book_new();
+        const ws_data = [
+          ["Sales Report"],
+          [getTotalSalesLabel(), total],
+          ["Transactions", currentSalesData.length],
+          [],
+          ["Sale Ref", "Date", "Payment Mode", "Total", "Sold By"],
+          ...currentSalesData.map((s) => [
+            s.sale_reference || "N/A",
+            s.created_at ? new Date(s.created_at).toLocaleString() : "-",
+            s.payment_mode || "Cash",
+            Number(s.total_amount) || 0,
+            s.sold_by || "Unknown",
+          ]),
+        ];
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+        XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
+        XLSX.writeFile(wb, "sales_report.xlsx");
+      });
+
+      // Event listeners
+      salesFilterToggle.addEventListener("click", () => {
+        salesFilterDropdown.classList.toggle("show");
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".filter-shell")) {
+          salesFilterDropdown.classList.remove("show");
+        }
+      });
+
+      generateReportBtn.addEventListener("click", () => {
+        loadSales();
+        salesFilterDropdown.classList.remove("show");
+      });
+
+      reportRange.addEventListener("change", () => {
+        updateFilterUI();
+        if (reportRange.value !== "custom") {
+          loadSales();
+        }
+      });
+
+      salesPageSize.addEventListener("change", () => {
+        salesCurrentPage = 1;
+        renderSalesTable();
+      });
+
+      salesPrevBtn.addEventListener("click", () => {
+        if (salesCurrentPage > 1) {
+          salesCurrentPage -= 1;
+          renderSalesTable();
+        }
+      });
+
+      salesNextBtn.addEventListener("click", () => {
+        const pageSize = getCurrentPageSize();
+        if (pageSize === "all") return;
+
+        const totalPages = Math.max(
+          1,
+          Math.ceil(currentSalesData.length / pageSize),
+        );
+        if (salesCurrentPage < totalPages) {
+          salesCurrentPage += 1;
+          renderSalesTable();
+        }
+      });
+
+      // ---------- TICKETING SYSTEM FUNCTIONS ----------
+      const ticketPackageCount = document.getElementById("ticketPackageCount");
+      const activeTicketPackageCount = document.getElementById(
+        "activeTicketPackageCount",
+      );
+      const assignedTicketGameCount = document.getElementById(
+        "assignedTicketGameCount",
+      );
+      const ticketPackageIdInput = document.getElementById("ticketPackageId");
+      const ticketPackageNameInput =
+        document.getElementById("ticketPackageName");
+      const ticketPackagePriceInput =
+        document.getElementById("ticketPackagePrice");
+      const ticketPackageDescriptionInput = document.getElementById(
+        "ticketPackageDescription",
+      );
+      const ticketPackageFormTitle = document.getElementById(
+        "ticketPackageFormTitle",
+      );
+      const saveTicketPackageBtn = document.getElementById(
+        "saveTicketPackageBtn",
+      );
+      const resetTicketPackageBtn = document.getElementById(
+        "resetTicketPackageBtn",
+      );
+      const ticketPackageAlert = document.getElementById("ticketPackageAlert");
+      const ticketGameAlert = document.getElementById("ticketGameAlert");
+      const ticketPackageList = document.getElementById("ticketPackageList");
+      const selectedTicketPackageBox = document.getElementById(
+        "selectedTicketPackageBox",
+      );
+      const ticketGameNameInput = document.getElementById("ticketGameName");
+      const ticketGameSortOrderInput = document.getElementById(
+        "ticketGameSortOrder",
+      );
+      const saveTicketGameBtn = document.getElementById("saveTicketGameBtn");
+      const ticketGamesTableBody = document.getElementById(
+        "ticketGamesTableBody",
+      );
+
+      let ticketPackages = [];
+      let ticketGames = [];
+      let selectedTicketPackage = null;
+
+      function showTicketAlert(target, message, type = "success") {
+        target.innerHTML =
+          '<div class="alert-msg ' +
+          (type === "success" ? "alert-success" : "alert-error") +
+          '"><i class="fas fa-' +
+          (type === "success" ? "check-circle" : "exclamation-circle") +
+          '"></i> ' +
+          message +
+          "</div>";
+      }
+
+      function clearTicketAlerts() {
+        ticketPackageAlert.innerHTML = "";
+        ticketGameAlert.innerHTML = "";
+      }
+
+      async function loadTicketingData() {
+        clearTicketAlerts();
+        try {
+          await loadTicketPackages();
+          if (selectedTicketPackage) {
+            const freshSelected = ticketPackages.find(
+              (pkg) => pkg.id === selectedTicketPackage.id,
+            );
+            selectedTicketPackage = freshSelected || null;
+          }
+          renderSelectedTicketPackage();
+          if (selectedTicketPackage) {
+            await loadTicketGames(selectedTicketPackage.id);
+          } else {
+            ticketGames = [];
+            renderTicketGames();
+          }
+        } catch (error) {
+          showTicketAlert(ticketPackageAlert, error.message, "error");
+          console.error(error);
+        }
+      }
+
+      async function loadTicketPackages() {
+        const { data, error } = await supabase
+          .from("ticket_packages")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        ticketPackages = data || [];
+        renderTicketPackages();
+        await updateTicketingStats();
+      }
+
+      async function updateTicketingStats() {
+        let totalAssignedGames = 0;
+
+        const { data, error } = await supabase
+          .from("ticket_package_games")
+          .select("id");
+
+        if (!error && data) {
+          totalAssignedGames = data.length;
+        }
+
+        ticketPackageCount.textContent =
+          ticketPackages.length.toLocaleString("en-NG");
+        activeTicketPackageCount.textContent = ticketPackages
+          .filter((pkg) => pkg.is_active)
+          .length.toLocaleString("en-NG");
+        assignedTicketGameCount.textContent =
+          totalAssignedGames.toLocaleString("en-NG");
+      }
+
+      function renderTicketPackages() {
+        ticketPackageList.innerHTML = "";
+
+        if (!ticketPackages.length) {
+          ticketPackageList.innerHTML = `
+            <div class="empty-state" style="padding: 36px 14px;">
+              <i class="fas fa-ticket-alt"></i>
+              <h4>No ticket packages yet</h4>
+              <p>Create a package, then select it to assign games.</p>
+            </div>
+          `;
+          return;
+        }
+
+        ticketPackages.forEach((pkg) => {
+          const card = document.createElement("div");
+          card.className =
+            "ticket-package-card" +
+            (selectedTicketPackage && selectedTicketPackage.id === pkg.id
+              ? " active"
+              : "");
+          card.onclick = () => selectTicketPackage(pkg.id);
+          card.innerHTML = `
+            <div class="ticket-package-top">
+              <div class="ticket-package-name">${pkg.package_name || "Untitled Package"}</div>
+              <div class="ticket-package-price">${formatCurrency(pkg.price)}</div>
+            </div>
+            ${
+              pkg.description
+                ? `<div class="ticket-package-description">${pkg.description}</div>`
+                : ""
+            }
+            <div class="ticket-package-meta">
+              <span class="ticket-status ${pkg.is_active ? "active" : "inactive"}">${
+                pkg.is_active ? "Active" : "Inactive"
+              }</span>
+              <span>
+                <button class="action-btn btn-edit" onclick="event.stopPropagation(); editTicketPackage(${pkg.id})"><i class="fas fa-pen"></i> Edit</button>
+                <button class="action-btn btn-toggle" onclick="event.stopPropagation(); toggleTicketPackage(${pkg.id}, ${pkg.is_active ? "false" : "true"})">${
+                  pkg.is_active ? "Deactivate" : "Activate"
+                }</button>
+              </span>
+            </div>
+          `;
+          ticketPackageList.appendChild(card);
+        });
+      }
+
+      async function saveTicketPackage() {
+        clearTicketAlerts();
+        const id = ticketPackageIdInput.value;
+        const package_name = ticketPackageNameInput.value.trim();
+        const price = parseFloat(ticketPackagePriceInput.value);
+        const description = ticketPackageDescriptionInput.value.trim();
+
+        if (!package_name) {
+          showTicketAlert(
+            ticketPackageAlert,
+            "Enter the ticket package name.",
+            "error",
+          );
+          return;
+        }
+
+        if (isNaN(price) || price < 0) {
+          showTicketAlert(
+            ticketPackageAlert,
+            "Enter a valid ticket price.",
+            "error",
+          );
+          return;
+        }
+
+        try {
+          if (id) {
+            const { error } = await supabase
+              .from("ticket_packages")
+              .update({ package_name, price, description })
+              .eq("id", id);
+
+            if (error) throw error;
+            showTicketAlert(
+              ticketPackageAlert,
+              "Ticket package updated successfully.",
+            );
+          } else {
+            const { data, error } = await supabase
+              .from("ticket_packages")
+              .insert([{ package_name, price, description, is_active: true }])
+              .select()
+              .single();
+
+            if (error) throw error;
+            selectedTicketPackage = data;
+            showTicketAlert(
+              ticketPackageAlert,
+              "Ticket package created successfully.",
+            );
+          }
+
+          resetTicketPackageForm(false);
+          await loadTicketingData();
+        } catch (error) {
+          showTicketAlert(ticketPackageAlert, error.message, "error");
+          console.error(error);
+        }
+      }
+
+      function editTicketPackage(id) {
+        const pkg = ticketPackages.find((item) => item.id === id);
+        if (!pkg) return;
+
+        ticketPackageIdInput.value = pkg.id;
+        ticketPackageNameInput.value = pkg.package_name || "";
+        ticketPackagePriceInput.value = pkg.price || 0;
+        ticketPackageDescriptionInput.value = pkg.description || "";
+        ticketPackageFormTitle.textContent = "Edit Ticket Package";
+        ticketPackageNameInput.focus();
+      }
+
+      function resetTicketPackageForm(clearAlert = true) {
+        ticketPackageIdInput.value = "";
+        ticketPackageNameInput.value = "";
+        ticketPackagePriceInput.value = "";
+        ticketPackageDescriptionInput.value = "";
+        ticketPackageFormTitle.textContent = "Create Ticket Package";
+        if (clearAlert) clearTicketAlerts();
+      }
+
+      async function toggleTicketPackage(id, isActive) {
+        clearTicketAlerts();
+        try {
+          const { error } = await supabase
+            .from("ticket_packages")
+            .update({ is_active: isActive })
+            .eq("id", id);
+
+          if (error) throw error;
+          showTicketAlert(ticketPackageAlert, "Ticket package status updated.");
+          await loadTicketingData();
+        } catch (error) {
+          showTicketAlert(ticketPackageAlert, error.message, "error");
+          console.error(error);
+        }
+      }
+
+      async function selectTicketPackage(id) {
+        selectedTicketPackage =
+          ticketPackages.find((pkg) => pkg.id === id) || null;
+        renderTicketPackages();
+        renderSelectedTicketPackage();
+        if (selectedTicketPackage) {
+          await loadTicketGames(selectedTicketPackage.id);
+        }
+      }
+
+      function renderSelectedTicketPackage() {
+        if (!selectedTicketPackage) {
+          selectedTicketPackageBox.innerHTML = `
+            <h3>No package selected</h3>
+            <p>Select a package on the left to assign games to it.</p>
+          `;
+          return;
+        }
+
+        selectedTicketPackageBox.innerHTML = `
+          <h3>${selectedTicketPackage.package_name}</h3>
+          <p>${formatCurrency(selectedTicketPackage.price)} • ${
+            selectedTicketPackage.is_active ? "Active" : "Inactive"
+          }</p>
+        `;
+      }
+
+      async function loadTicketGames(packageId) {
+        const { data, error } = await supabase
+          .from("ticket_package_games")
+          .select("*")
+          .eq("package_id", packageId)
+          .order("sort_order", { ascending: true })
+          .order("created_at", { ascending: true });
+
+        if (error) {
+          showTicketAlert(ticketGameAlert, error.message, "error");
+          return;
+        }
+
+        ticketGames = data || [];
+        renderTicketGames();
+      }
+
+      function renderTicketGames() {
+        ticketGamesTableBody.innerHTML = "";
+
+        if (!selectedTicketPackage) {
+          ticketGamesTableBody.innerHTML = `
+            <tr><td colspan="4">
+              <div class="empty-state">
+                <i class="fas fa-hand-pointer"></i>
+                <h4>Select a ticket package</h4>
+                <p>Assigned games will appear here.</p>
+              </div>
+            </td></tr>
+          `;
+          return;
+        }
+
+        if (!ticketGames.length) {
+          ticketGamesTableBody.innerHTML = `
+            <tr><td colspan="4">
+              <div class="empty-state">
+                <i class="fas fa-gamepad"></i>
+                <h4>No games assigned</h4>
+                <p>Add the games customers can play with this ticket package.</p>
+              </div>
+            </td></tr>
+          `;
+          return;
+        }
+
+        ticketGames.forEach((game) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td style="font-weight:700; color:var(--gray-900);">${game.game_name}</td>
+            <td>${Number(game.sort_order || 0).toLocaleString("en-NG")}</td>
+            <td><span class="ticket-status ${game.is_active ? "active" : "inactive"}">${
+              game.is_active ? "Active" : "Inactive"
+            }</span></td>
+            <td>
+              <button class="action-btn btn-toggle" onclick="toggleTicketGame(${game.id}, ${game.is_active ? "false" : "true"})">${
+                game.is_active ? "Deactivate" : "Activate"
+              }</button>
+              <button class="action-btn btn-delete" onclick="deleteTicketGame(${game.id})"><i class="fas fa-trash"></i> Delete</button>
+            </td>
+          `;
+          ticketGamesTableBody.appendChild(tr);
+        });
+      }
+
+      async function saveTicketGame() {
+        clearTicketAlerts();
+
+        if (!selectedTicketPackage) {
+          showTicketAlert(
+            ticketGameAlert,
+            "Select a ticket package first.",
+            "error",
+          );
+          return;
+        }
+
+        const game_name = ticketGameNameInput.value.trim();
+        const sort_order = parseInt(ticketGameSortOrderInput.value || "0", 10);
+
+        if (!game_name) {
+          showTicketAlert(ticketGameAlert, "Enter the game name.", "error");
+          return;
+        }
+
+        try {
+          const { error } = await supabase.from("ticket_package_games").insert([
+            {
+              package_id: selectedTicketPackage.id,
+              game_name,
+              sort_order: isNaN(sort_order) ? 0 : sort_order,
+              is_active: true,
+            },
+          ]);
+
+          if (error) throw error;
+          ticketGameNameInput.value = "";
+          ticketGameSortOrderInput.value = "0";
+          showTicketAlert(ticketGameAlert, "Game assigned successfully.");
+          await loadTicketGames(selectedTicketPackage.id);
+          await updateTicketingStats();
+        } catch (error) {
+          showTicketAlert(ticketGameAlert, error.message, "error");
+          console.error(error);
+        }
+      }
+
+      async function toggleTicketGame(id, isActive) {
+        clearTicketAlerts();
+        try {
+          const { error } = await supabase
+            .from("ticket_package_games")
+            .update({ is_active: isActive })
+            .eq("id", id);
+
+          if (error) throw error;
+          showTicketAlert(ticketGameAlert, "Game status updated.");
+          if (selectedTicketPackage)
+            await loadTicketGames(selectedTicketPackage.id);
+        } catch (error) {
+          showTicketAlert(ticketGameAlert, error.message, "error");
+          console.error(error);
+        }
+      }
+
+      async function deleteTicketGame(id) {
+        if (!confirm("Delete this assigned game?")) return;
+        clearTicketAlerts();
+        try {
+          const { error } = await supabase
+            .from("ticket_package_games")
+            .delete()
+            .eq("id", id);
+
+          if (error) throw error;
+          showTicketAlert(ticketGameAlert, "Game deleted successfully.");
+          if (selectedTicketPackage)
+            await loadTicketGames(selectedTicketPackage.id);
+          await updateTicketingStats();
+        } catch (error) {
+          showTicketAlert(ticketGameAlert, error.message, "error");
+          console.error(error);
+        }
+      }
+
+      saveTicketPackageBtn.addEventListener("click", saveTicketPackage);
+      resetTicketPackageBtn.addEventListener("click", () =>
+        resetTicketPackageForm(true),
+      );
+      saveTicketGameBtn.addEventListener("click", saveTicketGame);
+
+      updateFilterUI();
+
+      // Initial load - load all sales
+      loadSales();
+      loadProducts();
+      updateDashboardStats();
+
+      // ---------- SALE DETAIL MODAL FUNCTIONS ----------
+      let saleDetailModal = null;
+      let saleModalBody = null;
+
+      function getSaleModal() {
+        if (!saleDetailModal) {
+          saleDetailModal = document.getElementById("saleDetailModal");
+          saleModalBody = document.getElementById("saleModalBody");
+          if (saleDetailModal) {
+            saleDetailModal.addEventListener("click", (e) => {
+              if (e.target === saleDetailModal) closeSaleModal();
+            });
+          }
+        }
+        return { modal: saleDetailModal, body: saleModalBody };
+      }
+
+      function openSaleModal() {
+        const { modal } = getSaleModal();
+        if (modal) {
+          modal.classList.add("show");
+          document.body.style.overflow = "hidden";
+        }
+      }
+
+      function closeSaleModal() {
+        const { modal } = getSaleModal();
+        if (modal) {
+          modal.classList.remove("show");
+          document.body.style.overflow = "";
+        }
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          const { modal } = getSaleModal();
+          if (modal && modal.classList.contains("show")) {
+            closeSaleModal();
+          }
+        }
+      });
+
+      async function viewSaleDetail(saleId) {
+        openSaleModal();
+        const { body } = getSaleModal();
+        if (body) {
+          body.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-spinner fa-spin"></i>
+              <h4>Loading sale details...</h4>
+            </div>
+          `;
+        }
+
+        try {
+          // Fetch the sale record
+          const { data: sale, error: saleError } = await supabase
+            .from("sales")
+            .select("*")
+            .eq("id", saleId)
+            .single();
+
+          if (saleError) throw saleError;
+          if (!sale) throw new Error("Sale not found");
+
+          // Fetch sale items and inventory items in parallel
+          const [
+            { data: items, error: itemsError },
+            { data: inventory, error: invError },
+          ] = await Promise.all([
+            supabase.from("sale_items").select("*").eq("sale_id", saleId),
+            supabase.from("inventory_items").select("id,name"),
+          ]);
+
+          if (itemsError) throw itemsError;
+          console.log("Inventory fetch error:", invError);
+          console.log("Inventory data:", inventory);
+
+          // Build product name lookup map
+          const productMap = {};
+          (inventory || []).forEach((p) => {
+            productMap[p.id] = p.name;
+          });
+
+          const dateStr = sale.created_at
+            ? new Date(sale.created_at).toLocaleString("en-NG")
+            : "-";
+
+          let itemsHTML = "";
+          if (items && items.length > 0) {
+            console.log("First sale_item keys:", Object.keys(items[0]));
+            console.log("First sale_item:", items[0]);
+            console.log("Inventory map:", productMap);
+
+            const rows = items
+              .map((item) => {
+                const qty = Number(item.quantity) || 0;
+                const price = Number(item.unit_price) || 0;
+                const total = Number(item.total_price) || qty * price;
+
+                // Try every possible column name for product name
+                let prodName =
+                  item.product_name ||
+                  item.name ||
+                  item.item_name ||
+                  item.product ||
+                  item.title ||
+                  item.description;
+
+                // If no direct name, try lookup by ID
+                if (!prodName) {
+                  const id =
+                    item.product_id ||
+                    item.inventory_item_id ||
+                    item.item_id ||
+                    item.productId ||
+                    item.product;
+                  prodName = productMap[id];
+                }
+
+                // Final fallback
+                if (!prodName) prodName = "Unknown Product";
+
+                return `
+                <tr>
+                  <td style="font-weight:700; color:var(--gray-900);">${prodName}</td>
+                  <td>${qty.toLocaleString("en-NG")}</td>
+                  <td>${formatCurrency(price)}</td>
+                  <td style="font-weight:700; color:var(--gray-900);">${formatCurrency(total)}</td>
+                </tr>
+              `;
+              })
+              .join("");
+
+            itemsHTML = `
+              <div class="sale-items-section">
+                <h4><i class="fas fa-shopping-basket"></i> Items Sold</h4>
+                <table class="sale-items-table data-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Qty</th>
+                      <th>Unit Price</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>${rows}</tbody>
+                </table>
+              </div>
+            `;
+          } else {
+            itemsHTML = `
+              <div class="sale-items-section">
+                <h4><i class="fas fa-shopping-basket"></i> Items Sold</h4>
+                <div class="empty-state" style="padding: 30px 14px;">
+                  <i class="fas fa-box-open"></i>
+                  <h4>No items recorded</h4>
+                  <p>This sale does not have any item details.</p>
+                </div>
+              </div>
+            `;
+          }
+
+          if (body) {
+            body.innerHTML = `
+              <div class="sale-detail-grid">
+                <div class="sale-detail-item">
+                  <div class="sale-detail-label">Sale Reference</div>
+                  <div class="sale-detail-value">${sale.sale_reference || "N/A"}</div>
+                </div>
+                <div class="sale-detail-item">
+                  <div class="sale-detail-label">Date & Time</div>
+                  <div class="sale-detail-value">${dateStr}</div>
+                </div>
+                <div class="sale-detail-item">
+                  <div class="sale-detail-label">Payment Mode</div>
+                  <div class="sale-detail-value">${sale.payment_mode || "Cash"}</div>
+                </div>
+                <div class="sale-detail-item">
+                  <div class="sale-detail-label">Sold By</div>
+                  <div class="sale-detail-value">${sale.sold_by || "Unknown"}</div>
+                </div>
+                <div class="sale-detail-item">
+                  <div class="sale-detail-label">Total Amount</div>
+                  <div class="sale-detail-value" style="color:var(--primary);">${formatCurrency(sale.total_amount)}</div>
+                </div>
+                <div class="sale-detail-item">
+                  <div class="sale-detail-label">Items Count</div>
+                  <div class="sale-detail-value">${(items || []).length.toLocaleString("en-NG")}</div>
+                </div>
+              </div>
+              ${itemsHTML}
+            `;
+          }
+        } catch (error) {
+          if (body) {
+            body.innerHTML = `
+              <div class="alert-msg alert-error" style="margin:0;">
+                <i class="fas fa-exclamation-circle"></i> ${error.message || "Failed to load sale details"}
+              </div>
+            `;
+          }
+          console.error(error);
+        }
+      }
+
+      function printSaleDetail() {
+        window.print();
+      }
+    </script>
+
+    <!-- Sale Detail Modal -->
+    <div class="modal-overlay" id="saleDetailModal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3><i class="fas fa-receipt"></i> Sale Details</h3>
+          <button class="modal-close" onclick="closeSaleModal()" title="Close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="saleModalBody">
+          <div class="empty-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <h4>Loading sale details...</h4>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-print" onclick="printSaleDetail()">
+            <i class="fas fa-print"></i> Print
+          </button>
+          <button class="btn-close-modal" onclick="closeSaleModal()">
+            <i class="fas fa-times"></i> Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
