@@ -1195,6 +1195,41 @@
       .ticket-game-form button i {
         font-size: 13px;
       }
+      /* Logout Button */
+      .logout-btn {
+        width: 100%;
+        margin-top: 12px;
+        padding: 10px 14px;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(192, 58, 43, 0.25);
+        background: rgba(192, 58, 43, 0.08);
+        color: #e74c3c;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+        font-family: "Inter", sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: var(--transition);
+      }
+
+      .logout-btn i {
+        width: 20px;
+        text-align: center;
+        font-size: 16px;
+      }
+
+      .logout-btn:hover {
+        background: rgba(192, 58, 43, 0.15);
+        border-color: rgba(192, 58, 43, 0.4);
+        color: #c0392b;
+        transform: translateY(-1px);
+      }
+
+      .logout-btn:active {
+        transform: translateY(0);
+      }
 
       @media (max-width: 1000px) {
         .ticketing-grid {
@@ -1541,12 +1576,16 @@
 
         <div class="sidebar-footer">
           <div class="user-card">
-            <div class="user-avatar">AD</div>
+            <div class="user-avatar" id="userAvatar">AD</div>
             <div class="user-info">
-              <div class="user-name">Admin User</div>
-              <div class="user-role">Administrator</div>
+              <div class="user-name" id="sidebarUserName">Admin User</div>
+              <div class="user-role" id="sidebarUserRole">Administrator</div>
             </div>
           </div>
+          <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
         </div>
       </div>
 
@@ -1936,6 +1975,37 @@
     </div>
 
     <script>
+      // Logout function
+      async function logout() {
+        if (!confirm("Are you sure you want to logout?")) return;
+
+        try {
+          await window.supabase.auth.signOut();
+        } catch (e) {
+          console.error("Logout error:", e);
+        }
+
+        localStorage.clear();
+        window.location.href = "login.html";
+      }
+      // Load user info on page load
+      document.addEventListener("DOMContentLoaded", async () => {
+        const userName = localStorage.getItem("userName") || "User";
+        const userRole = localStorage.getItem("userRole") || "admin";
+
+        // Update sidebar
+        const nameEl = document.getElementById("sidebarUserName");
+        const roleEl = document.getElementById("sidebarUserRole");
+        const avatarEl = document.getElementById("userAvatar");
+
+        if (nameEl) nameEl.textContent = userName;
+        if (roleEl)
+          roleEl.textContent =
+            userRole.charAt(0).toUpperCase() +
+            userRole.slice(1).replace("_", " ");
+        if (avatarEl)
+          avatarEl.textContent = userName.substring(0, 2).toUpperCase();
+      });
       // Sidebar navigation
       function showSection(sectionId) {
         document

@@ -172,19 +172,18 @@
 
       .search-wrapper i {
         position: absolute;
-        left: 12px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
         color: var(--gray-400);
-        font-size: 13px;
+        font-size: 16px;
       }
-
       .search-input {
         width: 100%;
-        padding: 8px 12px 8px 36px;
+        padding: 14px 14px 14px 42px; /* Changed from 8px to 14px */
         border: 1px solid var(--gray-200);
         border-radius: var(--radius-md);
-        font-size: 13px;
+        font-size: 15px; /* Changed from 13px to 15px */
         font-family: "Inter", sans-serif;
         font-weight: 500;
         color: var(--gray-800);
@@ -205,17 +204,16 @@
       }
 
       .date-input {
-        padding: 8px 12px;
+        padding: 14px 12px; /* Changed from 8px to 14px */
         border: 1px solid var(--gray-200);
         border-radius: var(--radius-md);
-        font-size: 13px;
+        font-size: 15px; /* Changed from 13px to 15px */
         font-family: "Inter", sans-serif;
         color: var(--gray-800);
         background: var(--gray-50);
         outline: none;
         transition: var(--transition);
       }
-
       .date-input:focus {
         border-color: var(--primary);
         box-shadow: 0 0 0 3px rgba(107, 68, 35, 0.1);
@@ -714,6 +712,11 @@
         font-size: 14px;
       }
 
+      .pos-header-btn.logout-btn:hover {
+        background: rgba(192, 58, 43, 0.2); /* Light red background */
+        border-color: var(--danger);
+        color: var(--danger);
+      }
       /* Alert */
       .pos-alert {
         position: fixed;
@@ -815,6 +818,7 @@
           <div class="pos-logo">SEL <span>POS</span></div>
           <div class="pos-header-title">Point of Sale</div>
         </div>
+        <!-- Find this section in your code -->
         <div class="pos-header-right">
           <button
             class="pos-header-btn"
@@ -829,6 +833,15 @@
             title="Clear Cart"
           >
             <i class="fas fa-trash"></i>
+          </button>
+
+          <!-- ADD THIS BUTTON BELOW -->
+          <button
+            class="pos-header-btn logout-btn"
+            onclick="handleLogout()"
+            title="Logout"
+          >
+            <i class="fas fa-sign-out-alt"></i>
           </button>
         </div>
       </div>
@@ -845,7 +858,12 @@
             autocomplete="off"
           />
         </div>
-        <input type="datetime-local" id="saleDate" class="date-input" />
+        <input
+          type="datetime-local"
+          id="saleDate"
+          class="date-input"
+          readonly
+        />
       </div>
 
       <!-- Main Content -->
@@ -991,7 +1009,27 @@
           }, 300);
         }, 4000);
       }
+      // ============================================
+      // AUTH FUNCTIONS
+      // ============================================
+      async function handleLogout() {
+        // 1. Ask for confirmation so they don't click it by accident
+        if (!confirm("Are you sure you want to log out?")) return;
 
+        try {
+          const db = getSupabaseClient();
+
+          // 2. Call Supabase Sign Out
+          const { error } = await db.auth.signOut();
+
+          if (error) throw error;
+
+          window.location.href = "login.html";
+        } catch (err) {
+          console.error("Logout error:", err);
+          showAlert("Logout failed: " + err.message, "error");
+        }
+      }
       // ============================================
       // LOAD PRODUCTS
       // ============================================
@@ -1705,16 +1743,25 @@
 
           const sale_id = saleData.data.id;
           const saleItems = cartSnapshot.map(function (c) {
+            // 1. Defensive parsing: Ensure numbers are actual numbers, not strings or NaN
+            const qty = Math.floor(Number(c.quantity) || 0);
+            const uPrice = Number(c.unit_price || c.price || 0);
+            const tPrice = Number(c.total_price || qty * uPrice || 0);
+
             return {
-              sale_id: sale_id,
-              product_source: c.source_table,
-              item_id:
-                c.source_table === "inventory_items" ? c.source_id : null,
-              package_id:
-                c.source_table === TICKET_PACKAGE_TABLE ? c.source_id : null,
-              quantity: c.quantity,
-              unit_price: c.price,
-              total_price: c.total_price,
+              // 2. Force sale_id to be a Number (to match BigInt in DB)
+              sale_id: Number(sale_id),
+
+              // 3. Force product_type to be a String (to match Text in DB)
+              product_type: String(c.source_table),
+
+              // 4. Force product_id to be a String (to match the TEXT column we created)
+              product_id: String(c.source_id),
+
+              // 5. Ensure numeric values are clean
+              quantity: qty,
+              unit_price: uPrice,
+              total_price: tPrice,
             };
           });
 
@@ -1772,7 +1819,25 @@
           showAlert(err.message, "error");
         }
       }
+      // Replace your current date initialization with this:
 
+      function updateSaleDate() {
+        const now = new Date();
+        // Format: YYYY-MM-DDTHH:mm (required for datetime-local input)
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+
+        saleDateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+      }
+
+      // Set initial date
+      updateSaleDate();
+
+      // Update date every minute to keep it current
+      setInterval(updateSaleDate, 60000);
       // ============================================
       // INITIALIZE
       // ============================================
