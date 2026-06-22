@@ -1,0 +1,11 @@
+{
+  "name": "sel-center",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "mkdir -p dist && cp -r *.html css/ js/ dist/",
+    "start": "npx serve dist -l 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
