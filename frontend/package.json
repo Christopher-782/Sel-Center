@@ -2,7 +2,7 @@
   "name": "sel-center",
   "version": "1.0.0",
   "scripts": {
-    "build": "mkdir -p dist && cp -r *.html css/ js/ dist/",
+    "build": "mkdir -p dist && cp -r *.html css/ js/ serve.json dist/",
     "start": "npx serve dist -l 3000"
   },
   "dependencies": {
