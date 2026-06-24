@@ -172,19 +172,18 @@
 
       .search-wrapper i {
         position: absolute;
-        left: 12px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
         color: var(--gray-400);
-        font-size: 13px;
+        font-size: 16px;
       }
-
       .search-input {
         width: 100%;
-        padding: 8px 12px 8px 36px;
+        padding: 14px 14px 14px 42px; /* Changed from 8px to 14px */
         border: 1px solid var(--gray-200);
         border-radius: var(--radius-md);
-        font-size: 13px;
+        font-size: 15px; /* Changed from 13px to 15px */
         font-family: "Inter", sans-serif;
         font-weight: 500;
         color: var(--gray-800);
@@ -205,17 +204,16 @@
       }
 
       .date-input {
-        padding: 8px 12px;
+        padding: 14px 12px; /* Changed from 8px to 14px */
         border: 1px solid var(--gray-200);
         border-radius: var(--radius-md);
-        font-size: 13px;
+        font-size: 15px; /* Changed from 13px to 15px */
         font-family: "Inter", sans-serif;
         color: var(--gray-800);
         background: var(--gray-50);
         outline: none;
         transition: var(--transition);
       }
-
       .date-input:focus {
         border-color: var(--primary);
         box-shadow: 0 0 0 3px rgba(107, 68, 35, 0.1);
@@ -714,6 +712,11 @@
         font-size: 14px;
       }
 
+      .pos-header-btn.logout-btn:hover {
+        background: rgba(192, 58, 43, 0.2); /* Light red background */
+        border-color: var(--danger);
+        color: var(--danger);
+      }
       /* Alert */
       .pos-alert {
         position: fixed;
@@ -815,6 +818,7 @@
           <div class="pos-logo">SEL <span>POS</span></div>
           <div class="pos-header-title">Point of Sale</div>
         </div>
+        <!-- Find this section in your code -->
         <div class="pos-header-right">
           <button
             class="pos-header-btn"
@@ -829,6 +833,15 @@
             title="Clear Cart"
           >
             <i class="fas fa-trash"></i>
+          </button>
+
+          <!-- ADD THIS BUTTON BELOW -->
+          <button
+            class="pos-header-btn logout-btn"
+            onclick="handleLogout()"
+            title="Logout"
+          >
+            <i class="fas fa-sign-out-alt"></i>
           </button>
         </div>
       </div>
@@ -845,7 +858,12 @@
             autocomplete="off"
           />
         </div>
-        <input type="datetime-local" id="saleDate" class="date-input" />
+        <input
+          type="datetime-local"
+          id="saleDate"
+          class="date-input"
+          readonly
+        />
       </div>
 
       <!-- Main Content -->
@@ -937,6 +955,13 @@
       let cart = [];
       let currentTab = "all";
 
+      // Change this to the exact name of your Supabase ticket/package table.
+      // The table must have: id, package_name, price, description, is_active.
+      const TICKET_PACKAGE_TABLE = "ticket_packages";
+
+      // Use this when your ticket/package table does not have a quantity column.
+      const DEFAULT_TICKET_STOCK = 999999;
+
       function getSupabaseClient() {
         if (window.supabase && typeof window.supabase.from === "function") {
           return window.supabase;
@@ -984,22 +1009,95 @@
           }, 300);
         }, 4000);
       }
+      // ============================================
+      // AUTH FUNCTIONS
+      // ============================================
+      async function handleLogout() {
+        // 1. Ask for confirmation so they don't click it by accident
+        if (!confirm("Are you sure you want to log out?")) return;
 
+        try {
+          const db = getSupabaseClient();
+
+          // 2. Call Supabase Sign Out
+          const { error } = await db.auth.signOut();
+
+          if (error) throw error;
+
+          window.location.href = "login.html";
+        } catch (err) {
+          console.error("Logout error:", err);
+          showAlert("Logout failed: " + err.message, "error");
+        }
+      }
       // ============================================
       // LOAD PRODUCTS
       // ============================================
       async function loadProducts() {
         try {
           const db = getSupabaseClient();
-          const { data, error } = await db
+
+          const inventoryRequest = db
             .from("inventory_items")
             .select("*")
             .eq("is_active", true)
             .order("name", { ascending: true });
 
-          if (error) throw error;
+          const ticketRequest = db
+            .from(TICKET_PACKAGE_TABLE)
+            .select(
+              "id, package_name, price, description, is_active, created_at",
+            )
+            .eq("is_active", true)
+            .order("package_name", { ascending: true });
 
-          products = data || [];
+          const [inventoryResult, ticketResult] = await Promise.all([
+            inventoryRequest,
+            ticketRequest,
+          ]);
+
+          if (inventoryResult.error) throw inventoryResult.error;
+          if (ticketResult.error) throw ticketResult.error;
+
+          const inventoryProducts = (inventoryResult.data || []).map(
+            function (item) {
+              return {
+                id: item.id,
+                source_id: item.id,
+                source_table: "inventory_items",
+                product_key: "inventory_items:" + item.id,
+                name: item.name,
+                sku: item.sku || "",
+                category: item.category || "",
+                price: Number(item.price || 0),
+                quantity: Number(item.quantity || 0),
+                low_stock_threshold: Number(item.low_stock_threshold || 10),
+                image_url: item.image_url || null,
+                description: item.description || "",
+                is_unlimited: false,
+              };
+            },
+          );
+
+          const ticketProducts = (ticketResult.data || []).map(function (pkg) {
+            return {
+              id: "ticket_package:" + pkg.id,
+              source_id: pkg.id,
+              source_table: TICKET_PACKAGE_TABLE,
+              product_key: TICKET_PACKAGE_TABLE + ":" + pkg.id,
+              name: pkg.package_name,
+              sku: "",
+              category: "ticket",
+              price: Number(pkg.price || 0),
+              quantity: DEFAULT_TICKET_STOCK,
+              low_stock_threshold: 0,
+              image_url: null,
+              description: pkg.description || "",
+              is_unlimited: true,
+            };
+          });
+
+          products = inventoryProducts.concat(ticketProducts);
           renderProducts();
         } catch (err) {
           showAlert("Failed to load products: " + err.message, "error");
@@ -1016,7 +1114,10 @@
         // Filter by tab
         if (currentTab !== "all") {
           items = items.filter(function (p) {
-            return p.category && p.category.toLowerCase() === currentTab;
+            return (
+              p.category &&
+              p.category.toString().trim().toLowerCase() === currentTab
+            );
           });
         }
 
@@ -1037,12 +1138,16 @@
           div.className = "product-card";
           div.style.animation = "fadeIn 0.3s ease " + index * 0.02 + "s both";
 
+          const quantity = Number(p.quantity || 0);
+          const isUnlimited = p.is_unlimited === true;
           const isLowStock =
-            p.quantity <= (p.low_stock_threshold || 10) && p.quantity > 0;
-          const isOutOfStock = p.quantity <= 0;
+            !isUnlimited &&
+            quantity <= Number(p.low_stock_threshold || 10) &&
+            quantity > 0;
+          const isOutOfStock = !isUnlimited && quantity <= 0;
 
           let stockClass = "";
-          let stockText = p.quantity + " in stock";
+          let stockText = isUnlimited ? "Available" : quantity + " in stock";
           if (isOutOfStock) {
             stockClass = "out";
             stockText = "Out of stock";
@@ -1050,7 +1155,7 @@
             div.style.pointerEvents = "none";
           } else if (isLowStock) {
             stockClass = "low";
-            stockText = "Low: " + p.quantity + " left";
+            stockText = "Low: " + quantity + " left";
           }
 
           let imgHTML;
@@ -1155,19 +1260,22 @@
       // CART FUNCTIONS
       // ============================================
       function addToCart(product) {
-        if (product.quantity <= 0) {
+        const productQuantity = Number(product.quantity || 0);
+
+        if (!product.is_unlimited && productQuantity <= 0) {
           showAlert(product.name + " is out of stock!", "error");
           return;
         }
 
         const existing = cart.find(function (c) {
-          return c.id === product.id;
+          return c.product_key === product.product_key;
         });
+
         if (existing) {
-          if (existing.quantity >= product.quantity) {
+          if (!product.is_unlimited && existing.quantity >= productQuantity) {
             showAlert(
               "Only " +
-                product.quantity +
+                productQuantity +
                 " units available for " +
                 product.name,
               "error",
@@ -1182,26 +1290,29 @@
           productCopy.total_price = product.price;
           cart.push(productCopy);
         }
+
         renderCart();
         showAlert(product.name + " added to cart", "success");
       }
 
-      function updateCartQty(id, change) {
+      function updateCartQty(productKey, change) {
         const item = cart.find(function (c) {
-          return c.id === id;
+          return c.product_key === productKey;
         });
         const product = products.find(function (p) {
-          return p.id === id;
+          return p.product_key === productKey;
         });
         if (!item || !product) return;
 
         const newQty = item.quantity + change;
         if (newQty <= 0) {
-          removeCart(id);
+          removeCart(productKey);
           return;
         }
-        if (newQty > product.quantity) {
-          showAlert("Only " + product.quantity + " units available", "error");
+
+        const productQuantity = Number(product.quantity || 0);
+        if (!product.is_unlimited && newQty > productQuantity) {
+          showAlert("Only " + productQuantity + " units available", "error");
           return;
         }
 
@@ -1210,9 +1321,9 @@
         renderCart();
       }
 
-      function removeCart(id) {
+      function removeCart(productKey) {
         cart = cart.filter(function (c) {
-          return c.id !== id;
+          return c.product_key !== productKey;
         });
         renderCart();
       }
@@ -1292,7 +1403,7 @@
           minusBtn.type = "button";
           minusBtn.textContent = "-";
           minusBtn.addEventListener("click", function () {
-            updateCartQty(cartItem.id, -1);
+            updateCartQty(cartItem.product_key, -1);
           });
 
           const qtySpan = document.createElement("span");
@@ -1303,7 +1414,7 @@
           plusBtn.type = "button";
           plusBtn.textContent = "+";
           plusBtn.addEventListener("click", function () {
-            updateCartQty(cartItem.id, 1);
+            updateCartQty(cartItem.product_key, 1);
           });
 
           qtyDiv.appendChild(minusBtn);
@@ -1319,7 +1430,7 @@
           removeBtn.type = "button";
           removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
           removeBtn.addEventListener("click", function () {
-            removeCart(cartItem.id);
+            removeCart(cartItem.product_key);
           });
 
           div.appendChild(infoDiv);
@@ -1610,7 +1721,7 @@
           if (userError || !user) throw new Error("Not authenticated");
 
           const sale_reference = "SALE-" + Date.now();
-          const totalAmount = cart.reduce(function (a, c) {
+          const totalAmount = cartSnapshot.reduce(function (a, c) {
             return a + c.total_price;
           }, 0);
 
@@ -1631,23 +1742,39 @@
           if (saleData.error) throw saleData.error;
 
           const sale_id = saleData.data.id;
-          const saleItems = cart.map(function (c) {
+          const saleItems = cartSnapshot.map(function (c) {
+            // 1. Defensive parsing: Ensure numbers are actual numbers, not strings or NaN
+            const qty = Math.floor(Number(c.quantity) || 0);
+            const uPrice = Number(c.unit_price || c.price || 0);
+            const tPrice = Number(c.total_price || qty * uPrice || 0);
+
             return {
-              sale_id: sale_id,
-              item_id: c.id,
-              quantity: c.quantity,
-              unit_price: c.price,
-              total_price: c.total_price,
+              // 2. Force sale_id to be a Number (to match BigInt in DB)
+              sale_id: Number(sale_id),
+
+              // 3. Force product_type to be a String (to match Text in DB)
+              product_type: String(c.source_table),
+
+              // 4. Force product_id to be a String (to match the TEXT column we created)
+              product_id: String(c.source_id),
+
+              // 5. Ensure numeric values are clean
+              quantity: qty,
+              unit_price: uPrice,
+              total_price: tPrice,
             };
           });
 
           const itemsResult = await db.from("sale_items").insert(saleItems);
           if (itemsResult.error) throw itemsResult.error;
 
-          // Update stock safely after recording the sale items.
+          // Only inventory items should reduce inventory_items.quantity.
+          // Ticket packages from the ticket/package table are treated as available packages.
           for (const cartItem of cartSnapshot) {
+            if (cartItem.source_table !== "inventory_items") continue;
+
             const product = products.find(function (p) {
-              return p.id === cartItem.id;
+              return p.product_key === cartItem.product_key;
             });
 
             if (!product) {
@@ -1656,7 +1783,7 @@
               );
             }
 
-            const newQty = product.quantity - cartItem.quantity;
+            const newQty = Number(product.quantity || 0) - cartItem.quantity;
 
             const stockUpdate = await db
               .from("inventory_items")
@@ -1664,11 +1791,11 @@
                 quantity: newQty,
                 updated_at: new Date().toISOString(),
               })
-              .eq("id", cartItem.id);
+              .eq("id", cartItem.source_id);
 
             if (stockUpdate.error) throw stockUpdate.error;
 
-            if (newQty <= (product.low_stock_threshold || 10)) {
+            if (newQty <= Number(product.low_stock_threshold || 10)) {
               showAlert(
                 product.name + " low stock: " + newQty + " left",
                 "error",
@@ -1692,7 +1819,25 @@
           showAlert(err.message, "error");
         }
       }
+      // Replace your current date initialization with this:
 
+      function updateSaleDate() {
+        const now = new Date();
+        // Format: YYYY-MM-DDTHH:mm (required for datetime-local input)
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+
+        saleDateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+      }
+
+      // Set initial date
+      updateSaleDate();
+
+      // Update date every minute to keep it current
+      setInterval(updateSaleDate, 60000);
       // ============================================
       // INITIALIZE
       // ============================================

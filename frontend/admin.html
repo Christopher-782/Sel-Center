@@ -14,9 +14,9 @@
     />
     <style>
       :root {
-        --primary: #8b4513;
-        --primary-dark: #5c2e0d;
-        --primary-light: #a0522d;
+        --primary: #c62828;
+        --primary-dark: #8e0000;
+        --primary-light: #ff5f52;
         --secondary: #10b981;
         --danger: #c03a2b;
         --warning: #f59e0b;
@@ -114,11 +114,7 @@
       .sidebar-logo {
         width: 36px;
         height: 36px;
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-light)
-        );
+        background: linear-gradient(135deg, #c62828, #ff5f52);
         border-radius: var(--radius-md);
         display: flex;
         align-items: center;
@@ -192,10 +188,10 @@
       .sidebar button.active {
         background: linear-gradient(
           90deg,
-          rgba(139, 69, 19, 0.15),
+          rgba(198, 40, 40, 0.15),
           transparent
         );
-        color: #d4a574;
+        color: #ff867c;
         font-weight: 600;
       }
 
@@ -228,11 +224,7 @@
       .user-avatar {
         width: 36px;
         height: 36px;
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-light)
-        );
+        background: linear-gradient(135deg, #c62828, #ff5f52);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -407,11 +399,7 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: linear-gradient(
-          90deg,
-          var(--primary),
-          var(--primary-light)
-        );
+        background: linear-gradient(90deg, #c62828, #ff5f52);
         opacity: 0;
         transition: var(--transition);
       }
@@ -470,7 +458,7 @@
       .form-panel input:focus,
       .form-panel select:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
       }
 
       .form-panel input::placeholder {
@@ -478,11 +466,7 @@
       }
 
       .form-panel button {
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-dark)
-        );
+        background: linear-gradient(135deg, #c62828, #8e0000);
         color: #fff;
         padding: 10px 20px;
         border: none;
@@ -496,12 +480,12 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        box-shadow: 0 4px 6px -1px rgba(139, 69, 19, 0.3);
+        box-shadow: 0 4px 6px -1px rgba(198, 40, 40, 0.3);
       }
 
       .form-panel button:hover {
         transform: translateY(-1px);
-        box-shadow: 0 8px 12px -2px rgba(139, 69, 19, 0.4);
+        box-shadow: 0 8px 12px -2px rgba(198, 40, 40, 0.4);
       }
 
       /* Tables */
@@ -662,24 +646,20 @@
       .sales-filters input:focus,
       .sales-filters select:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
       }
 
       .sales-filters button {
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-dark)
-        );
+        background: linear-gradient(135deg, #c62828, #8e0000);
         color: #fff;
         border: none;
         font-weight: 600;
-        box-shadow: 0 4px 6px -1px rgba(139, 69, 19, 0.3);
+        box-shadow: 0 4px 6px -1px rgba(198, 40, 40, 0.3);
       }
 
       .sales-filters button:hover {
         transform: translateY(-1px);
-        box-shadow: 0 8px 12px -2px rgba(139, 69, 19, 0.4);
+        box-shadow: 0 8px 12px -2px rgba(198, 40, 40, 0.4);
       }
 
       /* Empty State */
@@ -883,7 +863,7 @@
 
       .pagination-size select:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
       }
 
       .pagination-controls {
@@ -948,7 +928,7 @@
 
       .ticketing-panel textarea:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
       }
 
       .ticket-actions {
@@ -998,7 +978,7 @@
 
       .ticket-package-card.active {
         border-color: var(--primary);
-        background: rgba(139, 69, 19, 0.06);
+        background: rgba(198, 40, 40, 0.06);
         box-shadow: var(--shadow-sm);
       }
 
@@ -1069,11 +1049,7 @@
       }
 
       .selected-ticket-box {
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-dark)
-        );
+        background: linear-gradient(135deg, #c62828, #8e0000);
         color: #fff;
         border-radius: var(--radius-lg);
         padding: 22px;
@@ -1155,7 +1131,7 @@
 
       .ticket-game-form .form-field input:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
       }
 
       .ticket-game-form .form-field input::placeholder {
@@ -1167,11 +1143,7 @@
         margin-top: 0;
         white-space: nowrap;
         flex-shrink: 0;
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-dark)
-        );
+        background: linear-gradient(135deg, #c62828, #8e0000);
         color: #fff;
         padding: 10px 22px;
         border: none;
@@ -1183,13 +1155,13 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        box-shadow: 0 4px 6px -1px rgba(139, 69, 19, 0.3);
+        box-shadow: 0 4px 6px -1px rgba(198, 40, 40, 0.3);
         transition: var(--transition);
       }
 
       .ticket-game-form button:hover {
         transform: translateY(-1px);
-        box-shadow: 0 8px 12px -2px rgba(139, 69, 19, 0.4);
+        box-shadow: 0 8px 12px -2px rgba(198, 40, 40, 0.4);
       }
 
       .ticket-game-form button i {
@@ -1465,17 +1437,13 @@
         font-family: "Inter", sans-serif;
       }
       .btn-print {
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-dark)
-        );
+        background: linear-gradient(135deg, #c62828, #8e0000);
         color: #fff;
-        box-shadow: 0 4px 6px -1px rgba(139, 69, 19, 0.3);
+        box-shadow: 0 4px 6px -1px rgba(198, 40, 40, 0.3);
       }
       .btn-print:hover {
         transform: translateY(-1px);
-        box-shadow: 0 8px 12px -2px rgba(139, 69, 19, 0.4);
+        box-shadow: 0 8px 12px -2px rgba(198, 40, 40, 0.4);
       }
       .btn-close-modal {
         background: #fff;
@@ -1486,21 +1454,17 @@
         background: var(--gray-100);
       }
       .btn-view {
-        background: linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary-dark)
-        );
-        box-shadow: 0 2px 4px rgba(139, 69, 19, 0.3);
+        background: linear-gradient(135deg, #c62828, #8e0000);
+        box-shadow: 0 2px 4px rgba(198, 40, 40, 0.3);
       }
       .btn-view:hover {
-        box-shadow: 0 4px 8px rgba(139, 69, 19, 0.4);
+        box-shadow: 0 4px 8px rgba(198, 40, 40, 0.4);
       }
       .sale-row {
         cursor: pointer;
       }
       .sale-row:hover {
-        background: rgba(139, 69, 19, 0.04) !important;
+        background: rgba(198, 40, 40, 0.04) !important;
       }
       @media print {
         .sidebar,
@@ -1526,6 +1490,7 @@
     <script src="./js/supabaseClient.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <base target="_blank" />
     <base target="_blank" />
     <base target="_blank" />
     <base target="_blank" />
@@ -1641,6 +1606,10 @@
                 <h4>Low Stock Alerts</h4>
                 <span id="lowStockProducts">0</span>
               </div>
+              <div class="card">
+                <h4>Total Profit</h4>
+                <span id="totalProfit">₦0</span>
+              </div>
             </div>
           </div>
 
@@ -1656,7 +1625,20 @@
               <input type="hidden" id="productId" />
               <input type="text" id="productName" placeholder="Product Name" />
               <input type="text" id="productSKU" placeholder="SKU / Optional" />
-              <input type="number" id="productPrice" placeholder="Price" />
+              <input
+                type="number"
+                id="productPrice"
+                placeholder="Selling Price"
+                min="0"
+                step="0.01"
+              />
+              <input
+                type="number"
+                id="productCostPrice"
+                placeholder="Cost Price"
+                min="0"
+                step="0.01"
+              />
               <input
                 type="number"
                 id="productQuantity"
@@ -1706,7 +1688,9 @@
                     <th>Image</th>
                     <th>Name</th>
                     <th>SKU</th>
-                    <th>Price</th>
+                    <th>Selling Price</th>
+                    <th>Cost Price</th>
+                    <th>Profit / Unit</th>
                     <th>Qty</th>
                     <th>Low Stock</th>
                     <th>Category</th>
@@ -1805,6 +1789,15 @@
                     Average value per transaction
                   </div>
                 </div>
+                <div class="sales-summary-card">
+                  <div class="sales-summary-label">Gross Profit</div>
+                  <div class="sales-summary-value" id="reportGrossProfit">
+                    ₦0.00
+                  </div>
+                  <div class="sales-summary-subtext">
+                    Total profit after deducting product cost
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1831,6 +1824,7 @@
                     <th>Date</th>
                     <th>Payment</th>
                     <th>Total</th>
+                    <th>Gross Profit</th>
                     <th>Sold By</th>
                     <th>Actions</th>
                   </tr>
@@ -2054,6 +2048,7 @@
           (sum, s) => sum + (Number(s.total_amount) || 0),
           0,
         );
+        const totalProfit = await calculateProfitForSales(sales);
 
         document.getElementById("totalProducts").textContent =
           products.length.toLocaleString("en-NG");
@@ -2063,6 +2058,9 @@
             : `₦${totalSales.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         document.getElementById("lowStockProducts").textContent =
           lowStock.toLocaleString("en-NG");
+        const totalProfitEl = document.getElementById("totalProfit");
+        if (totalProfitEl)
+          totalProfitEl.textContent = formatCurrency(totalProfit);
       }
 
       // Product Variables
@@ -2071,6 +2069,7 @@
       const productNameInput = document.getElementById("productName");
       const productSKUInput = document.getElementById("productSKU");
       const productPriceInput = document.getElementById("productPrice");
+      const productCostPriceInput = document.getElementById("productCostPrice");
       const productQuantityInput = document.getElementById("productQuantity");
       const productLowStockInput = document.getElementById("productLowStock");
       const productCategoryInput = document.getElementById("productCategory");
@@ -2110,26 +2109,40 @@
           const imgHTML = p.image_url
             ? `<img src="${p.image_url}" class="product-thumb">`
             : "";
+          const sellingPrice = Number(p.price) || 0;
+          const costPrice = Number(p.cost_price) || 0;
+          const unitProfit = sellingPrice - costPrice;
+          const safeProductId = JSON.stringify(String(p.id));
+
           tr.innerHTML = `
-      <td>${imgHTML}</td><td>${p.name}</td><td>${p.sku || ""}</td><td style="font-weight: 700; color: var(--gray-800);">₦${parseFloat(p.price).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td><td>${p.quantity}</td>
-      <td>${p.low_stock_threshold}</td><td>${p.category || ""}</td><td>${p.is_active ? "Yes" : "No"}</td>
-      <td>
-        <button class="action-btn btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-pen"></i> Edit</button>
-        <button class="action-btn btn-toggle" onclick="toggleProduct(${p.id})">${p.is_active ? "Deactivate" : "Activate"}</button>
-        <button class="action-btn btn-delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i> Delete</button>
-      </td>`;
+            <td>${imgHTML}</td>
+            <td>${p.name}</td>
+            <td>${p.sku || ""}</td>
+            <td style="font-weight: 700; color: var(--gray-800);">${formatCurrency(sellingPrice)}</td>
+            <td style="font-weight: 700; color: var(--gray-800);">${formatCurrency(costPrice)}</td>
+            <td style="font-weight: 800; color:${unitProfit >= 0 ? "var(--secondary)" : "var(--danger)"};">${formatCurrency(unitProfit)}</td>
+            <td>${p.quantity}</td>
+            <td>${p.low_stock_threshold}</td>
+            <td>${p.category || ""}</td>
+            <td>${p.is_active ? "Yes" : "No"}</td>
+            <td>
+              <button class="action-btn btn-edit" onclick='editProduct(${safeProductId})'><i class="fas fa-pen"></i> Edit</button>
+              <button class="action-btn btn-toggle" onclick='toggleProduct(${safeProductId})'>${p.is_active ? "Deactivate" : "Activate"}</button>
+              <button class="action-btn btn-delete" onclick='deleteProduct(${safeProductId})'><i class="fas fa-trash"></i> Delete</button>
+            </td>`;
           productTableBody.appendChild(tr);
         });
       }
 
       // Add/Edit/Delete/Toggle
       function editProduct(id) {
-        const p = productsList.find((p) => p.id === id);
+        const p = productsList.find((p) => String(p.id) === String(id));
         if (!p) return;
         productIdInput.value = p.id;
         productNameInput.value = p.name;
         productSKUInput.value = p.sku || "";
         productPriceInput.value = p.price;
+        productCostPriceInput.value = p.cost_price || 0;
         productQuantityInput.value = p.quantity;
         productLowStockInput.value = p.low_stock_threshold || 0;
         productCategoryInput.value = p.category || "";
@@ -2158,7 +2171,7 @@
       }
 
       async function toggleProduct(id) {
-        const p = productsList.find((p) => p.id === id);
+        const p = productsList.find((p) => String(p.id) === String(id));
         if (!p) return;
         const { error } = await supabase
           .from("inventory_items")
@@ -2183,10 +2196,11 @@
         const name = productNameInput.value.trim(),
           sku = productSKUInput.value.trim();
         const price = parseFloat(productPriceInput.value),
+          costPrice = parseFloat(productCostPriceInput.value || "0"),
           quantity = parseInt(productQuantityInput.value);
-        const lowStock = parseInt(productLowStockInput.value),
+        const lowStock = parseInt(productLowStockInput.value || "0"),
           category = productCategoryInput.value;
-        if (!name || isNaN(price) || isNaN(quantity)) {
+        if (!name || isNaN(price) || isNaN(costPrice) || isNaN(quantity)) {
           adminError.innerHTML =
             '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> Fill required fields</div>';
           return;
@@ -2216,6 +2230,7 @@
               name,
               sku,
               price,
+              cost_price: costPrice,
               quantity,
               low_stock_threshold: lowStock,
               category,
@@ -2237,6 +2252,7 @@
               name,
               sku,
               price,
+              cost_price: costPrice,
               quantity,
               low_stock_threshold: lowStock,
               category,
@@ -2258,6 +2274,7 @@
         productNameInput.value = "";
         productSKUInput.value = "";
         productPriceInput.value = "";
+        productCostPriceInput.value = "";
         productQuantityInput.value = "";
         productLowStockInput.value = "";
         productCategoryInput.value = "";
@@ -2268,6 +2285,9 @@
       });
 
       // Bulk CSV
+      // New CSV format:
+      // name,sku,price,cost_price,quantity,low_stock_threshold,category
+      // The old format without cost_price still works; cost_price defaults to 0.
       importCSVBtn.addEventListener("click", async () => {
         csvError.innerHTML = "";
         csvSuccess.innerHTML = "";
@@ -2279,16 +2299,26 @@
         const text = await bulkCSV.files[0].text();
         const rows = text.split("\n").filter((r) => r.trim() !== "");
         for (let i = 1; i < rows.length; i++) {
-          const [name, sku, price, quantity, lowStock, category] =
-            rows[i].split(",");
+          const values = rows[i].split(",").map((v) => v.trim());
+          let name, sku, price, costPrice, quantity, lowStock, category;
+
+          if (values.length >= 7) {
+            [name, sku, price, costPrice, quantity, lowStock, category] =
+              values;
+          } else {
+            [name, sku, price, quantity, lowStock, category] = values;
+            costPrice = 0;
+          }
+
           const { error } = await supabase.from("inventory_items").insert([
             {
-              name: name.trim(),
-              sku: sku.trim(),
+              name,
+              sku,
               price: parseFloat(price),
+              cost_price: parseFloat(costPrice) || 0,
               quantity: parseInt(quantity),
               low_stock_threshold: parseInt(lowStock),
-              category: category.trim(),
+              category,
               is_active: true,
             },
           ]);
@@ -2325,6 +2355,7 @@
       const reportTotalSales = document.getElementById("reportTotalSales");
       const reportTransactions = document.getElementById("reportTransactions");
       const reportAverageSale = document.getElementById("reportAverageSale");
+      const reportGrossProfit = document.getElementById("reportGrossProfit");
       const salesPageSize = document.getElementById("salesPageSize");
       const salesPaginationInfo = document.getElementById(
         "salesPaginationInfo",
@@ -2342,6 +2373,250 @@
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}`;
+      }
+
+      function getSaleItemProductId(item) {
+        return (
+          item.product_id ||
+          item.inventory_item_id ||
+          item.item_id ||
+          item.productId ||
+          item.product ||
+          null
+        );
+      }
+
+      function getSaleItemFinancials(item, productMap = {}) {
+        const qty =
+          Number(item.quantity ?? item.qty ?? item.quantity_sold) || 0;
+        const unitPrice =
+          Number(item.unit_price ?? item.price ?? item.selling_price) || 0;
+        const totalRevenueValue = Number(
+          item.total_price ?? item.line_total ?? item.subtotal,
+        );
+        const totalRevenue =
+          Number.isFinite(totalRevenueValue) && totalRevenueValue > 0
+            ? totalRevenueValue
+            : qty * unitPrice;
+
+        const productId = getSaleItemProductId(item);
+        const product = productMap[String(productId)] || {};
+        const costPrice =
+          Number(
+            item.cost_price ??
+              item.unit_cost_price ??
+              item.unit_cost ??
+              item.cost ??
+              item.purchase_price ??
+              product.cost_price ??
+              0,
+          ) || 0;
+        const totalCostValue = Number(item.total_cost ?? item.cost_total);
+        const totalCost =
+          Number.isFinite(totalCostValue) && totalCostValue > 0
+            ? totalCostValue
+            : qty * costPrice;
+        const profitValue = Number(item.profit_amount ?? item.gross_profit);
+        const profit =
+          Number.isFinite(profitValue) && profitValue !== 0
+            ? profitValue
+            : totalRevenue - totalCost;
+
+        return {
+          qty,
+          unitPrice,
+          totalRevenue,
+          productId,
+          costPrice,
+          totalCost,
+          profit,
+        };
+      }
+
+      async function getInventoryCostMap(productIds = []) {
+        const cleanIds = [
+          ...new Set(productIds.map((id) => String(id)).filter(Boolean)),
+        ];
+        const productMap = {};
+        if (!cleanIds.length) return productMap;
+
+        const { data, error } = await supabase
+          .from("inventory_items")
+          .select("id,name,cost_price")
+          .in("id", cleanIds);
+
+        if (error) {
+          console.warn("Could not load product cost prices:", error.message);
+          return productMap;
+        }
+
+        (data || []).forEach((p) => {
+          productMap[String(p.id)] = p;
+        });
+
+        return productMap;
+      }
+
+      async function attachProfitToSales(salesData = []) {
+        const saleIds = [
+          ...new Set(
+            (salesData || []).map((s) => String(s.id)).filter(Boolean),
+          ),
+        ];
+        if (!saleIds.length) {
+          return (salesData || []).map((s) => ({
+            ...s,
+            total_cost: 0,
+            gross_profit: 0,
+          }));
+        }
+
+        const { data: saleItems, error } = await supabase
+          .from("sale_items")
+          .select("*")
+          .in("sale_id", saleIds);
+
+        if (error) {
+          console.warn(
+            "Could not load sale items for profit calculation:",
+            error.message,
+          );
+          return (salesData || []).map((s) => ({
+            ...s,
+            total_cost: 0,
+            gross_profit: 0,
+          }));
+        }
+
+        const productIds = (saleItems || [])
+          .map(getSaleItemProductId)
+          .filter(Boolean);
+        const productMap = await getInventoryCostMap(productIds);
+        const totalsBySaleId = {};
+
+        (saleItems || []).forEach((item) => {
+          const saleId = String(item.sale_id || "");
+          if (!saleId) return;
+          const financials = getSaleItemFinancials(item, productMap);
+          if (!totalsBySaleId[saleId]) {
+            totalsBySaleId[saleId] = { total_cost: 0, gross_profit: 0 };
+          }
+          totalsBySaleId[saleId].total_cost += financials.totalCost;
+          totalsBySaleId[saleId].gross_profit += financials.profit;
+        });
+
+        return (salesData || []).map((sale) => {
+          const totals = totalsBySaleId[String(sale.id)] || {
+            total_cost: 0,
+            gross_profit: 0,
+          };
+          return {
+            ...sale,
+            total_cost: totals.total_cost,
+            gross_profit: totals.gross_profit,
+          };
+        });
+      }
+
+      async function calculateProfitForSales(salesData = []) {
+        const salesWithProfit = await attachProfitToSales(salesData || []);
+        return salesWithProfit.reduce(
+          (sum, sale) => sum + (Number(sale.gross_profit) || 0),
+          0,
+        );
+      }
+
+      function normalizeProfileId(value) {
+        return value === null || value === undefined
+          ? ""
+          : String(value).trim();
+      }
+
+      async function getSellerNameMap(salesData) {
+        const userIds = [
+          ...new Set(
+            (salesData || [])
+              .map((sale) => normalizeProfileId(sale.sold_by))
+              .filter(Boolean),
+          ),
+        ];
+
+        const userMap = {};
+        if (!userIds.length) return userMap;
+
+        // First try a safe public view if you create it in Supabase:
+        // public.profile_names => id, full_name
+        const profileSources = [
+          { table: "profile_names", columns: "id, full_name" },
+          { table: "profiles", columns: "id, full_name" },
+        ];
+
+        for (const source of profileSources) {
+          const { data, error } = await supabase
+            .from(source.table)
+            .select(source.columns)
+            .in("id", userIds);
+
+          if (error) {
+            console.warn(
+              `Could not load seller names from ${source.table}:`,
+              error.message,
+            );
+            continue;
+          }
+
+          (data || []).forEach((profile) => {
+            const id = normalizeProfileId(profile.id);
+            if (id) userMap[id] = profile.full_name || "Unknown";
+          });
+
+          if (Object.keys(userMap).length > 0) break;
+        }
+
+        // Fallback for the currently logged-in user. This helps when RLS only allows users to read themselves.
+        try {
+          const { data: authData } = await supabase.auth.getUser();
+          const loggedInUserId = normalizeProfileId(authData?.user?.id);
+          const loggedInUserName =
+            localStorage.getItem("userName") ||
+            authData?.user?.user_metadata?.full_name ||
+            authData?.user?.email ||
+            "Current User";
+
+          if (
+            loggedInUserId &&
+            userIds.includes(loggedInUserId) &&
+            !userMap[loggedInUserId]
+          ) {
+            userMap[loggedInUserId] = loggedInUserName;
+          }
+        } catch (authError) {
+          console.warn(
+            "Could not load current auth user for seller fallback:",
+            authError,
+          );
+        }
+
+        if (userIds.length && Object.keys(userMap).length === 0) {
+          console.warn(
+            "No seller names were found. Check that public.profiles has matching ids and that RLS allows this app to read id/full_name, or create the public.profile_names view.",
+            userIds,
+          );
+        }
+
+        return userMap;
+      }
+
+      async function resolveSellerName(soldBy, cachedSale) {
+        if (cachedSale?.sold_by_name && cachedSale.sold_by_name !== "Unknown") {
+          return cachedSale.sold_by_name;
+        }
+
+        const sellerId = normalizeProfileId(soldBy);
+        if (!sellerId) return "Unknown";
+
+        const nameMap = await getSellerNameMap([{ sold_by: sellerId }]);
+        return nameMap[sellerId] || "Unknown";
       }
 
       function getReportLabel() {
@@ -2380,12 +2655,18 @@
           (sum, sale) => sum + (Number(sale.total_amount) || 0),
           0,
         );
+        const grossProfit = data.reduce(
+          (sum, sale) => sum + (Number(sale.gross_profit) || 0),
+          0,
+        );
         const transactions = data.length;
         const average = transactions ? total / transactions : 0;
 
         reportTotalSales.textContent = formatCurrency(total);
         reportTransactions.textContent = transactions.toLocaleString("en-NG");
         reportAverageSale.textContent = formatCurrency(average);
+        if (reportGrossProfit)
+          reportGrossProfit.textContent = formatCurrency(grossProfit);
       }
 
       function getCurrentPageSize() {
@@ -2427,7 +2708,7 @@
         updateFilterUI();
 
         salesTableBody.innerHTML = `
-          <tr><td colspan="6">
+          <tr><td colspan="7">
             <div class="empty-state">
               <i class="fas fa-spinner fa-spin"></i>
               <h4>Loading sales...</h4>
@@ -2479,7 +2760,7 @@
           }
         }
 
-        const { data, error } = await query.order("created_at", {
+        const { data: salesData, error } = await query.order("created_at", {
           ascending: false,
         });
 
@@ -2487,7 +2768,7 @@
           currentSalesData = [];
           updateSalesSummary(currentSalesData);
           salesTableBody.innerHTML = `
-            <tr><td colspan="6">
+            <tr><td colspan="7">
               <div class="empty-state">
                 <i class="fas fa-exclamation-circle"></i>
                 <h4>Error loading sales</h4>
@@ -2499,7 +2780,18 @@
           return;
         }
 
-        currentSalesData = data || [];
+        const userMap = await getSellerNameMap(salesData || []);
+
+        currentSalesData = (salesData || []).map((s) => {
+          const sellerId = normalizeProfileId(s.sold_by);
+          return {
+            ...s,
+            sold_by_name: userMap[sellerId] || "Unknown",
+          };
+        });
+
+        currentSalesData = await attachProfitToSales(currentSalesData);
+
         salesCurrentPage = 1;
         updateSalesSummary(currentSalesData);
         renderSalesTable();
@@ -2511,7 +2803,7 @@
 
         if (!currentSalesData || currentSalesData.length === 0) {
           salesTableBody.innerHTML = `
-            <tr><td colspan="6">
+            <tr><td colspan="7">
               <div class="empty-state">
                 <i class="fas fa-chart-line"></i>
                 <h4>No sales found</h4>
@@ -2548,13 +2840,15 @@
             ? new Date(s.created_at).toLocaleString()
             : "-";
 
+          const safeSaleId = JSON.stringify(String(s.id));
           tr.innerHTML = `
-            <td><span style="font-family:monospace; font-weight:600; color:var(--primary); font-size:12px;">${s.sale_reference || "N/A"}</span></td>
+            <td><span style="font-family:monospace; font-weight:600; color:#c62828; font-size:12px;">${s.sale_reference || "N/A"}</span></td>
             <td>${dateStr}</td>
             <td><span style="background:var(--gray-100); padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; color:var(--gray-600);">${s.payment_mode || "Cash"}</span></td>
             <td class="money-value">${formatCurrency(s.total_amount)}</td>
-            <td>${s.sold_by || "Unknown"}</td>
-            <td><button class="action-btn btn-view" onclick="event.stopPropagation(); viewSaleDetail(${s.id})"><i class="fas fa-eye"></i> View</button></td>
+            <td class="money-value" style="color:${Number(s.gross_profit) >= 0 ? "var(--secondary)" : "var(--danger)"};">${formatCurrency(s.gross_profit)}</td>
+            <td>${s.sold_by_name || "Unknown"}</td>
+            <td><button class="action-btn btn-view" onclick='event.stopPropagation(); viewSaleDetail(${safeSaleId})'><i class="fas fa-eye"></i> View</button></td>
           `;
           tr.addEventListener("click", () => viewSaleDetail(s.id));
           salesTableBody.appendChild(tr);
@@ -2567,37 +2861,168 @@
       exportPDFBtn.addEventListener("click", () => {
         if (!currentSalesData.length) return alert("No sales data to export.");
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        const doc = new jsPDF({
+          orientation: "portrait",
+          unit: "mm",
+          format: "a4",
+        });
         const total = currentSalesData.reduce(
           (sum, sale) => sum + (Number(sale.total_amount) || 0),
           0,
         );
-
-        doc.setFontSize(16);
-        doc.text("Sales Report", 14, 20);
-        doc.setFontSize(11);
-        doc.text(`${getTotalSalesLabel()}: ${formatCurrency(total)}`, 14, 28);
-        doc.text(
-          `Transactions: ${currentSalesData.length.toLocaleString("en-NG")}`,
-          14,
-          36,
+        const totalCost = currentSalesData.reduce(
+          (sum, sale) => sum + (Number(sale.total_cost) || 0),
+          0,
         );
-
-        doc.setFontSize(9);
-        let y = 48;
-        doc.text("Ref | Date | Payment | Total | Sold By", 14, y);
-        y += 6;
-
-        currentSalesData.forEach((s) => {
-          const line = `${s.sale_reference || "N/A"} | ${new Date(s.created_at).toLocaleString()} | ${s.payment_mode || "Cash"} | ${formatCurrency(s.total_amount)} | ${s.sold_by || "Unknown"}`;
-          doc.text(line, 14, y);
-          y += 6;
-          if (y > 280) {
-            doc.addPage();
-            y = 20;
-          }
+        const totalProfit = currentSalesData.reduce(
+          (sum, sale) => sum + (Number(sale.gross_profit) || 0),
+          0,
+        );
+        const avg = total / currentSalesData.length;
+        const now = new Date();
+        const reportDate = now.toLocaleDateString("en-NG", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
         });
-        doc.save("sales_report.pdf");
+
+        function nairaPDF(amount) {
+          const num = Number(amount) || 0;
+          return (
+            "N " +
+            num.toLocaleString("en-NG", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+          );
+        }
+
+        doc.setFillColor(198, 40, 40);
+        doc.rect(0, 0, 210, 24, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(17);
+        doc.text("SEL POS", 14, 10);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.text("SALES & PROFIT REPORT", 14, 17);
+        doc.text(reportDate, 196, 10, { align: "right" });
+        doc.text(getTotalSalesLabel(), 196, 17, { align: "right" });
+
+        const cards = [
+          ["TOTAL SALES", nairaPDF(total)],
+          ["TOTAL COST", nairaPDF(totalCost)],
+          ["GROSS PROFIT", nairaPDF(totalProfit)],
+          ["AVERAGE SALE", nairaPDF(avg)],
+        ];
+        const cardY = 32;
+        const cardW = 87;
+        const cardH = 20;
+        cards.forEach((card, i) => {
+          const x = 14 + (i % 2) * (cardW + 8);
+          const y = cardY + Math.floor(i / 2) * (cardH + 6);
+          doc.setFillColor(255, 255, 255);
+          doc.setDrawColor(220, 220, 220);
+          doc.roundedRect(x, y, cardW, cardH, 2, 2, "FD");
+          doc.setFontSize(7);
+          doc.setTextColor(130, 130, 130);
+          doc.setFont("helvetica", "bold");
+          doc.text(card[0], x + 4, y + 7);
+          doc.setFontSize(11);
+          doc.setTextColor(30, 30, 30);
+          doc.text(card[1], x + 4, y + 15);
+        });
+
+        let y = 82;
+        const tableX = 14;
+        const colW = [8, 32, 28, 22, 28, 28, 36];
+        const rowH = 7.5;
+
+        function drawTableHeader() {
+          doc.setFillColor(198, 40, 40);
+          doc.rect(tableX, y - 5, 182, 9, "F");
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(7.5);
+          doc.setFont("helvetica", "bold");
+          let cx = tableX + 2;
+          [
+            "#",
+            "SALE REF",
+            "DATE",
+            "PAYMENT",
+            "TOTAL",
+            "PROFIT",
+            "SOLD BY",
+          ].forEach((h, idx) => {
+            doc.text(h, cx, y);
+            cx += colW[idx];
+          });
+          y += 4;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(7);
+        }
+
+        drawTableHeader();
+        currentSalesData.forEach((s, idx) => {
+          if (y > 272) {
+            doc.addPage();
+            y = 18;
+            drawTableHeader();
+          }
+          if (idx % 2 === 0) {
+            doc.setFillColor(248, 248, 248);
+            doc.rect(tableX, y - 4, 182, rowH, "F");
+          }
+          const dateStr = s.created_at
+            ? new Date(s.created_at).toLocaleDateString("en-NG", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })
+            : "-";
+          const row = [
+            String(idx + 1),
+            s.sale_reference || "N/A",
+            dateStr,
+            (s.payment_mode || "Cash").toUpperCase(),
+            nairaPDF(s.total_amount),
+            nairaPDF(s.gross_profit),
+            s.sold_by_name || "Unknown",
+          ];
+          let cx = tableX + 2;
+          row.forEach((value, colIdx) => {
+            doc.setTextColor(
+              colIdx === 5 ? 16 : 80,
+              colIdx === 5 ? 130 : 80,
+              colIdx === 5 ? 80 : 80,
+            );
+            doc.text(
+              String(value).slice(0, colIdx === 6 ? 22 : 16),
+              cx,
+              y + 1.5,
+            );
+            cx += colW[colIdx];
+          });
+          y += rowH;
+        });
+
+        y += 2;
+        doc.setFillColor(198, 40, 40);
+        doc.rect(tableX, y - 4, 182, 10, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.text("GRAND TOTAL", tableX + 3, y + 1.5);
+        doc.text("SALES: " + nairaPDF(total), tableX + 76, y + 1.5);
+        doc.text("PROFIT: " + nairaPDF(totalProfit), tableX + 128, y + 1.5);
+
+        doc.setFontSize(7);
+        doc.setTextColor(150, 150, 150);
+        doc.text("Generated by SEL POS System", 14, 288);
+        doc.save(
+          "sales_profit_report_" + now.toISOString().slice(0, 10) + ".pdf",
+        );
       });
 
       // Excel Export
@@ -2607,25 +3032,97 @@
           (sum, sale) => sum + (Number(sale.total_amount) || 0),
           0,
         );
+        const totalCost = currentSalesData.reduce(
+          (sum, sale) => sum + (Number(sale.total_cost) || 0),
+          0,
+        );
+        const totalProfit = currentSalesData.reduce(
+          (sum, sale) => sum + (Number(sale.gross_profit) || 0),
+          0,
+        );
+        const avg = total / currentSalesData.length;
+        const now = new Date();
+
+        function nairaExcel(amount) {
+          const num = Number(amount) || 0;
+          return (
+            "N " +
+            num.toLocaleString("en-NG", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+          );
+        }
 
         const wb = XLSX.utils.book_new();
         const ws_data = [
-          ["Sales Report"],
-          [getTotalSalesLabel(), total],
-          ["Transactions", currentSalesData.length],
+          ["SEL POS - SALES & PROFIT REPORT"],
+          ["Generated: " + now.toLocaleString("en-NG")],
+          ["Report Period: " + getTotalSalesLabel()],
           [],
-          ["Sale Ref", "Date", "Payment Mode", "Total", "Sold By"],
-          ...currentSalesData.map((s) => [
+          ["SALES SUMMARY"],
+          ["Total Sales", nairaExcel(total)],
+          ["Total Cost", nairaExcel(totalCost)],
+          ["Gross Profit", nairaExcel(totalProfit)],
+          ["Total Transactions", currentSalesData.length],
+          ["Average Sale", nairaExcel(avg)],
+          [],
+          [
+            "S/N",
+            "SALE REFERENCE",
+            "DATE",
+            "PAYMENT MODE",
+            "TOTAL SALES",
+            "TOTAL COST",
+            "GROSS PROFIT",
+            "SOLD BY",
+          ],
+          ...currentSalesData.map((s, idx) => [
+            idx + 1,
             s.sale_reference || "N/A",
-            s.created_at ? new Date(s.created_at).toLocaleString() : "-",
-            s.payment_mode || "Cash",
-            Number(s.total_amount) || 0,
-            s.sold_by || "Unknown",
+            s.created_at
+              ? new Date(s.created_at).toLocaleDateString("en-NG", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "-",
+            (s.payment_mode || "Cash").toUpperCase(),
+            nairaExcel(s.total_amount),
+            nairaExcel(s.total_cost),
+            nairaExcel(s.gross_profit),
+            s.sold_by_name || "Unknown",
           ]),
+          [],
+          [
+            "",
+            "",
+            "",
+            "GRAND TOTAL",
+            nairaExcel(total),
+            nairaExcel(totalCost),
+            nairaExcel(totalProfit),
+          ],
         ];
+
         const ws = XLSX.utils.aoa_to_sheet(ws_data);
-        XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
-        XLSX.writeFile(wb, "sales_report.xlsx");
+        ws["!cols"] = [
+          { wch: 6 },
+          { wch: 24 },
+          { wch: 18 },
+          { wch: 14 },
+          { wch: 18 },
+          { wch: 18 },
+          { wch: 18 },
+          { wch: 22 },
+        ];
+        ws["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 7 } }];
+
+        XLSX.utils.book_append_sheet(wb, ws, "Sales Profit Report");
+        XLSX.writeFile(
+          wb,
+          "sales_profit_report_" + now.toISOString().slice(0, 10) + ".xlsx",
+        );
       });
 
       // Event listeners
@@ -2808,9 +3305,11 @@
 
         ticketPackages.forEach((pkg) => {
           const card = document.createElement("div");
+          const safePkgId = JSON.stringify(String(pkg.id));
           card.className =
             "ticket-package-card" +
-            (selectedTicketPackage && selectedTicketPackage.id === pkg.id
+            (selectedTicketPackage &&
+            String(selectedTicketPackage.id) === String(pkg.id)
               ? " active"
               : "");
           card.onclick = () => selectTicketPackage(pkg.id);
@@ -2829,8 +3328,8 @@
                 pkg.is_active ? "Active" : "Inactive"
               }</span>
               <span>
-                <button class="action-btn btn-edit" onclick="event.stopPropagation(); editTicketPackage(${pkg.id})"><i class="fas fa-pen"></i> Edit</button>
-                <button class="action-btn btn-toggle" onclick="event.stopPropagation(); toggleTicketPackage(${pkg.id}, ${pkg.is_active ? "false" : "true"})">${
+                <button class="action-btn btn-edit" onclick='event.stopPropagation(); editTicketPackage(${safePkgId})'><i class="fas fa-pen"></i> Edit</button>
+                <button class="action-btn btn-toggle" onclick='event.stopPropagation(); toggleTicketPackage(${safePkgId}, ${pkg.is_active ? "false" : "true"})'>${
                   pkg.is_active ? "Deactivate" : "Activate"
                 }</button>
               </span>
@@ -3013,6 +3512,7 @@
 
         ticketGames.forEach((game) => {
           const tr = document.createElement("tr");
+          const safeGameId = JSON.stringify(String(game.id));
           tr.innerHTML = `
             <td style="font-weight:700; color:var(--gray-900);">${game.game_name}</td>
             <td>${Number(game.sort_order || 0).toLocaleString("en-NG")}</td>
@@ -3020,10 +3520,10 @@
               game.is_active ? "Active" : "Inactive"
             }</span></td>
             <td>
-              <button class="action-btn btn-toggle" onclick="toggleTicketGame(${game.id}, ${game.is_active ? "false" : "true"})">${
+              <button class="action-btn btn-toggle" onclick='toggleTicketGame(${safeGameId}, ${game.is_active ? "false" : "true"})'>${
                 game.is_active ? "Deactivate" : "Activate"
               }</button>
-              <button class="action-btn btn-delete" onclick="deleteTicketGame(${game.id})"><i class="fas fa-trash"></i> Delete</button>
+              <button class="action-btn btn-delete" onclick='deleteTicketGame(${safeGameId})'><i class="fas fa-trash"></i> Delete</button>
             </td>
           `;
           ticketGamesTableBody.appendChild(tr);
@@ -3178,7 +3678,6 @@
         }
 
         try {
-          // Fetch the sale record
           const { data: sale, error: saleError } = await supabase
             .from("sales")
             .select("*")
@@ -3188,42 +3687,43 @@
           if (saleError) throw saleError;
           if (!sale) throw new Error("Sale not found");
 
-          // Fetch sale items and inventory items in parallel
+          const cachedSale = (currentSalesData || []).find(
+            (s) => String(s.id) === String(saleId),
+          );
+          sale.sold_by_name = await resolveSellerName(sale.sold_by, cachedSale);
+
           const [
             { data: items, error: itemsError },
             { data: inventory, error: invError },
           ] = await Promise.all([
             supabase.from("sale_items").select("*").eq("sale_id", saleId),
-            supabase.from("inventory_items").select("id,name"),
+            supabase.from("inventory_items").select("id,name,cost_price"),
           ]);
 
           if (itemsError) throw itemsError;
-          console.log("Inventory fetch error:", invError);
-          console.log("Inventory data:", inventory);
+          if (invError)
+            console.warn("Inventory fetch error:", invError.message);
 
-          // Build product name lookup map
           const productMap = {};
           (inventory || []).forEach((p) => {
-            productMap[p.id] = p.name;
+            productMap[String(p.id)] = p;
           });
 
           const dateStr = sale.created_at
             ? new Date(sale.created_at).toLocaleString("en-NG")
             : "-";
 
+          let totalCost = 0;
+          let grossProfit = 0;
           let itemsHTML = "";
-          if (items && items.length > 0) {
-            console.log("First sale_item keys:", Object.keys(items[0]));
-            console.log("First sale_item:", items[0]);
-            console.log("Inventory map:", productMap);
 
+          if (items && items.length > 0) {
             const rows = items
               .map((item) => {
-                const qty = Number(item.quantity) || 0;
-                const price = Number(item.unit_price) || 0;
-                const total = Number(item.total_price) || qty * price;
+                const financials = getSaleItemFinancials(item, productMap);
+                totalCost += financials.totalCost;
+                grossProfit += financials.profit;
 
-                // Try every possible column name for product name
                 let prodName =
                   item.product_name ||
                   item.name ||
@@ -3232,26 +3732,21 @@
                   item.title ||
                   item.description;
 
-                // If no direct name, try lookup by ID
                 if (!prodName) {
-                  const id =
-                    item.product_id ||
-                    item.inventory_item_id ||
-                    item.item_id ||
-                    item.productId ||
-                    item.product;
-                  prodName = productMap[id];
+                  const product = productMap[String(financials.productId)];
+                  prodName = product?.name;
                 }
 
-                // Final fallback
                 if (!prodName) prodName = "Unknown Product";
 
                 return `
                 <tr>
                   <td style="font-weight:700; color:var(--gray-900);">${prodName}</td>
-                  <td>${qty.toLocaleString("en-NG")}</td>
-                  <td>${formatCurrency(price)}</td>
-                  <td style="font-weight:700; color:var(--gray-900);">${formatCurrency(total)}</td>
+                  <td>${financials.qty.toLocaleString("en-NG")}</td>
+                  <td>${formatCurrency(financials.unitPrice)}</td>
+                  <td>${formatCurrency(financials.costPrice)}</td>
+                  <td style="font-weight:700; color:var(--gray-900);">${formatCurrency(financials.totalRevenue)}</td>
+                  <td style="font-weight:800; color:${financials.profit >= 0 ? "var(--secondary)" : "var(--danger)"};">${formatCurrency(financials.profit)}</td>
                 </tr>
               `;
               })
@@ -3266,7 +3761,9 @@
                       <th>Product</th>
                       <th>Qty</th>
                       <th>Unit Price</th>
+                      <th>Cost Price</th>
                       <th>Total</th>
+                      <th>Profit</th>
                     </tr>
                   </thead>
                   <tbody>${rows}</tbody>
@@ -3286,6 +3783,11 @@
             `;
           }
 
+          if (!items || !items.length) {
+            totalCost = Number(cachedSale?.total_cost) || 0;
+            grossProfit = Number(cachedSale?.gross_profit) || 0;
+          }
+
           if (body) {
             body.innerHTML = `
               <div class="sale-detail-grid">
@@ -3303,11 +3805,19 @@
                 </div>
                 <div class="sale-detail-item">
                   <div class="sale-detail-label">Sold By</div>
-                  <div class="sale-detail-value">${sale.sold_by || "Unknown"}</div>
+                  <div class="sale-detail-value">${sale.sold_by_name || "Unknown"}</div>
                 </div>
                 <div class="sale-detail-item">
                   <div class="sale-detail-label">Total Amount</div>
-                  <div class="sale-detail-value" style="color:var(--primary);">${formatCurrency(sale.total_amount)}</div>
+                  <div class="sale-detail-value" style="color:#c62828;">${formatCurrency(sale.total_amount)}</div>
+                </div>
+                <div class="sale-detail-item">
+                  <div class="sale-detail-label">Total Cost</div>
+                  <div class="sale-detail-value">${formatCurrency(totalCost)}</div>
+                </div>
+                <div class="sale-detail-item">
+                  <div class="sale-detail-label">Gross Profit</div>
+                  <div class="sale-detail-value" style="color:${grossProfit >= 0 ? "var(--secondary)" : "var(--danger)"};">${formatCurrency(grossProfit)}</div>
                 </div>
                 <div class="sale-detail-item">
                   <div class="sale-detail-label">Items Count</div>
