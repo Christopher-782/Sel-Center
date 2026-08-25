@@ -1,0 +1,1018 @@
+/* SEL Center UI Enhancement Layer
+   Non-destructive visual overrides shared by the active application pages. */
+
+:root {
+  --sel-primary: #b91c1c;
+  --sel-primary-strong: #7f1d1d;
+  --sel-primary-soft: #fef2f2;
+  --sel-accent: #ef4444;
+  --sel-ink: #0f172a;
+  --sel-muted: #64748b;
+  --sel-line: #e2e8f0;
+  --sel-surface: rgba(255, 255, 255, 0.92);
+  --sel-bg: #f6f7fb;
+  --sel-success: #059669;
+  --sel-warning: #d97706;
+  --sel-danger: #dc2626;
+  --sel-radius-sm: 10px;
+  --sel-radius-md: 14px;
+  --sel-radius-lg: 20px;
+  --sel-radius-xl: 28px;
+  --sel-shadow-xs: 0 1px 2px rgb(15 23 42 / 0.04);
+  --sel-shadow-sm: 0 8px 24px rgb(15 23 42 / 0.06);
+  --sel-shadow-md: 0 18px 45px rgb(15 23 42 / 0.09);
+  --sel-shadow-lg: 0 30px 80px rgb(15 23 42 / 0.14);
+  --sel-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 8% 0%, rgb(185 28 28 / 0.07), transparent 28%),
+    radial-gradient(circle at 94% 12%, rgb(15 23 42 / 0.05), transparent 24%),
+    linear-gradient(180deg, #fbfcfe 0%, var(--sel-bg) 100%);
+}
+
+button,
+a,
+input,
+select,
+textarea,
+.product-card,
+.card,
+.panel,
+.form-panel,
+.table-panel,
+.package-card,
+.cart-item {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+[role="button"],
+.product-card,
+.package-card {
+  transition:
+    transform 220ms var(--sel-ease),
+    box-shadow 220ms var(--sel-ease),
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease,
+    opacity 220ms ease;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid rgb(239 68 68 / 0.22) !important;
+  outline-offset: 2px;
+}
+
+input,
+select,
+textarea {
+  accent-color: var(--sel-primary);
+}
+
+::selection {
+  color: #fff;
+  background: var(--sel-primary);
+}
+
+::-webkit-scrollbar {
+  width: 7px !important;
+  height: 7px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border-radius: 999px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8 !important;
+}
+
+/* Shared entry motion */
+.ui-reveal {
+  opacity: 0;
+  transform: translateY(12px) scale(0.995);
+}
+
+.ui-reveal.ui-revealed {
+  animation: selReveal 520ms var(--sel-ease) both;
+  animation-delay: var(--ui-delay, 0ms);
+}
+
+@keyframes selReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes selPulseDot {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(16 185 129 / 0.28); }
+  50% { box-shadow: 0 0 0 7px rgb(16 185 129 / 0); }
+}
+
+@keyframes selShimmer {
+  0% { transform: translateX(-140%); }
+  100% { transform: translateX(180%); }
+}
+
+.ui-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+  color: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.ui-status-pill .ui-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  animation: selPulseDot 2s infinite;
+}
+
+.ui-status-pill.is-offline .ui-status-dot {
+  background: #f59e0b;
+  animation: none;
+}
+
+/* Login */
+body[data-ui-page="login"] {
+  background: #f8fafc !important;
+}
+
+body[data-ui-page="login"] .login-page {
+  min-height: 100dvh;
+  background: #f8fafc;
+}
+
+body[data-ui-page="login"] .login-hero {
+  background:
+    radial-gradient(circle at 20% 10%, rgb(255 255 255 / 0.17), transparent 26%),
+    radial-gradient(circle at 78% 70%, rgb(255 255 255 / 0.10), transparent 30%),
+    linear-gradient(145deg, #5f1010 0%, #991b1b 48%, #dc2626 100%) !important;
+}
+
+body[data-ui-page="login"] .login-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.75), transparent 85%);
+  pointer-events: none;
+}
+
+body[data-ui-page="login"] .particle {
+  background: rgb(255 255 255 / 0.15) !important;
+  box-shadow: 0 0 30px rgb(255 255 255 / 0.09) !important;
+  filter: blur(0.2px);
+}
+
+body[data-ui-page="login"] .shape {
+  border-color: rgb(255 255 255 / 0.13) !important;
+}
+
+body[data-ui-page="login"] .hero-content {
+  z-index: 2;
+  width: min(640px, 100%);
+}
+
+body[data-ui-page="login"] .hero-image-wrapper {
+  filter: drop-shadow(0 35px 50px rgb(25 8 8 / 0.26));
+}
+
+body[data-ui-page="login"] .hero-image {
+  transition: transform 700ms var(--sel-ease), filter 700ms var(--sel-ease);
+}
+
+body[data-ui-page="login"] .hero-image:hover {
+  transform: translateY(-6px) scale(1.012);
+  filter: saturate(1.03);
+}
+
+body[data-ui-page="login"] .hero-tagline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  border: 1px solid rgb(255 255 255 / 0.15);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.09);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px rgb(255 255 255 / 0.09);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-page="login"] .login-form-panel {
+  position: relative;
+  isolation: isolate;
+  background: transparent !important;
+}
+
+body[data-ui-page="login"] .login-form-panel::before,
+body[data-ui-page="login"] .login-form-panel::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(1px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+body[data-ui-page="login"] .login-form-panel::before {
+  width: 260px;
+  height: 260px;
+  right: -90px;
+  top: -90px;
+  background: rgb(185 28 28 / 0.07);
+}
+
+body[data-ui-page="login"] .login-form-panel::after {
+  width: 220px;
+  height: 220px;
+  left: -80px;
+  bottom: -100px;
+  background: rgb(15 23 42 / 0.045);
+}
+
+body[data-ui-page="login"] .form-container {
+  width: min(460px, calc(100% - 40px));
+  padding: 38px !important;
+  border: 1px solid rgb(226 232 240 / 0.9);
+  border-radius: 26px;
+  background: rgb(255 255 255 / 0.88);
+  box-shadow: var(--sel-shadow-lg);
+  backdrop-filter: blur(18px);
+}
+
+body[data-ui-page="login"] .form-header h2 {
+  color: var(--sel-ink) !important;
+  letter-spacing: -0.045em !important;
+}
+
+body[data-ui-page="login"] .form-header p,
+body[data-ui-page="login"] .form-footer p {
+  color: var(--sel-muted) !important;
+}
+
+body[data-ui-page="login"] .form-input {
+  min-height: 50px;
+  border: 1px solid var(--sel-line) !important;
+  border-radius: 13px !important;
+  background: #f8fafc !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8);
+}
+
+body[data-ui-page="login"] .form-input:hover {
+  border-color: #cbd5e1 !important;
+}
+
+body[data-ui-page="login"] .form-input:focus {
+  border-color: var(--sel-primary) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgb(185 28 28 / 0.08) !important;
+}
+
+body[data-ui-page="login"] .btn-submit {
+  position: relative;
+  overflow: hidden;
+  min-height: 50px;
+  border-radius: 13px !important;
+  background: linear-gradient(135deg, #991b1b, #dc2626) !important;
+  box-shadow: 0 13px 28px rgb(185 28 28 / 0.23) !important;
+}
+
+body[data-ui-page="login"] .btn-submit:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 17px 32px rgb(185 28 28 / 0.28) !important;
+}
+
+body[data-ui-page="login"] .btn-submit::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  width: 50%;
+  height: 300%;
+  transform: translateX(-140%) rotate(18deg);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.2), transparent);
+}
+
+body[data-ui-page="login"] .btn-submit:hover::after {
+  animation: selShimmer 850ms ease;
+}
+
+.ui-password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.ui-password-toggle:hover {
+  background: #eef2f7;
+  color: #475569;
+}
+
+body[data-ui-page="login"] #password {
+  padding-right: 48px !important;
+}
+
+/* POS / Manager */
+body[data-ui-page="pos"],
+body[data-ui-page="manager"] {
+  --primary: var(--sel-primary);
+  --primary-dark: var(--sel-primary-strong);
+  --primary-light: var(--sel-accent);
+  --primary-accent: #fecaca;
+  background: var(--sel-bg) !important;
+}
+
+body[data-ui-page="pos"] .pos-container,
+body[data-ui-page="manager"] .pos-container {
+  background:
+    radial-gradient(circle at 95% -10%, rgb(185 28 28 / 0.08), transparent 24%),
+    var(--sel-bg) !important;
+}
+
+body[data-ui-page="pos"] .pos-header,
+body[data-ui-page="manager"] .pos-header {
+  height: 64px !important;
+  padding: 0 24px !important;
+  background:
+    linear-gradient(135deg, rgb(15 23 42 / 0.98), rgb(51 20 24 / 0.98)) !important;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  box-shadow: 0 12px 30px rgb(15 23 42 / 0.16) !important;
+}
+
+body[data-ui-page="pos"] .pos-logo,
+body[data-ui-page="manager"] .pos-logo {
+  letter-spacing: -0.04em !important;
+}
+
+body[data-ui-page="pos"] .pos-logo span,
+body[data-ui-page="manager"] .pos-logo span {
+  color: #fca5a5 !important;
+}
+
+body[data-ui-page="pos"] .pos-header-title,
+body[data-ui-page="manager"] .pos-header-title {
+  color: #cbd5e1;
+  opacity: 1 !important;
+}
+
+body[data-ui-page="pos"] .pos-header-btn,
+body[data-ui-page="manager"] .pos-header-btn {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  border-color: rgb(255 255 255 / 0.12) !important;
+  background: rgb(255 255 255 / 0.07) !important;
+}
+
+body[data-ui-page="pos"] .pos-header-btn:hover,
+body[data-ui-page="manager"] .pos-header-btn:hover {
+  transform: translateY(-1px);
+  background: rgb(255 255 255 / 0.13) !important;
+}
+
+body[data-ui-page="pos"] .pos-search-bar,
+body[data-ui-page="manager"] .pos-search-bar {
+  padding: 12px 24px !important;
+  border-bottom: 1px solid var(--sel-line) !important;
+  background: rgb(255 255 255 / 0.88) !important;
+  backdrop-filter: blur(16px);
+}
+
+body[data-ui-page="pos"] .search-input,
+body[data-ui-page="pos"] .date-input,
+body[data-ui-page="manager"] .search-input,
+body[data-ui-page="manager"] .date-input {
+  min-height: 40px;
+  border: 1px solid var(--sel-line) !important;
+  border-radius: 11px !important;
+  background: #f8fafc !important;
+}
+
+body[data-ui-page="pos"] .search-input:focus,
+body[data-ui-page="pos"] .date-input:focus,
+body[data-ui-page="manager"] .search-input:focus,
+body[data-ui-page="manager"] .date-input:focus {
+  border-color: #f87171 !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgb(185 28 28 / 0.07) !important;
+}
+
+body[data-ui-page="pos"] .pos-main,
+body[data-ui-page="manager"] .pos-main {
+  gap: 16px !important;
+  padding: 16px 24px !important;
+}
+
+body[data-ui-page="pos"] .cart-panel,
+body[data-ui-page="pos"] .product-panel,
+body[data-ui-page="manager"] .cart-panel,
+body[data-ui-page="manager"] .product-panel {
+  border: 1px solid rgb(226 232 240 / 0.95) !important;
+  border-radius: 18px !important;
+  background: rgb(255 255 255 / 0.94) !important;
+  box-shadow: var(--sel-shadow-sm) !important;
+}
+
+body[data-ui-page="pos"] .cart-panel:hover,
+body[data-ui-page="pos"] .product-panel:hover,
+body[data-ui-page="manager"] .cart-panel:hover,
+body[data-ui-page="manager"] .product-panel:hover {
+  box-shadow: var(--sel-shadow-md) !important;
+}
+
+body[data-ui-page="pos"] .cart-header,
+body[data-ui-page="manager"] .cart-header {
+  padding: 16px 18px !important;
+  background: linear-gradient(180deg, #fff, #fbfcfe);
+}
+
+body[data-ui-page="pos"] .cart-badge,
+body[data-ui-page="manager"] .cart-badge {
+  border-radius: 999px !important;
+  background: var(--sel-primary-soft) !important;
+  color: var(--sel-primary) !important;
+  font-weight: 700 !important;
+}
+
+body[data-ui-page="pos"] .product-tabs,
+body[data-ui-page="manager"] .product-tabs {
+  gap: 6px !important;
+  padding: 10px 12px !important;
+  background: #fbfcfe !important;
+  border-bottom: 1px solid #edf0f4 !important;
+}
+
+body[data-ui-page="pos"] .product-tab,
+body[data-ui-page="manager"] .product-tab {
+  border-radius: 9px !important;
+  border: 1px solid transparent !important;
+}
+
+body[data-ui-page="pos"] .product-tab:hover,
+body[data-ui-page="manager"] .product-tab:hover {
+  background: #f1f5f9 !important;
+  color: var(--sel-ink) !important;
+}
+
+body[data-ui-page="pos"] .product-tab.active,
+body[data-ui-page="manager"] .product-tab.active {
+  border-color: #fecaca !important;
+  background: var(--sel-primary-soft) !important;
+  color: var(--sel-primary) !important;
+  box-shadow: 0 4px 12px rgb(185 28 28 / 0.07);
+}
+
+body[data-ui-page="pos"] .product-grid,
+body[data-ui-page="manager"] .product-grid {
+  gap: 12px !important;
+  padding: 14px !important;
+}
+
+body[data-ui-page="pos"] .product-card,
+body[data-ui-page="manager"] .product-card {
+  border: 1px solid #e9edf3 !important;
+  border-radius: 15px !important;
+  background: #fff !important;
+  box-shadow: var(--sel-shadow-xs) !important;
+  overflow: hidden;
+}
+
+body[data-ui-page="pos"] .product-card:hover,
+body[data-ui-page="manager"] .product-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: #fecaca !important;
+  box-shadow: 0 16px 28px rgb(15 23 42 / 0.09) !important;
+}
+
+body[data-ui-page="pos"] .product-card-img,
+body[data-ui-page="manager"] .product-card-img {
+  background: linear-gradient(145deg, #f8fafc, #f1f5f9) !important;
+}
+
+body[data-ui-page="pos"] .product-card-price,
+body[data-ui-page="manager"] .product-card-price {
+  color: var(--sel-primary) !important;
+  letter-spacing: -0.02em;
+}
+
+body[data-ui-page="pos"] .cart-item,
+body[data-ui-page="manager"] .cart-item {
+  border-radius: 12px !important;
+  border: 1px solid transparent;
+}
+
+body[data-ui-page="pos"] .cart-item:hover,
+body[data-ui-page="manager"] .cart-item:hover {
+  border-color: #e2e8f0;
+  background: #f8fafc !important;
+  transform: translateX(2px);
+}
+
+body[data-ui-page="pos"] .payment-panel,
+body[data-ui-page="manager"] .payment-panel {
+  gap: 10px !important;
+  padding: 12px 24px 16px !important;
+  border-top: 1px solid var(--sel-line) !important;
+  background: rgb(255 255 255 / 0.9) !important;
+  backdrop-filter: blur(16px);
+}
+
+body[data-ui-page="pos"] .payment-btn,
+body[data-ui-page="manager"] .payment-btn {
+  min-height: 48px;
+  border-radius: 12px !important;
+  border: 0 !important;
+  box-shadow: 0 8px 18px rgb(15 23 42 / 0.08) !important;
+}
+
+body[data-ui-page="pos"] .payment-btn:hover,
+body[data-ui-page="manager"] .payment-btn:hover {
+  transform: translateY(-2px) !important;
+  filter: saturate(1.04);
+  box-shadow: 0 13px 26px rgb(15 23 42 / 0.12) !important;
+}
+
+body[data-ui-page="pos"] .payment-btn.cancel,
+body[data-ui-page="manager"] .payment-btn.cancel {
+  background: #fff !important;
+  color: #64748b !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Admin dashboard */
+body[data-ui-page="admin"] {
+  --primary: var(--sel-primary);
+  --primary-dark: var(--sel-primary-strong);
+  --primary-light: var(--sel-accent);
+  --primary-accent: #fecaca;
+  background: var(--sel-bg) !important;
+}
+
+body[data-ui-page="admin"] .admin-dashboard {
+  background: var(--sel-bg) !important;
+}
+
+body[data-ui-page="admin"] .sidebar {
+  background:
+    radial-gradient(circle at 20% 0%, rgb(239 68 68 / 0.16), transparent 30%),
+    linear-gradient(180deg, #111827 0%, #0f172a 100%) !important;
+  border-right: 1px solid rgb(255 255 255 / 0.05);
+  box-shadow: 14px 0 40px rgb(15 23 42 / 0.08);
+}
+
+body[data-ui-page="admin"] .sidebar-header {
+  border-bottom-color: rgb(255 255 255 / 0.08) !important;
+}
+
+body[data-ui-page="admin"] .sidebar-logo {
+  border-radius: 13px !important;
+  background: linear-gradient(135deg, #b91c1c, #ef4444) !important;
+  box-shadow: 0 10px 22px rgb(185 28 28 / 0.24);
+}
+
+body[data-ui-page="admin"] .sidebar-brand span {
+  color: #fca5a5 !important;
+}
+
+body[data-ui-page="admin"] .sidebar button {
+  margin-inline: 8px;
+  width: calc(100% - 16px) !important;
+  border-radius: 11px !important;
+}
+
+body[data-ui-page="admin"] .sidebar button:hover {
+  background: rgb(255 255 255 / 0.065) !important;
+  transform: translateX(2px);
+}
+
+body[data-ui-page="admin"] .sidebar button.active {
+  background: linear-gradient(90deg, rgb(185 28 28 / 0.32), rgb(185 28 28 / 0.10)) !important;
+  color: #fff !important;
+  box-shadow: inset 0 0 0 1px rgb(248 113 113 / 0.15);
+}
+
+body[data-ui-page="admin"] .sidebar button.active::before {
+  border-radius: 999px !important;
+  background: #ef4444 !important;
+  box-shadow: 0 0 16px rgb(239 68 68 / 0.4);
+}
+
+body[data-ui-page="admin"] .sidebar-footer {
+  border-top-color: rgb(255 255 255 / 0.08) !important;
+}
+
+body[data-ui-page="admin"] .user-card {
+  border-radius: 13px !important;
+  background: rgb(255 255 255 / 0.045) !important;
+  border: 1px solid rgb(255 255 255 / 0.06);
+}
+
+body[data-ui-page="admin"] .top-header {
+  background: rgb(255 255 255 / 0.84) !important;
+  border-bottom: 1px solid rgb(226 232 240 / 0.82) !important;
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.035) !important;
+  backdrop-filter: blur(18px) saturate(130%);
+}
+
+body[data-ui-page="admin"] .page-title {
+  letter-spacing: -0.035em !important;
+  color: var(--sel-ink) !important;
+}
+
+body[data-ui-page="admin"] .header-btn {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 11px !important;
+  background: #fff !important;
+  color: #475569 !important;
+  box-shadow: var(--sel-shadow-xs);
+}
+
+body[data-ui-page="admin"] .header-btn:hover {
+  transform: translateY(-2px);
+  border-color: #fecaca !important;
+  color: var(--sel-primary) !important;
+  box-shadow: var(--sel-shadow-sm);
+}
+
+body[data-ui-page="admin"] .main-panel {
+  background:
+    radial-gradient(circle at 100% 0%, rgb(185 28 28 / 0.055), transparent 22%),
+    var(--sel-bg) !important;
+}
+
+body[data-ui-page="admin"] .cards {
+  gap: 16px !important;
+}
+
+body[data-ui-page="admin"] .card,
+body[data-ui-page="admin"] .form-panel,
+body[data-ui-page="admin"] .table-panel {
+  border: 1px solid #e7ebf1 !important;
+  border-radius: 17px !important;
+  background: rgb(255 255 255 / 0.96) !important;
+  box-shadow: var(--sel-shadow-sm) !important;
+}
+
+body[data-ui-page="admin"] .card {
+  position: relative;
+  overflow: hidden;
+}
+
+body[data-ui-page="admin"] .card::after {
+  content: "";
+  position: absolute;
+  width: 84px;
+  height: 84px;
+  top: -36px;
+  right: -28px;
+  border-radius: 50%;
+  background: rgb(185 28 28 / 0.07);
+  transition: transform 350ms var(--sel-ease);
+}
+
+body[data-ui-page="admin"] .card:hover,
+body[data-ui-page="admin"] .form-panel:hover,
+body[data-ui-page="admin"] .table-panel:hover {
+  transform: translateY(-2px);
+  border-color: #dce2ea !important;
+  box-shadow: var(--sel-shadow-md) !important;
+}
+
+body[data-ui-page="admin"] .card:hover::after {
+  transform: scale(1.28);
+}
+
+body[data-ui-page="admin"] .card span,
+body[data-ui-page="admin"] .money-value {
+  letter-spacing: -0.035em;
+}
+
+body[data-ui-page="admin"] .form-panel input,
+body[data-ui-page="admin"] .form-panel select,
+body[data-ui-page="admin"] .form-panel textarea,
+body[data-ui-page="admin"] .filter-field input,
+body[data-ui-page="admin"] .filter-field select {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 11px !important;
+  background: #f8fafc !important;
+}
+
+body[data-ui-page="admin"] .form-panel input:focus,
+body[data-ui-page="admin"] .form-panel select:focus,
+body[data-ui-page="admin"] .form-panel textarea:focus,
+body[data-ui-page="admin"] .filter-field input:focus,
+body[data-ui-page="admin"] .filter-field select:focus {
+  border-color: #f87171 !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgb(185 28 28 / 0.07) !important;
+}
+
+body[data-ui-page="admin"] .form-panel button,
+body[data-ui-page="admin"] #generateReportBtn,
+body[data-ui-page="admin"] #exportPDFBtn,
+body[data-ui-page="admin"] #exportExcelBtn,
+body[data-ui-page="admin"] .ticket-actions button {
+  border-radius: 11px !important;
+}
+
+body[data-ui-page="admin"] #saveProductBtn,
+body[data-ui-page="admin"] #importCSVBtn,
+body[data-ui-page="admin"] #generateReportBtn,
+body[data-ui-page="admin"] .primary-ticket-btn {
+  background: linear-gradient(135deg, #991b1b, #dc2626) !important;
+  box-shadow: 0 9px 20px rgb(185 28 28 / 0.18);
+}
+
+body[data-ui-page="admin"] .data-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+body[data-ui-page="admin"] .data-table thead th {
+  background: #f8fafc !important;
+  color: #475569 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.055em !important;
+  font-size: 10px !important;
+}
+
+body[data-ui-page="admin"] .data-table tbody tr {
+  transition: background-color 180ms ease, transform 180ms var(--sel-ease);
+}
+
+body[data-ui-page="admin"] .data-table tbody tr:hover {
+  background: #fffafa !important;
+}
+
+body[data-ui-page="admin"] .action-btn {
+  border-radius: 9px !important;
+}
+
+body[data-ui-page="admin"] .sales-summary-card {
+  border: 1px solid #e7ebf1 !important;
+  border-radius: 15px !important;
+  background: linear-gradient(180deg, #fff, #fbfcfe) !important;
+  box-shadow: var(--sel-shadow-xs) !important;
+}
+
+body[data-ui-page="admin"] .sales-summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sel-shadow-sm) !important;
+}
+
+body[data-ui-page="admin"] .modal-overlay {
+  backdrop-filter: blur(8px);
+  background: rgb(15 23 42 / 0.48) !important;
+}
+
+body[data-ui-page="admin"] .modal-box {
+  border: 1px solid rgb(255 255 255 / 0.7) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--sel-shadow-lg) !important;
+}
+
+/* Ticket admin */
+body[data-ui-page="ticket-admin"] {
+  --primary: var(--sel-primary);
+  --primary-dark: var(--sel-primary-strong);
+  --primary-light: var(--sel-accent);
+  --primary-accent: #fecaca;
+  --primary-soft: var(--sel-primary-soft);
+  background:
+    radial-gradient(circle at 100% 0%, rgb(185 28 28 / 0.06), transparent 24%),
+    var(--sel-bg) !important;
+}
+
+body[data-ui-page="ticket-admin"] .header {
+  height: 72px !important;
+  border-bottom: 1px solid rgb(226 232 240 / 0.8) !important;
+  background: rgb(255 255 255 / 0.84) !important;
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.035);
+  backdrop-filter: blur(18px) saturate(130%) !important;
+}
+
+body[data-ui-page="ticket-admin"] .logo {
+  border-radius: 13px !important;
+  background: linear-gradient(135deg, #991b1b, #dc2626) !important;
+  box-shadow: 0 9px 20px rgb(185 28 28 / 0.20) !important;
+}
+
+body[data-ui-page="ticket-admin"] .brand-text h1 {
+  letter-spacing: -0.035em !important;
+}
+
+body[data-ui-page="ticket-admin"] .header-btn {
+  border: 1px solid #e2e8f0 !important;
+  background: #fff !important;
+  box-shadow: var(--sel-shadow-xs);
+}
+
+body[data-ui-page="ticket-admin"] .header-btn:hover {
+  border-color: #fecaca !important;
+  color: var(--sel-primary) !important;
+  box-shadow: var(--sel-shadow-sm);
+}
+
+body[data-ui-page="ticket-admin"] .page {
+  max-width: 1380px !important;
+  gap: 20px !important;
+  padding-top: 24px !important;
+}
+
+body[data-ui-page="ticket-admin"] .panel,
+body[data-ui-page="ticket-admin"] .selected-box {
+  border: 1px solid #e7ebf1 !important;
+  border-radius: 18px !important;
+  background: rgb(255 255 255 / 0.96) !important;
+  box-shadow: var(--sel-shadow-sm) !important;
+}
+
+body[data-ui-page="ticket-admin"] .panel:hover,
+body[data-ui-page="ticket-admin"] .selected-box:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sel-shadow-md) !important;
+}
+
+body[data-ui-page="ticket-admin"] .panel-header {
+  background: linear-gradient(180deg, #fff, #fbfcfe);
+}
+
+body[data-ui-page="ticket-admin"] input,
+body[data-ui-page="ticket-admin"] textarea,
+body[data-ui-page="ticket-admin"] select {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 11px !important;
+  background: #f8fafc !important;
+}
+
+body[data-ui-page="ticket-admin"] input:focus,
+body[data-ui-page="ticket-admin"] textarea:focus,
+body[data-ui-page="ticket-admin"] select:focus {
+  border-color: #f87171 !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgb(185 28 28 / 0.07) !important;
+}
+
+body[data-ui-page="ticket-admin"] .btn {
+  border-radius: 11px !important;
+}
+
+body[data-ui-page="ticket-admin"] .btn-primary {
+  background: linear-gradient(135deg, #991b1b, #dc2626) !important;
+  box-shadow: 0 9px 20px rgb(185 28 28 / 0.18) !important;
+}
+
+body[data-ui-page="ticket-admin"] .btn-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 13px 25px rgb(185 28 28 / 0.24) !important;
+}
+
+body[data-ui-page="ticket-admin"] .package-card {
+  border: 1px solid #e7ebf1 !important;
+  border-radius: 13px !important;
+  background: #fff !important;
+}
+
+body[data-ui-page="ticket-admin"] .package-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: #fecaca !important;
+  box-shadow: var(--sel-shadow-sm) !important;
+}
+
+body[data-ui-page="ticket-admin"] .package-card.active {
+  border-color: #fca5a5 !important;
+  background: var(--sel-primary-soft) !important;
+  box-shadow: 0 0 0 3px rgb(185 28 28 / 0.05) !important;
+}
+
+body[data-ui-page="ticket-admin"] .package-price,
+body[data-ui-page="ticket-admin"] .panel-title i {
+  color: var(--sel-primary) !important;
+}
+
+body[data-ui-page="ticket-admin"] .selected-box {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, #fff 0%, #fff8f8 100%) !important;
+}
+
+body[data-ui-page="ticket-admin"] .selected-box::after {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  right: -60px;
+  top: -70px;
+  border-radius: 50%;
+  background: rgb(185 28 28 / 0.06);
+}
+
+body[data-ui-page="ticket-admin"] .games-table th {
+  background: #f8fafc !important;
+  color: #475569 !important;
+}
+
+/* Responsive refinements */
+@media (max-width: 980px) {
+  body[data-ui-page="pos"] .pos-main,
+  body[data-ui-page="manager"] .pos-main {
+    padding-inline: 14px !important;
+  }
+
+  body[data-ui-page="pos"] .pos-search-bar,
+  body[data-ui-page="manager"] .pos-search-bar,
+  body[data-ui-page="pos"] .payment-panel,
+  body[data-ui-page="manager"] .payment-panel {
+    padding-inline: 14px !important;
+  }
+
+  body[data-ui-page="ticket-admin"] .page {
+    padding-inline: 18px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-page="login"] .form-container {
+    padding: 28px 22px !important;
+    border-radius: 20px;
+  }
+
+  .ui-status-pill {
+    display: none;
+  }
+
+  body[data-ui-page="pos"] .pos-header,
+  body[data-ui-page="manager"] .pos-header {
+    padding-inline: 14px !important;
+  }
+
+  body[data-ui-page="pos"] .pos-header-title,
+  body[data-ui-page="manager"] .pos-header-title {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .ui-reveal { opacity: 1 !important; transform: none !important; }
+}

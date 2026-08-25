@@ -1485,632 +1485,7 @@
           max-width: 100%;
         }
       }
-    
-
-      /* Product Management */
-      .products-toolbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        margin-bottom: 18px;
-        padding: 22px 24px;
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius-lg);
-        background:
-          radial-gradient(circle at 100% 0%, rgba(198, 40, 40, 0.08), transparent 34%),
-          #fff;
-        box-shadow: var(--shadow-sm);
-      }
-
-      .products-eyebrow {
-        margin-bottom: 5px;
-        color: var(--primary);
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-      }
-
-      .products-toolbar h2 {
-        color: var(--gray-900);
-        font-size: 20px;
-        line-height: 1.2;
-        letter-spacing: -0.35px;
-      }
-
-      .products-toolbar p {
-        margin-top: 6px;
-        color: var(--gray-500);
-        font-size: 13px;
-        line-height: 1.6;
-      }
-
-      .btn-add-product {
-        min-height: 44px;
-        padding: 0 18px;
-        border: 0;
-        border-radius: 11px;
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: #fff;
-        box-shadow: 0 9px 22px rgba(198, 40, 40, 0.22);
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 9px;
-        font: 700 13px/1 "Inter", sans-serif;
-        white-space: nowrap;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-      }
-
-      .btn-add-product:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 13px 28px rgba(198, 40, 40, 0.3);
-        filter: saturate(1.05);
-      }
-
-      .btn-add-product:active {
-        transform: translateY(0);
-      }
-
-      .import-panel {
-        margin-bottom: 18px;
-      }
-
-      /* Add / Edit Product Modal */
-      .product-modal-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 1500;
-        padding: 28px;
-        background: rgba(15, 23, 42, 0.62);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition: opacity 0.22s ease, visibility 0.22s ease;
-      }
-
-      .product-modal-overlay.show {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-      }
-
-      .product-modal {
-        width: min(940px, 100%);
-        max-height: min(860px, calc(100vh - 56px));
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        background: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.75);
-        border-radius: 20px;
-        box-shadow: 0 28px 70px rgba(15, 23, 42, 0.24);
-        transform: translateY(18px) scale(0.985);
-        transition: transform 0.24s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-
-      .product-modal-overlay.show .product-modal {
-        transform: translateY(0) scale(1);
-      }
-
-      .product-modal-header {
-        min-height: 92px;
-        padding: 20px 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 18px;
-        border-bottom: 1px solid var(--gray-200);
-        background:
-          radial-gradient(circle at 78% -40%, rgba(198, 40, 40, 0.11), transparent 35%),
-          linear-gradient(180deg, #fff, #fcfcfd);
-      }
-
-      .product-modal-heading {
-        min-width: 0;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-
-      .product-modal-icon {
-        width: 46px;
-        height: 46px;
-        flex: 0 0 46px;
-        border-radius: 13px;
-        display: grid;
-        place-items: center;
-        color: #fff;
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        box-shadow: 0 8px 18px rgba(198, 40, 40, 0.2);
-      }
-
-      .product-modal-kicker {
-        margin-bottom: 3px;
-        color: var(--primary);
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-      }
-
-      .product-modal-heading h3 {
-        color: var(--gray-900);
-        font-size: 19px;
-        letter-spacing: -0.35px;
-      }
-
-      .product-modal-heading p {
-        margin-top: 4px;
-        color: var(--gray-500);
-        font-size: 12px;
-      }
-
-      .product-modal-close {
-        width: 38px;
-        height: 38px;
-        flex: 0 0 38px;
-        border: 1px solid var(--gray-200);
-        border-radius: 10px;
-        background: #fff;
-        color: var(--gray-500);
-        cursor: pointer;
-        display: grid;
-        place-items: center;
-        transition: var(--transition);
-      }
-
-      .product-modal-close:hover {
-        border-color: #fecaca;
-        background: #fff5f5;
-        color: var(--primary);
-        transform: rotate(4deg);
-      }
-
-      .product-modal-body {
-        min-height: 0;
-        padding: 24px;
-        overflow-y: auto;
-        display: grid;
-        grid-template-columns: 220px minmax(0, 1fr);
-        gap: 28px;
-      }
-
-      .field-label-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        margin-bottom: 9px;
-      }
-
-      .field-label-row label {
-        color: var(--gray-700);
-        font-size: 12px;
-        font-weight: 700;
-      }
-
-      .field-label-row span {
-        color: var(--gray-400);
-        font-size: 10px;
-        font-weight: 600;
-      }
-
-      .product-image-dropzone {
-        display: block;
-        border: 1.5px dashed var(--gray-300);
-        border-radius: 15px;
-        padding: 10px;
-        background: var(--gray-50);
-        cursor: pointer;
-        transition: var(--transition);
-      }
-
-      .product-image-dropzone:hover,
-      .product-image-dropzone.dragging {
-        border-color: var(--primary);
-        background: #fff7f7;
-        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.08);
-      }
-
-      .product-image-preview-wrap {
-        aspect-ratio: 1 / 1;
-        width: 100%;
-        overflow: hidden;
-        position: relative;
-        display: grid;
-        place-items: center;
-        border-radius: 11px;
-        background: #fff;
-        border: 1px solid var(--gray-200);
-      }
-
-      .product-image-preview-wrap img {
-        width: 100%;
-        height: 100%;
-        display: none;
-        object-fit: cover;
-      }
-
-      .product-image-preview-wrap.has-image img {
-        display: block;
-      }
-
-      .product-image-preview-wrap.has-image .product-image-placeholder {
-        display: none;
-      }
-
-      .product-image-placeholder {
-        padding: 20px 10px;
-        text-align: center;
-        color: var(--gray-400);
-      }
-
-      .product-image-placeholder i {
-        width: 44px;
-        height: 44px;
-        margin: 0 auto 10px;
-        border-radius: 12px;
-        display: grid;
-        place-items: center;
-        background: var(--gray-100);
-        color: var(--gray-400);
-        font-size: 18px;
-      }
-
-      .product-image-placeholder strong {
-        display: block;
-        color: var(--gray-700);
-        font-size: 12px;
-      }
-
-      .product-image-placeholder span {
-        display: block;
-        margin-top: 4px;
-        font-size: 10px;
-      }
-
-      .product-image-action {
-        margin-top: 9px;
-        min-height: 36px;
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        color: var(--gray-700);
-        background: #fff;
-        border: 1px solid var(--gray-200);
-        font-size: 11px;
-        font-weight: 700;
-      }
-
-      .upload-hint {
-        margin-top: 9px;
-        color: var(--gray-400);
-        font-size: 10px;
-        line-height: 1.5;
-      }
-
-      .sr-file-input {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-      }
-
-      .product-form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
-      }
-
-      .product-field-wide {
-        grid-column: 1 / -1;
-      }
-
-      .product-field label {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        margin-bottom: 7px;
-        color: var(--gray-700);
-        font-size: 11px;
-        font-weight: 700;
-      }
-
-      .product-field label > span,
-      .required-note span {
-        color: var(--primary);
-      }
-
-      .product-field label small {
-        margin-left: auto;
-        color: var(--gray-400);
-        font-size: 9px;
-        font-weight: 600;
-      }
-
-      .product-input-shell {
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 0 12px;
-        border: 1px solid var(--gray-200);
-        border-radius: 10px;
-        background: #fff;
-        transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-      }
-
-      .product-input-shell:focus-within {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.1);
-        background: #fff;
-      }
-
-      .product-input-shell.field-error {
-        border-color: #ef4444;
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
-      }
-
-      .product-input-shell > i {
-        width: 15px;
-        flex: 0 0 15px;
-        color: var(--gray-400);
-        text-align: center;
-        font-size: 12px;
-      }
-
-      .product-input-shell input,
-      .product-input-shell select {
-        width: 100%;
-        height: 42px;
-        padding: 0;
-        margin: 0;
-        border: 0;
-        outline: 0;
-        background: transparent;
-        color: var(--gray-800);
-        font: 500 12px/1 "Inter", sans-serif;
-      }
-
-      .product-input-shell input::placeholder {
-        color: var(--gray-400);
-      }
-
-      .product-select-shell select {
-        cursor: pointer;
-      }
-
-      .money-input > span {
-        color: var(--gray-600);
-        font-size: 12px;
-        font-weight: 800;
-      }
-
-      .product-profit-card {
-        margin-top: 18px;
-        min-height: 66px;
-        padding: 13px 15px;
-        border: 1px solid #d1fae5;
-        border-radius: 12px;
-        background: linear-gradient(135deg, #f0fdf4, #f8fffb);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 14px;
-      }
-
-      .profit-copy span {
-        display: block;
-        margin-bottom: 3px;
-        color: #64748b;
-        font-size: 10px;
-        font-weight: 600;
-      }
-
-      .profit-copy strong {
-        color: #047857;
-        font-size: 18px;
-        letter-spacing: -0.25px;
-      }
-
-      .product-profit-card.negative {
-        border-color: #fee2e2;
-        background: #fff7f7;
-      }
-
-      .product-profit-card.negative .profit-copy strong {
-        color: #b91c1c;
-      }
-
-      .margin-chip {
-        padding: 7px 9px;
-        border-radius: 999px;
-        background: rgba(16, 185, 129, 0.11);
-        color: #047857;
-        font-size: 10px;
-        font-weight: 800;
-        white-space: nowrap;
-      }
-
-      .product-profit-card.negative .margin-chip {
-        background: rgba(239, 68, 68, 0.1);
-        color: #b91c1c;
-      }
-
-      #productModalError .alert-msg {
-        margin-top: 13px;
-        margin-bottom: 0;
-      }
-
-      .product-modal-footer {
-        min-height: 76px;
-        padding: 14px 24px;
-        border-top: 1px solid var(--gray-200);
-        background: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-      }
-
-      .required-note {
-        color: var(--gray-400);
-        font-size: 10px;
-        font-weight: 600;
-      }
-
-      .product-modal-actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .btn-product-cancel,
-      .btn-product-save {
-        min-height: 42px;
-        padding: 0 16px;
-        border-radius: 10px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        font: 700 12px/1 "Inter", sans-serif;
-        transition: var(--transition);
-      }
-
-      .btn-product-cancel {
-        border: 1px solid var(--gray-200);
-        background: #fff;
-        color: var(--gray-600);
-      }
-
-      .btn-product-cancel:hover {
-        background: var(--gray-50);
-        border-color: var(--gray-300);
-      }
-
-      .btn-product-save {
-        min-width: 132px;
-        border: 0;
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: #fff;
-        box-shadow: 0 7px 17px rgba(198, 40, 40, 0.22);
-      }
-
-      .btn-product-save:hover:not(:disabled) {
-        transform: translateY(-1px);
-        box-shadow: 0 10px 22px rgba(198, 40, 40, 0.28);
-      }
-
-      .btn-product-save:disabled {
-        cursor: wait;
-        opacity: 0.72;
-      }
-
-      body.product-modal-open {
-        overflow: hidden;
-      }
-
-      @media (max-width: 760px) {
-        .products-toolbar {
-          align-items: stretch;
-          flex-direction: column;
-        }
-
-        .btn-add-product {
-          width: 100%;
-        }
-
-        .product-modal-overlay {
-          padding: 12px;
-          align-items: flex-end;
-        }
-
-        .product-modal {
-          max-height: calc(100vh - 24px);
-          border-radius: 18px 18px 12px 12px;
-        }
-
-        .product-modal-header {
-          min-height: 78px;
-          padding: 16px;
-        }
-
-        .product-modal-icon {
-          width: 40px;
-          height: 40px;
-          flex-basis: 40px;
-        }
-
-        .product-modal-heading p {
-          display: none;
-        }
-
-        .product-modal-body {
-          padding: 18px 16px;
-          grid-template-columns: 1fr;
-          gap: 20px;
-        }
-
-        .product-image-column {
-          max-width: 230px;
-          width: 100%;
-          margin: 0 auto;
-        }
-
-        .product-form-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .product-field-wide {
-          grid-column: auto;
-        }
-
-        .product-modal-footer {
-          padding: 13px 16px;
-          align-items: stretch;
-          flex-direction: column;
-        }
-
-        .required-note {
-          display: none;
-        }
-
-        .product-modal-actions {
-          width: 100%;
-        }
-
-        .btn-product-cancel,
-        .btn-product-save {
-          flex: 1;
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .product-modal-overlay,
-        .product-modal,
-        .btn-add-product,
-        .btn-product-save {
-          transition: none !important;
-        }
-      }
-</style>
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./js/supabaseClient.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -2120,8 +1495,7 @@
     <base target="_blank" />
     <base target="_blank" />
     <base target="_blank" />
-      <link rel="stylesheet" href="css/ui-enhancements.css" />
-</head>
+  </head>
   <body>
     <div class="admin-dashboard">
       <!-- Sidebar -->
@@ -2232,31 +1606,46 @@
                 <h4>Low Stock Alerts</h4>
                 <span id="lowStockProducts">0</span>
               </div>
-              <div class="card">
-                <h4>Total Profit</h4>
-                <span id="totalProfit">₦0</span>
-              </div>
             </div>
           </div>
 
           <!-- Products -->
           <div id="products" class="panel-section">
-            <div class="products-toolbar">
-              <div>
-                <div class="products-eyebrow">Inventory</div>
-                <h2>Product Management</h2>
-                <p>Create products, update stock details, and manage your catalogue.</p>
+            <div class="form-panel">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="fas fa-plus-circle"></i>
+                  <span id="productFormTitle">Add / Edit Product</span>
+                </div>
               </div>
-              <button class="btn-add-product" id="openProductModalBtn" type="button">
-                <i class="fas fa-plus"></i>
-                <span>Add Product</span>
-              </button>
+              <input type="hidden" id="productId" />
+              <input type="text" id="productName" placeholder="Product Name" />
+              <input type="text" id="productSKU" placeholder="SKU / Optional" />
+              <input type="number" id="productPrice" placeholder="Price" />
+              <input
+                type="number"
+                id="productQuantity"
+                placeholder="Quantity"
+              />
+              <input
+                type="number"
+                id="productLowStock"
+                placeholder="Low Stock Threshold"
+              />
+              <select id="productCategory">
+                <option value="">Select Category</option>
+                <option value="Food">Food</option>
+                <option value="Drinks">Drinks</option>
+                <option value="Games">Games</option>
+                <option value="Ticket">Ticket</option>
+              </select>
+              <input type="file" id="productImage" />
+              <button id="saveProductBtn">Save Product</button>
+              <div id="adminError"></div>
+              <div id="adminSuccess"></div>
             </div>
 
-            <div id="adminError"></div>
-            <div id="adminSuccess"></div>
-
-            <div class="form-panel import-panel">
+            <div class="form-panel">
               <div class="card-header">
                 <div class="card-title">
                   <i class="fas fa-file-csv"></i>
@@ -2282,9 +1671,7 @@
                     <th>Image</th>
                     <th>Name</th>
                     <th>SKU</th>
-                    <th>Selling Price</th>
-                    <th>Cost Price</th>
-                    <th>Profit / Unit</th>
+                    <th>Price</th>
                     <th>Qty</th>
                     <th>Low Stock</th>
                     <th>Category</th>
@@ -2383,15 +1770,6 @@
                     Average value per transaction
                   </div>
                 </div>
-                <div class="sales-summary-card">
-                  <div class="sales-summary-label">Gross Profit</div>
-                  <div class="sales-summary-value" id="reportGrossProfit">
-                    ₦0.00
-                  </div>
-                  <div class="sales-summary-subtext">
-                    Total profit after deducting product cost
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -2418,7 +1796,6 @@
                     <th>Date</th>
                     <th>Payment</th>
                     <th>Total</th>
-                    <th>Gross Profit</th>
                     <th>Sold By</th>
                     <th>Actions</th>
                   </tr>
@@ -2562,195 +1939,6 @@
       </div>
     </div>
 
-    <!-- Add / Edit Product Modal -->
-    <div class="product-modal-overlay" id="productModal" aria-hidden="true">
-      <div
-        class="product-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="productFormTitle"
-      >
-        <div class="product-modal-header">
-          <div class="product-modal-heading">
-            <div class="product-modal-icon">
-              <i class="fas fa-box"></i>
-            </div>
-            <div>
-              <div class="product-modal-kicker" id="productModalKicker">New inventory item</div>
-              <h3 id="productFormTitle">Add Product</h3>
-              <p id="productModalSubtitle">Add the product details and starting stock level.</p>
-            </div>
-          </div>
-          <button
-            class="product-modal-close"
-            id="closeProductModalBtn"
-            type="button"
-            aria-label="Close product form"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-
-        <div class="product-modal-body">
-          <input type="hidden" id="productId" />
-
-          <div class="product-image-column">
-            <div class="field-label-row">
-              <label>Product image</label>
-              <span>Optional</span>
-            </div>
-            <label class="product-image-dropzone" for="productImage" id="productImageDropzone">
-              <div class="product-image-preview-wrap" id="productImagePreviewWrap">
-                <div class="product-image-placeholder" id="productImagePlaceholder">
-                  <i class="fas fa-image"></i>
-                  <strong>Upload image</strong>
-                  <span>PNG, JPG or WEBP</span>
-                </div>
-                <img id="productImagePreview" alt="Product preview" />
-              </div>
-              <div class="product-image-action">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <span>Choose image</span>
-              </div>
-            </label>
-            <input
-              class="sr-file-input"
-              type="file"
-              id="productImage"
-              accept="image/png,image/jpeg,image/webp"
-            />
-            <p class="upload-hint">Use a square image for the cleanest display in the POS.</p>
-          </div>
-
-          <div class="product-fields-column">
-            <div class="product-form-grid">
-              <div class="product-field product-field-wide">
-                <label for="productName">Product name <span>*</span></label>
-                <div class="product-input-shell">
-                  <i class="fas fa-tag"></i>
-                  <input
-                    type="text"
-                    id="productName"
-                    placeholder="e.g. Malt Drink 33cl"
-                    autocomplete="off"
-                  />
-                </div>
-              </div>
-
-              <div class="product-field">
-                <label for="productSKU">SKU <small>Optional</small></label>
-                <div class="product-input-shell">
-                  <i class="fas fa-barcode"></i>
-                  <input
-                    type="text"
-                    id="productSKU"
-                    placeholder="e.g. DRK-001"
-                    autocomplete="off"
-                  />
-                </div>
-              </div>
-
-              <div class="product-field">
-                <label for="productCategory">Category</label>
-                <div class="product-input-shell product-select-shell">
-                  <i class="fas fa-layer-group"></i>
-                  <select id="productCategory">
-                    <option value="">Select category</option>
-                    <option value="Food">Food</option>
-                    <option value="Drinks">Drinks</option>
-                    <option value="Games">Games</option>
-                    <option value="Ticket">Ticket</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="product-field">
-                <label for="productCostPrice">Cost price</label>
-                <div class="product-input-shell money-input">
-                  <span>₦</span>
-                  <input
-                    type="number"
-                    id="productCostPrice"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    inputmode="decimal"
-                  />
-                </div>
-              </div>
-
-              <div class="product-field">
-                <label for="productPrice">Selling price <span>*</span></label>
-                <div class="product-input-shell money-input">
-                  <span>₦</span>
-                  <input
-                    type="number"
-                    id="productPrice"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    inputmode="decimal"
-                  />
-                </div>
-              </div>
-
-              <div class="product-field">
-                <label for="productQuantity">Opening quantity <span>*</span></label>
-                <div class="product-input-shell">
-                  <i class="fas fa-boxes-stacked"></i>
-                  <input
-                    type="number"
-                    id="productQuantity"
-                    placeholder="0"
-                    min="0"
-                    step="1"
-                    inputmode="numeric"
-                  />
-                </div>
-              </div>
-
-              <div class="product-field">
-                <label for="productLowStock">Low-stock alert</label>
-                <div class="product-input-shell">
-                  <i class="fas fa-bell"></i>
-                  <input
-                    type="number"
-                    id="productLowStock"
-                    placeholder="5"
-                    min="0"
-                    step="1"
-                    inputmode="numeric"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div class="product-profit-card">
-              <div class="profit-copy">
-                <span>Estimated profit per unit</span>
-                <strong id="productProfitPreview">₦0.00</strong>
-              </div>
-              <div class="margin-chip" id="productMarginPreview">0% margin</div>
-            </div>
-
-            <div id="productModalError" aria-live="polite"></div>
-          </div>
-        </div>
-
-        <div class="product-modal-footer">
-          <div class="required-note"><span>*</span> Required fields</div>
-          <div class="product-modal-actions">
-            <button class="btn-product-cancel" id="cancelProductBtn" type="button">Cancel</button>
-            <button class="btn-product-save" id="saveProductBtn" type="button">
-              <i class="fas fa-check"></i>
-              <span id="saveProductBtnText">Save Product</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
     <script>
       // Logout function
       async function logout() {
@@ -2831,7 +2019,6 @@
           (sum, s) => sum + (Number(s.total_amount) || 0),
           0,
         );
-        const totalProfit = await calculateProfitForSales(sales);
 
         document.getElementById("totalProducts").textContent =
           products.length.toLocaleString("en-NG");
@@ -2841,9 +2028,6 @@
             : `₦${totalSales.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         document.getElementById("lowStockProducts").textContent =
           lowStock.toLocaleString("en-NG");
-        const totalProfitEl = document.getElementById("totalProfit");
-        if (totalProfitEl)
-          totalProfitEl.textContent = formatCurrency(totalProfit);
       }
 
       // Product Variables
@@ -2852,23 +2036,11 @@
       const productNameInput = document.getElementById("productName");
       const productSKUInput = document.getElementById("productSKU");
       const productPriceInput = document.getElementById("productPrice");
-      const productCostPriceInput = document.getElementById("productCostPrice");
       const productQuantityInput = document.getElementById("productQuantity");
       const productLowStockInput = document.getElementById("productLowStock");
       const productCategoryInput = document.getElementById("productCategory");
       const productImageInput = document.getElementById("productImage");
       const saveProductBtn = document.getElementById("saveProductBtn");
-      const saveProductBtnText = document.getElementById("saveProductBtnText");
-      const productModal = document.getElementById("productModal");
-      const openProductModalBtn = document.getElementById("openProductModalBtn");
-      const closeProductModalBtn = document.getElementById("closeProductModalBtn");
-      const cancelProductBtn = document.getElementById("cancelProductBtn");
-      const productModalError = document.getElementById("productModalError");
-      const productImageDropzone = document.getElementById("productImageDropzone");
-      const productImagePreviewWrap = document.getElementById("productImagePreviewWrap");
-      const productImagePreview = document.getElementById("productImagePreview");
-      const productProfitPreview = document.getElementById("productProfitPreview");
-      const productMarginPreview = document.getElementById("productMarginPreview");
       const adminError = document.getElementById("adminError");
       const adminSuccess = document.getElementById("adminSuccess");
       const importCSVBtn = document.getElementById("importCSVBtn");
@@ -2877,181 +2049,6 @@
       const csvSuccess = document.getElementById("csvSuccess");
 
       let productsList = [];
-      let productModalLastFocus = null;
-      let productImageObjectUrl = null;
-
-      function formatProductMoney(value) {
-        const amount = Number(value) || 0;
-        return new Intl.NumberFormat("en-NG", {
-          style: "currency",
-          currency: "NGN",
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }).format(amount);
-      }
-
-      function clearProductFieldErrors() {
-        document
-          .querySelectorAll(".product-input-shell.field-error")
-          .forEach((shell) => shell.classList.remove("field-error"));
-      }
-
-      function showProductModalError(message, field = null) {
-        productModalError.innerHTML = `<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ${message}</div>`;
-        if (field) {
-          field.closest(".product-input-shell")?.classList.add("field-error");
-          field.focus();
-        }
-      }
-
-      function setProductImagePreview(src = "") {
-        if (productImageObjectUrl) {
-          URL.revokeObjectURL(productImageObjectUrl);
-          productImageObjectUrl = null;
-        }
-        if (src) {
-          productImagePreview.src = src;
-          productImagePreviewWrap.classList.add("has-image");
-        } else {
-          productImagePreview.removeAttribute("src");
-          productImagePreviewWrap.classList.remove("has-image");
-        }
-      }
-
-      function updateProductProfitPreview() {
-        const selling = Number(productPriceInput.value) || 0;
-        const cost = Number(productCostPriceInput.value) || 0;
-        const profit = selling - cost;
-        const margin = selling > 0 ? (profit / selling) * 100 : 0;
-        const profitCard = productProfitPreview.closest(".product-profit-card");
-
-        productProfitPreview.textContent = formatProductMoney(profit);
-        productMarginPreview.textContent = `${Number.isFinite(margin) ? margin.toFixed(1) : "0.0"}% margin`;
-        profitCard.classList.toggle("negative", profit < 0);
-      }
-
-      function resetProductForm() {
-        productIdInput.value = "";
-        productNameInput.value = "";
-        productSKUInput.value = "";
-        productPriceInput.value = "";
-        productCostPriceInput.value = "";
-        productQuantityInput.value = "";
-        productLowStockInput.value = "5";
-        productCategoryInput.value = "";
-        productImageInput.value = "";
-        productModalError.innerHTML = "";
-        clearProductFieldErrors();
-        setProductImagePreview();
-        document.getElementById("productFormTitle").textContent = "Add Product";
-        document.getElementById("productModalKicker").textContent = "New inventory item";
-        document.getElementById("productModalSubtitle").textContent =
-          "Add the product details and starting stock level.";
-        saveProductBtnText.textContent = "Save Product";
-        updateProductProfitPreview();
-      }
-
-      function openProductModal(mode = "add") {
-        productModalLastFocus = document.activeElement;
-        productModalError.innerHTML = "";
-        clearProductFieldErrors();
-        productModal.classList.add("show");
-        productModal.setAttribute("aria-hidden", "false");
-        document.body.classList.add("product-modal-open");
-
-        requestAnimationFrame(() => {
-          if (mode === "edit") productNameInput.focus();
-          else productNameInput.focus();
-        });
-      }
-
-      function closeProductModal({ reset = true } = {}) {
-        productModal.classList.remove("show");
-        productModal.setAttribute("aria-hidden", "true");
-        document.body.classList.remove("product-modal-open");
-        if (reset) resetProductForm();
-        if (productModalLastFocus && typeof productModalLastFocus.focus === "function") {
-          productModalLastFocus.focus();
-        }
-      }
-
-      openProductModalBtn.addEventListener("click", () => {
-        adminError.innerHTML = "";
-        adminSuccess.innerHTML = "";
-        resetProductForm();
-        openProductModal("add");
-      });
-
-      closeProductModalBtn.addEventListener("click", () => closeProductModal());
-      cancelProductBtn.addEventListener("click", () => closeProductModal());
-
-      productModal.addEventListener("click", (event) => {
-        if (event.target === productModal) closeProductModal();
-      });
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && productModal.classList.contains("show")) {
-          closeProductModal();
-        }
-      });
-
-      [productPriceInput, productCostPriceInput].forEach((input) => {
-        input.addEventListener("input", updateProductProfitPreview);
-      });
-
-      [productNameInput, productPriceInput, productQuantityInput].forEach((input) => {
-        input.addEventListener("input", () => {
-          input.closest(".product-input-shell")?.classList.remove("field-error");
-          if (productModalError.textContent.trim()) productModalError.innerHTML = "";
-        });
-      });
-
-      productImageInput.addEventListener("change", () => {
-        const file = productImageInput.files?.[0];
-        if (!file) {
-          setProductImagePreview();
-          return;
-        }
-        if (!file.type.startsWith("image/")) {
-          productImageInput.value = "";
-          showProductModalError("Please choose a valid image file.");
-          return;
-        }
-        if (file.size > 5 * 1024 * 1024) {
-          productImageInput.value = "";
-          showProductModalError("Product image must be 5 MB or smaller.");
-          return;
-        }
-        if (productImageObjectUrl) URL.revokeObjectURL(productImageObjectUrl);
-        productImageObjectUrl = URL.createObjectURL(file);
-        productImagePreview.src = productImageObjectUrl;
-        productImagePreviewWrap.classList.add("has-image");
-      });
-
-      ["dragenter", "dragover"].forEach((eventName) => {
-        productImageDropzone.addEventListener(eventName, (event) => {
-          event.preventDefault();
-          productImageDropzone.classList.add("dragging");
-        });
-      });
-
-      ["dragleave", "drop"].forEach((eventName) => {
-        productImageDropzone.addEventListener(eventName, (event) => {
-          event.preventDefault();
-          productImageDropzone.classList.remove("dragging");
-        });
-      });
-
-      productImageDropzone.addEventListener("drop", (event) => {
-        const file = event.dataTransfer?.files?.[0];
-        if (!file) return;
-        const transfer = new DataTransfer();
-        transfer.items.add(file);
-        productImageInput.files = transfer.files;
-        productImageInput.dispatchEvent(new Event("change"));
-      });
-
-      resetProductForm();
 
       // Load products
       async function loadProducts() {
@@ -3078,59 +2075,33 @@
           const imgHTML = p.image_url
             ? `<img src="${p.image_url}" class="product-thumb">`
             : "";
-          const sellingPrice = Number(p.price) || 0;
-          const costPrice = Number(p.cost_price) || 0;
-          const unitProfit = sellingPrice - costPrice;
-          const safeProductId = JSON.stringify(String(p.id));
-
           tr.innerHTML = `
-            <td>${imgHTML}</td>
-            <td>${p.name}</td>
-            <td>${p.sku || ""}</td>
-            <td style="font-weight: 700; color: var(--gray-800);">${formatCurrency(sellingPrice)}</td>
-            <td style="font-weight: 700; color: var(--gray-800);">${formatCurrency(costPrice)}</td>
-            <td style="font-weight: 800; color:${unitProfit >= 0 ? "var(--secondary)" : "var(--danger)"};">${formatCurrency(unitProfit)}</td>
-            <td>${p.quantity}</td>
-            <td>${p.low_stock_threshold}</td>
-            <td>${p.category || ""}</td>
-            <td>${p.is_active ? "Yes" : "No"}</td>
-            <td>
-              <button class="action-btn btn-edit" onclick='editProduct(${safeProductId})'><i class="fas fa-pen"></i> Edit</button>
-              <button class="action-btn btn-toggle" onclick='toggleProduct(${safeProductId})'>${p.is_active ? "Deactivate" : "Activate"}</button>
-              <button class="action-btn btn-delete" onclick='deleteProduct(${safeProductId})'><i class="fas fa-trash"></i> Delete</button>
-            </td>`;
+      <td>${imgHTML}</td><td>${p.name}</td><td>${p.sku || ""}</td><td style="font-weight: 700; color: var(--gray-800);">₦${parseFloat(p.price).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td><td>${p.quantity}</td>
+      <td>${p.low_stock_threshold}</td><td>${p.category || ""}</td><td>${p.is_active ? "Yes" : "No"}</td>
+      <td>
+        <button class="action-btn btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-pen"></i> Edit</button>
+        <button class="action-btn btn-toggle" onclick="toggleProduct(${p.id})">${p.is_active ? "Deactivate" : "Activate"}</button>
+        <button class="action-btn btn-delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i> Delete</button>
+      </td>`;
           productTableBody.appendChild(tr);
         });
       }
 
       // Add/Edit/Delete/Toggle
       function editProduct(id) {
-        const p = productsList.find((p) => String(p.id) === String(id));
+        const p = productsList.find((p) => p.id === id);
         if (!p) return;
-
-        showSection("products");
-        adminError.innerHTML = "";
-        adminSuccess.innerHTML = "";
-        resetProductForm();
-
         productIdInput.value = p.id;
-        productNameInput.value = p.name || "";
+        productNameInput.value = p.name;
         productSKUInput.value = p.sku || "";
-        productPriceInput.value = p.price ?? "";
-        productCostPriceInput.value = p.cost_price ?? 0;
-        productQuantityInput.value = p.quantity ?? 0;
-        productLowStockInput.value = p.low_stock_threshold ?? 0;
+        productPriceInput.value = p.price;
+        productQuantityInput.value = p.quantity;
+        productLowStockInput.value = p.low_stock_threshold || 0;
         productCategoryInput.value = p.category || "";
-        setProductImagePreview(p.image_url || "");
-        updateProductProfitPreview();
-
-        document.getElementById("productFormTitle").textContent = "Edit Product";
-        document.getElementById("productModalKicker").textContent = "Update inventory item";
-        document.getElementById("productModalSubtitle").textContent =
-          "Review the details below and save your changes.";
-        saveProductBtnText.textContent = "Update Product";
-
-        openProductModal("edit");
+        document.getElementById("productFormTitle").textContent =
+          "Edit Product";
+        showSection("products");
+        productNameInput.focus();
       }
 
       async function deleteProduct(id) {
@@ -3152,7 +2123,7 @@
       }
 
       async function toggleProduct(id) {
-        const p = productsList.find((p) => String(p.id) === String(id));
+        const p = productsList.find((p) => p.id === id);
         if (!p) return;
         const { error } = await supabase
           .from("inventory_items")
@@ -3174,119 +2145,94 @@
       saveProductBtn.addEventListener("click", async () => {
         adminError.innerHTML = "";
         adminSuccess.innerHTML = "";
-        productModalError.innerHTML = "";
-        clearProductFieldErrors();
-
-        const name = productNameInput.value.trim();
-        const sku = productSKUInput.value.trim();
-        const price = Number(productPriceInput.value);
-        const costPrice = Number(productCostPriceInput.value || 0);
-        const quantity = Number(productQuantityInput.value);
-        const lowStock = Number(productLowStockInput.value || 0);
-        const category = productCategoryInput.value;
-
-        if (!name) {
-          showProductModalError("Enter a product name.", productNameInput);
+        const name = productNameInput.value.trim(),
+          sku = productSKUInput.value.trim();
+        const price = parseFloat(productPriceInput.value),
+          quantity = parseInt(productQuantityInput.value);
+        const lowStock = parseInt(productLowStockInput.value),
+          category = productCategoryInput.value;
+        if (!name || isNaN(price) || isNaN(quantity)) {
+          adminError.innerHTML =
+            '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> Fill required fields</div>';
           return;
         }
-        if (productPriceInput.value === "" || !Number.isFinite(price) || price < 0) {
-          showProductModalError("Enter a valid selling price.", productPriceInput);
-          return;
-        }
-        if (!Number.isFinite(costPrice) || costPrice < 0) {
-          showProductModalError("Enter a valid cost price.", productCostPriceInput);
-          return;
-        }
-        if (productQuantityInput.value === "" || !Number.isInteger(quantity) || quantity < 0) {
-          showProductModalError("Enter a valid opening quantity.", productQuantityInput);
-          return;
-        }
-        if (!Number.isInteger(lowStock) || lowStock < 0) {
-          showProductModalError("Enter a valid low-stock threshold.", productLowStockInput);
-          return;
-        }
-
         const id = productIdInput.value;
         let image_url = null;
-
-        saveProductBtn.disabled = true;
-        const saveIcon = saveProductBtn.querySelector("i");
-        if (saveIcon) saveIcon.className = "fas fa-circle-notch fa-spin";
-        saveProductBtnText.textContent = id ? "Updating..." : "Saving...";
-
-        try {
-          if (productImageInput.files.length > 0) {
-            const file = productImageInput.files[0];
-            const fileExt = file.name.split(".").pop()?.toLowerCase() || "jpg";
-            const safeStem = (sku || name)
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "-")
-              .replace(/^-|-$/g, "")
-              .slice(0, 40) || "product";
-            const fileName = `${safeStem}-${Date.now()}.${fileExt}`;
-            const { data, error: uploadError } = await supabase.storage
-              .from("product-images")
-              .upload(fileName, file);
-
-            if (uploadError) throw uploadError;
-
-            const { data: publicUrlData } = supabase.storage
-              .from("product-images")
-              .getPublicUrl(data.path);
-            image_url = publicUrlData?.publicUrl || null;
+        if (productImageInput.files.length > 0) {
+          const file = productImageInput.files[0];
+          const fileExt = file.name.split(".").pop();
+          const fileName = `${Date.now()}.${fileExt}`;
+          const { data, error: uploadError } = await supabase.storage
+            .from("product-images")
+            .upload(fileName, file);
+          if (uploadError) {
+            adminError.innerHTML =
+              '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ' +
+              uploadError.message +
+              "</div>";
+            return;
           }
-
-          const payload = {
-            name,
-            sku,
-            price,
-            cost_price: costPrice,
-            quantity,
-            low_stock_threshold: lowStock,
-            category,
-            ...(image_url ? { image_url } : {}),
-          };
-
-          if (id) {
-            const { error } = await supabase
-              .from("inventory_items")
-              .update(payload)
-              .eq("id", id);
-            if (error) throw error;
-            adminSuccess.innerHTML =
-              '<div class="alert-msg alert-success"><i class="fas fa-check-circle"></i> Product updated successfully</div>';
-          } else {
-            const { error } = await supabase.from("inventory_items").insert([
-              {
-                ...payload,
-                image_url,
-                is_active: true,
-              },
-            ]);
-            if (error) throw error;
-            adminSuccess.innerHTML =
-              '<div class="alert-msg alert-success"><i class="fas fa-check-circle"></i> Product added successfully</div>';
-          }
-
-          await loadProducts();
-          closeProductModal();
-        } catch (error) {
-          showProductModalError(error?.message || "Unable to save product. Please try again.");
-        } finally {
-          saveProductBtn.disabled = false;
-          const saveIcon = saveProductBtn.querySelector("i");
-          if (saveIcon) saveIcon.className = "fas fa-check";
-          saveProductBtnText.textContent =
-            productModal.classList.contains("show") && id
-              ? "Update Product"
-              : "Save Product";
+          image_url = `https://YOUR_SUPABASE_BUCKET_URL/${data.path}`;
         }
+        if (id) {
+          const { error } = await supabase
+            .from("inventory_items")
+            .update({
+              name,
+              sku,
+              price,
+              quantity,
+              low_stock_threshold: lowStock,
+              category,
+              ...(image_url ? { image_url } : {}),
+            })
+            .eq("id", id);
+          if (error) {
+            adminError.innerHTML =
+              '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ' +
+              error.message +
+              "</div>";
+            return;
+          }
+          adminSuccess.innerHTML =
+            '<div class="alert-msg alert-success"><i class="fas fa-check-circle"></i> Product updated successfully</div>';
+        } else {
+          const { error } = await supabase.from("inventory_items").insert([
+            {
+              name,
+              sku,
+              price,
+              quantity,
+              low_stock_threshold: lowStock,
+              category,
+              image_url,
+              is_active: true,
+            },
+          ]);
+          if (error) {
+            adminError.innerHTML =
+              '<div class="alert-msg alert-error"><i class="fas fa-exclamation-circle"></i> ' +
+              error.message +
+              "</div>";
+            return;
+          }
+          adminSuccess.innerHTML =
+            '<div class="alert-msg alert-success"><i class="fas fa-check-circle"></i> Product added successfully</div>';
+        }
+        productIdInput.value = "";
+        productNameInput.value = "";
+        productSKUInput.value = "";
+        productPriceInput.value = "";
+        productQuantityInput.value = "";
+        productLowStockInput.value = "";
+        productCategoryInput.value = "";
+        productImageInput.value = "";
+        document.getElementById("productFormTitle").textContent =
+          "Add / Edit Product";
+        loadProducts();
       });
 
       // Bulk CSV
-      // New CSV format:
-      // name,sku,price,cost_price,quantity,low_stock_threshold,category
-      // The old format without cost_price still works; cost_price defaults to 0.
       importCSVBtn.addEventListener("click", async () => {
         csvError.innerHTML = "";
         csvSuccess.innerHTML = "";
@@ -3298,26 +2244,16 @@
         const text = await bulkCSV.files[0].text();
         const rows = text.split("\n").filter((r) => r.trim() !== "");
         for (let i = 1; i < rows.length; i++) {
-          const values = rows[i].split(",").map((v) => v.trim());
-          let name, sku, price, costPrice, quantity, lowStock, category;
-
-          if (values.length >= 7) {
-            [name, sku, price, costPrice, quantity, lowStock, category] =
-              values;
-          } else {
-            [name, sku, price, quantity, lowStock, category] = values;
-            costPrice = 0;
-          }
-
+          const [name, sku, price, quantity, lowStock, category] =
+            rows[i].split(",");
           const { error } = await supabase.from("inventory_items").insert([
             {
-              name,
-              sku,
+              name: name.trim(),
+              sku: sku.trim(),
               price: parseFloat(price),
-              cost_price: parseFloat(costPrice) || 0,
               quantity: parseInt(quantity),
               low_stock_threshold: parseInt(lowStock),
-              category,
+              category: category.trim(),
               is_active: true,
             },
           ]);
@@ -3354,7 +2290,6 @@
       const reportTotalSales = document.getElementById("reportTotalSales");
       const reportTransactions = document.getElementById("reportTransactions");
       const reportAverageSale = document.getElementById("reportAverageSale");
-      const reportGrossProfit = document.getElementById("reportGrossProfit");
       const salesPageSize = document.getElementById("salesPageSize");
       const salesPaginationInfo = document.getElementById(
         "salesPaginationInfo",
@@ -3372,157 +2307,6 @@
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}`;
-      }
-
-      function getSaleItemProductId(item) {
-        return (
-          item.product_id ||
-          item.inventory_item_id ||
-          item.item_id ||
-          item.productId ||
-          item.product ||
-          null
-        );
-      }
-
-      function getSaleItemFinancials(item, productMap = {}) {
-        const qty =
-          Number(item.quantity ?? item.qty ?? item.quantity_sold) || 0;
-        const unitPrice =
-          Number(item.unit_price ?? item.price ?? item.selling_price) || 0;
-        const totalRevenueValue = Number(
-          item.total_price ?? item.line_total ?? item.subtotal,
-        );
-        const totalRevenue =
-          Number.isFinite(totalRevenueValue) && totalRevenueValue > 0
-            ? totalRevenueValue
-            : qty * unitPrice;
-
-        const productId = getSaleItemProductId(item);
-        const product = productMap[String(productId)] || {};
-        const costPrice =
-          Number(
-            item.cost_price ??
-              item.unit_cost_price ??
-              item.unit_cost ??
-              item.cost ??
-              item.purchase_price ??
-              product.cost_price ??
-              0,
-          ) || 0;
-        const totalCostValue = Number(item.total_cost ?? item.cost_total);
-        const totalCost =
-          Number.isFinite(totalCostValue) && totalCostValue > 0
-            ? totalCostValue
-            : qty * costPrice;
-        const profitValue = Number(item.profit_amount ?? item.gross_profit);
-        const profit =
-          Number.isFinite(profitValue) && profitValue !== 0
-            ? profitValue
-            : totalRevenue - totalCost;
-
-        return {
-          qty,
-          unitPrice,
-          totalRevenue,
-          productId,
-          costPrice,
-          totalCost,
-          profit,
-        };
-      }
-
-      async function getInventoryCostMap(productIds = []) {
-        const cleanIds = [
-          ...new Set(productIds.map((id) => String(id)).filter(Boolean)),
-        ];
-        const productMap = {};
-        if (!cleanIds.length) return productMap;
-
-        const { data, error } = await supabase
-          .from("inventory_items")
-          .select("id,name,cost_price")
-          .in("id", cleanIds);
-
-        if (error) {
-          console.warn("Could not load product cost prices:", error.message);
-          return productMap;
-        }
-
-        (data || []).forEach((p) => {
-          productMap[String(p.id)] = p;
-        });
-
-        return productMap;
-      }
-
-      async function attachProfitToSales(salesData = []) {
-        const saleIds = [
-          ...new Set(
-            (salesData || []).map((s) => String(s.id)).filter(Boolean),
-          ),
-        ];
-        if (!saleIds.length) {
-          return (salesData || []).map((s) => ({
-            ...s,
-            total_cost: 0,
-            gross_profit: 0,
-          }));
-        }
-
-        const { data: saleItems, error } = await supabase
-          .from("sale_items")
-          .select("*")
-          .in("sale_id", saleIds);
-
-        if (error) {
-          console.warn(
-            "Could not load sale items for profit calculation:",
-            error.message,
-          );
-          return (salesData || []).map((s) => ({
-            ...s,
-            total_cost: 0,
-            gross_profit: 0,
-          }));
-        }
-
-        const productIds = (saleItems || [])
-          .map(getSaleItemProductId)
-          .filter(Boolean);
-        const productMap = await getInventoryCostMap(productIds);
-        const totalsBySaleId = {};
-
-        (saleItems || []).forEach((item) => {
-          const saleId = String(item.sale_id || "");
-          if (!saleId) return;
-          const financials = getSaleItemFinancials(item, productMap);
-          if (!totalsBySaleId[saleId]) {
-            totalsBySaleId[saleId] = { total_cost: 0, gross_profit: 0 };
-          }
-          totalsBySaleId[saleId].total_cost += financials.totalCost;
-          totalsBySaleId[saleId].gross_profit += financials.profit;
-        });
-
-        return (salesData || []).map((sale) => {
-          const totals = totalsBySaleId[String(sale.id)] || {
-            total_cost: 0,
-            gross_profit: 0,
-          };
-          return {
-            ...sale,
-            total_cost: totals.total_cost,
-            gross_profit: totals.gross_profit,
-          };
-        });
-      }
-
-      async function calculateProfitForSales(salesData = []) {
-        const salesWithProfit = await attachProfitToSales(salesData || []);
-        return salesWithProfit.reduce(
-          (sum, sale) => sum + (Number(sale.gross_profit) || 0),
-          0,
-        );
       }
 
       function normalizeProfileId(value) {
@@ -3654,18 +2438,12 @@
           (sum, sale) => sum + (Number(sale.total_amount) || 0),
           0,
         );
-        const grossProfit = data.reduce(
-          (sum, sale) => sum + (Number(sale.gross_profit) || 0),
-          0,
-        );
         const transactions = data.length;
         const average = transactions ? total / transactions : 0;
 
         reportTotalSales.textContent = formatCurrency(total);
         reportTransactions.textContent = transactions.toLocaleString("en-NG");
         reportAverageSale.textContent = formatCurrency(average);
-        if (reportGrossProfit)
-          reportGrossProfit.textContent = formatCurrency(grossProfit);
       }
 
       function getCurrentPageSize() {
@@ -3707,7 +2485,7 @@
         updateFilterUI();
 
         salesTableBody.innerHTML = `
-          <tr><td colspan="7">
+          <tr><td colspan="6">
             <div class="empty-state">
               <i class="fas fa-spinner fa-spin"></i>
               <h4>Loading sales...</h4>
@@ -3767,7 +2545,7 @@
           currentSalesData = [];
           updateSalesSummary(currentSalesData);
           salesTableBody.innerHTML = `
-            <tr><td colspan="7">
+            <tr><td colspan="6">
               <div class="empty-state">
                 <i class="fas fa-exclamation-circle"></i>
                 <h4>Error loading sales</h4>
@@ -3789,8 +2567,6 @@
           };
         });
 
-        currentSalesData = await attachProfitToSales(currentSalesData);
-
         salesCurrentPage = 1;
         updateSalesSummary(currentSalesData);
         renderSalesTable();
@@ -3802,7 +2578,7 @@
 
         if (!currentSalesData || currentSalesData.length === 0) {
           salesTableBody.innerHTML = `
-            <tr><td colspan="7">
+            <tr><td colspan="6">
               <div class="empty-state">
                 <i class="fas fa-chart-line"></i>
                 <h4>No sales found</h4>
@@ -3839,15 +2615,13 @@
             ? new Date(s.created_at).toLocaleString()
             : "-";
 
-          const safeSaleId = JSON.stringify(String(s.id));
           tr.innerHTML = `
             <td><span style="font-family:monospace; font-weight:600; color:#c62828; font-size:12px;">${s.sale_reference || "N/A"}</span></td>
             <td>${dateStr}</td>
             <td><span style="background:var(--gray-100); padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; color:var(--gray-600);">${s.payment_mode || "Cash"}</span></td>
             <td class="money-value">${formatCurrency(s.total_amount)}</td>
-            <td class="money-value" style="color:${Number(s.gross_profit) >= 0 ? "var(--secondary)" : "var(--danger)"};">${formatCurrency(s.gross_profit)}</td>
             <td>${s.sold_by_name || "Unknown"}</td>
-            <td><button class="action-btn btn-view" onclick='event.stopPropagation(); viewSaleDetail(${safeSaleId})'><i class="fas fa-eye"></i> View</button></td>
+            <td><button class="action-btn btn-view" onclick="event.stopPropagation(); viewSaleDetail(${s.id})"><i class="fas fa-eye"></i> View</button></td>
           `;
           tr.addEventListener("click", () => viewSaleDetail(s.id));
           salesTableBody.appendChild(tr);
@@ -3869,23 +2643,32 @@
           (sum, sale) => sum + (Number(sale.total_amount) || 0),
           0,
         );
-        const totalCost = currentSalesData.reduce(
-          (sum, sale) => sum + (Number(sale.total_cost) || 0),
-          0,
-        );
-        const totalProfit = currentSalesData.reduce(
-          (sum, sale) => sum + (Number(sale.gross_profit) || 0),
-          0,
-        );
         const avg = total / currentSalesData.length;
         const now = new Date();
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        const monthYear = monthNames[now.getMonth()] + " " + now.getFullYear();
         const reportDate = now.toLocaleDateString("en-NG", {
           weekday: "long",
           year: "numeric",
           month: "long",
           day: "numeric",
         });
+        const reportTime = now.toLocaleTimeString("en-NG");
 
+        // Helper: format Naira for PDF (use N symbol instead of Unicode)
         function nairaPDF(amount) {
           const num = Number(amount) || 0;
           return (
@@ -3897,82 +2680,141 @@
           );
         }
 
+        // ─── HEADER BAR ───
         doc.setFillColor(198, 40, 40);
-        doc.rect(0, 0, 210, 24, "F");
+        doc.rect(0, 0, 210, 26, "F");
         doc.setTextColor(255, 255, 255);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(17);
-        doc.text("SEL POS", 14, 10);
-        doc.setFontSize(9);
+        doc.setFontSize(18);
+        doc.text("SEL POS", 14, 11);
         doc.setFont("helvetica", "normal");
-        doc.text("SALES & PROFIT REPORT", 14, 17);
-        doc.text(reportDate, 196, 10, { align: "right" });
-        doc.text(getTotalSalesLabel(), 196, 17, { align: "right" });
+        doc.setFontSize(9);
+        doc.text("SALES REPORT", 14, 17);
+        doc.setFontSize(8);
+        doc.text(monthYear.toUpperCase(), 14, 22);
 
-        const cards = [
-          ["TOTAL SALES", nairaPDF(total)],
-          ["TOTAL COST", nairaPDF(totalCost)],
-          ["GROSS PROFIT", nairaPDF(totalProfit)],
-          ["AVERAGE SALE", nairaPDF(avg)],
-        ];
+        // ─── REPORT INFO ───
+        doc.setTextColor(120, 120, 120);
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "bold");
+        doc.text("REPORT PERIOD:", 140, 11);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(60, 60, 60);
+        doc.text(getTotalSalesLabel(), 140, 16);
+        doc.setTextColor(120, 120, 120);
+        doc.setFont("helvetica", "bold");
+        doc.text("DATE:", 140, 21);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(60, 60, 60);
+        doc.text(reportDate, 155, 21);
+
+        // ─── SUMMARY CARDS ───
         const cardY = 32;
-        const cardW = 87;
-        const cardH = 20;
+        const cardW = 58;
+        const cardH = 26;
+        const gap = 6;
+        const cards = [
+          {
+            label: "TOTAL SALES",
+            value: nairaPDF(total),
+            color: [198, 40, 40],
+          },
+          {
+            label: "TRANSACTIONS",
+            value: String(currentSalesData.length),
+            color: [16, 185, 129],
+          },
+          { label: "AVERAGE SALE", value: nairaPDF(avg), color: [0, 123, 255] },
+        ];
         cards.forEach((card, i) => {
-          const x = 14 + (i % 2) * (cardW + 8);
-          const y = cardY + Math.floor(i / 2) * (cardH + 6);
+          const x = 14 + i * (cardW + gap);
           doc.setFillColor(255, 255, 255);
           doc.setDrawColor(220, 220, 220);
-          doc.roundedRect(x, y, cardW, cardH, 2, 2, "FD");
+          doc.roundedRect(x, cardY, cardW, cardH, 2, 2, "FD");
+          doc.setFillColor(card.color[0], card.color[1], card.color[2]);
+          doc.rect(x, cardY, cardW, 2.5, "F");
           doc.setFontSize(7);
-          doc.setTextColor(130, 130, 130);
+          doc.setTextColor(150, 150, 150);
           doc.setFont("helvetica", "bold");
-          doc.text(card[0], x + 4, y + 7);
-          doc.setFontSize(11);
-          doc.setTextColor(30, 30, 30);
-          doc.text(card[1], x + 4, y + 15);
+          doc.text(card.label, x + 4, cardY + 9);
+          doc.setFontSize(12);
+          doc.setTextColor(card.color[0], card.color[1], card.color[2]);
+          doc.setFont("helvetica", "bold");
+          doc.text(card.value, x + 4, cardY + 19);
         });
 
-        let y = 82;
+        // ─── TABLE ───
+        let y = cardY + cardH + 10;
         const tableX = 14;
-        const colW = [8, 32, 28, 22, 28, 28, 36];
+        const colW = [10, 38, 38, 26, 32, 38];
         const rowH = 7.5;
 
-        function drawTableHeader() {
-          doc.setFillColor(198, 40, 40);
-          doc.rect(tableX, y - 5, 182, 9, "F");
-          doc.setTextColor(255, 255, 255);
-          doc.setFontSize(7.5);
-          doc.setFont("helvetica", "bold");
-          let cx = tableX + 2;
-          [
-            "#",
-            "SALE REF",
-            "DATE",
-            "PAYMENT",
-            "TOTAL",
-            "PROFIT",
-            "SOLD BY",
-          ].forEach((h, idx) => {
-            doc.text(h, cx, y);
-            cx += colW[idx];
-          });
-          y += 4;
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(7);
-        }
+        // Table header
+        doc.setFillColor(198, 40, 40);
+        doc.rect(tableX, y - 5, 182, 9, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "bold");
+        let cx = tableX + 3;
+        doc.text("S/N", cx, y);
+        cx += colW[0];
+        doc.text("SALE REF", cx, y);
+        cx += colW[1];
+        doc.text("DATE", cx, y);
+        cx += colW[2];
+        doc.text("PAYMENT", cx, y);
+        cx += colW[3];
+        doc.text("TOTAL", cx, y);
+        cx += colW[4];
+        doc.text("SOLD BY", cx, y);
 
-        drawTableHeader();
+        // Table rows
+        y += 4;
+        doc.setFontSize(7.5);
+        doc.setFont("helvetica", "normal");
+
         currentSalesData.forEach((s, idx) => {
           if (y > 272) {
             doc.addPage();
+            doc.setFillColor(198, 40, 40);
+            doc.rect(0, 0, 210, 12, "F");
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "bold");
+            doc.text("SEL POS  -  SALES REPORT", 14, 8);
+            doc.setFontSize(7);
+            doc.setFont("helvetica", "normal");
+            doc.text("Page " + doc.internal.getNumberOfPages(), 196, 8, {
+              align: "right",
+            });
             y = 18;
-            drawTableHeader();
+            doc.setFillColor(198, 40, 40);
+            doc.rect(tableX, y - 5, 182, 9, "F");
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "bold");
+            let cx2 = tableX + 3;
+            doc.text("S/N", cx2, y);
+            cx2 += colW[0];
+            doc.text("SALE REF", cx2, y);
+            cx2 += colW[1];
+            doc.text("DATE", cx2, y);
+            cx2 += colW[2];
+            doc.text("PAYMENT", cx2, y);
+            cx2 += colW[3];
+            doc.text("TOTAL", cx2, y);
+            cx2 += colW[4];
+            doc.text("SOLD BY", cx2, y);
+            y += 4;
+            doc.setFontSize(7.5);
+            doc.setFont("helvetica", "normal");
           }
+
           if (idx % 2 === 0) {
             doc.setFillColor(248, 248, 248);
             doc.rect(tableX, y - 4, 182, rowH, "F");
           }
+
           const dateStr = s.created_at
             ? new Date(s.created_at).toLocaleDateString("en-NG", {
                 day: "2-digit",
@@ -3980,48 +2822,67 @@
                 year: "numeric",
               })
             : "-";
-          const row = [
-            String(idx + 1),
-            s.sale_reference || "N/A",
-            dateStr,
-            (s.payment_mode || "Cash").toUpperCase(),
-            nairaPDF(s.total_amount),
-            nairaPDF(s.gross_profit),
-            s.sold_by_name || "Unknown",
-          ];
-          let cx = tableX + 2;
-          row.forEach((value, colIdx) => {
-            doc.setTextColor(
-              colIdx === 5 ? 16 : 80,
-              colIdx === 5 ? 130 : 80,
-              colIdx === 5 ? 80 : 80,
-            );
-            doc.text(
-              String(value).slice(0, colIdx === 6 ? 22 : 16),
-              cx,
-              y + 1.5,
-            );
-            cx += colW[colIdx];
-          });
+          cx = tableX + 3;
+          doc.setTextColor(80, 80, 80);
+          doc.text(String(idx + 1), cx, y + 1.5);
+          cx += colW[0];
+          doc.setTextColor(50, 50, 50);
+          doc.setFont("helvetica", "bold");
+          doc.text(s.sale_reference || "N/A", cx, y + 1.5);
+          cx += colW[1];
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(100, 100, 100);
+          doc.text(dateStr, cx, y + 1.5);
+          cx += colW[2];
+          const pm = (s.payment_mode || "Cash").toUpperCase();
+          const pmColors = {
+            CASH: [16, 185, 129],
+            CARD: [0, 123, 255],
+            TRANSFER: [108, 117, 125],
+          };
+          const pmColor = pmColors[pm] || [108, 117, 125];
+          doc.setFillColor(pmColor[0], pmColor[1], pmColor[2]);
+          doc.roundedRect(cx, y - 1.5, 20, 4.5, 1, 1, "F");
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(6);
+          doc.setFont("helvetica", "bold");
+          doc.text(pm, cx + 10, y + 0.8, { align: "center" });
+          doc.setFontSize(7.5);
+          doc.setFont("helvetica", "normal");
+          cx += colW[3];
+          doc.setTextColor(198, 40, 40);
+          doc.setFont("helvetica", "bold");
+          doc.text(nairaPDF(s.total_amount), cx, y + 1.5);
+          cx += colW[4];
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(80, 80, 80);
+          doc.text(s.sold_by_name || "Unknown", cx, y + 1.5);
+
           y += rowH;
         });
 
-        y += 2;
+        // ─── GRAND TOTAL ───
+        y += 1;
         doc.setFillColor(198, 40, 40);
-        doc.rect(tableX, y - 4, 182, 10, "F");
+        doc.rect(tableX, y - 4, 182, 9, "F");
         doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(8);
-        doc.text("GRAND TOTAL", tableX + 3, y + 1.5);
-        doc.text("SALES: " + nairaPDF(total), tableX + 76, y + 1.5);
-        doc.text("PROFIT: " + nairaPDF(totalProfit), tableX + 128, y + 1.5);
+        doc.text("GRAND TOTAL", tableX + 3, y + 1);
+        doc.text(nairaPDF(total), tableX + 148, y + 1);
 
+        // ─── FOOTER ───
+        const footerY = 288;
+        doc.setDrawColor(198, 40, 40);
+        doc.setLineWidth(0.5);
+        doc.line(14, footerY, 196, footerY);
         doc.setFontSize(7);
         doc.setTextColor(150, 150, 150);
-        doc.text("Generated by SEL POS System", 14, 288);
-        doc.save(
-          "sales_profit_report_" + now.toISOString().slice(0, 10) + ".pdf",
-        );
+        doc.setFont("helvetica", "normal");
+        doc.text("Generated by SEL POS System", 14, footerY + 4);
+        doc.text("support@selpos.com", 196, footerY + 4, { align: "right" });
+
+        doc.save("sales_report_" + now.toISOString().slice(0, 10) + ".pdf");
       });
 
       // Excel Export
@@ -4031,16 +2892,23 @@
           (sum, sale) => sum + (Number(sale.total_amount) || 0),
           0,
         );
-        const totalCost = currentSalesData.reduce(
-          (sum, sale) => sum + (Number(sale.total_cost) || 0),
-          0,
-        );
-        const totalProfit = currentSalesData.reduce(
-          (sum, sale) => sum + (Number(sale.gross_profit) || 0),
-          0,
-        );
         const avg = total / currentSalesData.length;
         const now = new Date();
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        const monthYear = monthNames[now.getMonth()] + " " + now.getFullYear();
 
         function nairaExcel(amount) {
           const num = Number(amount) || 0;
@@ -4055,27 +2923,17 @@
 
         const wb = XLSX.utils.book_new();
         const ws_data = [
-          ["SEL POS - SALES & PROFIT REPORT"],
+          ["SEL POS - SALES REPORT"],
+          [monthYear.toUpperCase()],
           ["Generated: " + now.toLocaleString("en-NG")],
           ["Report Period: " + getTotalSalesLabel()],
           [],
           ["SALES SUMMARY"],
           ["Total Sales", nairaExcel(total)],
-          ["Total Cost", nairaExcel(totalCost)],
-          ["Gross Profit", nairaExcel(totalProfit)],
           ["Total Transactions", currentSalesData.length],
           ["Average Sale", nairaExcel(avg)],
           [],
-          [
-            "S/N",
-            "SALE REFERENCE",
-            "DATE",
-            "PAYMENT MODE",
-            "TOTAL SALES",
-            "TOTAL COST",
-            "GROSS PROFIT",
-            "SOLD BY",
-          ],
+          ["S/N", "SALE REFERENCE", "DATE", "PAYMENT MODE", "TOTAL", "SOLD BY"],
           ...currentSalesData.map((s, idx) => [
             idx + 1,
             s.sale_reference || "N/A",
@@ -4088,39 +2946,32 @@
               : "-",
             (s.payment_mode || "Cash").toUpperCase(),
             nairaExcel(s.total_amount),
-            nairaExcel(s.total_cost),
-            nairaExcel(s.gross_profit),
             s.sold_by_name || "Unknown",
           ]),
           [],
-          [
-            "",
-            "",
-            "",
-            "GRAND TOTAL",
-            nairaExcel(total),
-            nairaExcel(totalCost),
-            nairaExcel(totalProfit),
-          ],
+          ["", "", "", "GRAND TOTAL", nairaExcel(total)],
         ];
 
         const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
         ws["!cols"] = [
           { wch: 6 },
           { wch: 24 },
           { wch: 18 },
           { wch: 14 },
           { wch: 18 },
-          { wch: 18 },
-          { wch: 18 },
-          { wch: 22 },
+          { wch: 20 },
         ];
-        ws["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 7 } }];
 
-        XLSX.utils.book_append_sheet(wb, ws, "Sales Profit Report");
+        ws["!merges"] = [
+          { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } },
+          { s: { r: 1, c: 0 }, e: { r: 1, c: 5 } },
+        ];
+
+        XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
         XLSX.writeFile(
           wb,
-          "sales_profit_report_" + now.toISOString().slice(0, 10) + ".xlsx",
+          "sales_report_" + now.toISOString().slice(0, 10) + ".xlsx",
         );
       });
 
@@ -4304,11 +3155,9 @@
 
         ticketPackages.forEach((pkg) => {
           const card = document.createElement("div");
-          const safePkgId = JSON.stringify(String(pkg.id));
           card.className =
             "ticket-package-card" +
-            (selectedTicketPackage &&
-            String(selectedTicketPackage.id) === String(pkg.id)
+            (selectedTicketPackage && selectedTicketPackage.id === pkg.id
               ? " active"
               : "");
           card.onclick = () => selectTicketPackage(pkg.id);
@@ -4327,8 +3176,8 @@
                 pkg.is_active ? "Active" : "Inactive"
               }</span>
               <span>
-                <button class="action-btn btn-edit" onclick='event.stopPropagation(); editTicketPackage(${safePkgId})'><i class="fas fa-pen"></i> Edit</button>
-                <button class="action-btn btn-toggle" onclick='event.stopPropagation(); toggleTicketPackage(${safePkgId}, ${pkg.is_active ? "false" : "true"})'>${
+                <button class="action-btn btn-edit" onclick="event.stopPropagation(); editTicketPackage(${pkg.id})"><i class="fas fa-pen"></i> Edit</button>
+                <button class="action-btn btn-toggle" onclick="event.stopPropagation(); toggleTicketPackage(${pkg.id}, ${pkg.is_active ? "false" : "true"})">${
                   pkg.is_active ? "Deactivate" : "Activate"
                 }</button>
               </span>
@@ -4511,7 +3360,6 @@
 
         ticketGames.forEach((game) => {
           const tr = document.createElement("tr");
-          const safeGameId = JSON.stringify(String(game.id));
           tr.innerHTML = `
             <td style="font-weight:700; color:var(--gray-900);">${game.game_name}</td>
             <td>${Number(game.sort_order || 0).toLocaleString("en-NG")}</td>
@@ -4519,10 +3367,10 @@
               game.is_active ? "Active" : "Inactive"
             }</span></td>
             <td>
-              <button class="action-btn btn-toggle" onclick='toggleTicketGame(${safeGameId}, ${game.is_active ? "false" : "true"})'>${
+              <button class="action-btn btn-toggle" onclick="toggleTicketGame(${game.id}, ${game.is_active ? "false" : "true"})">${
                 game.is_active ? "Deactivate" : "Activate"
               }</button>
-              <button class="action-btn btn-delete" onclick='deleteTicketGame(${safeGameId})'><i class="fas fa-trash"></i> Delete</button>
+              <button class="action-btn btn-delete" onclick="deleteTicketGame(${game.id})"><i class="fas fa-trash"></i> Delete</button>
             </td>
           `;
           ticketGamesTableBody.appendChild(tr);
@@ -4677,6 +3525,7 @@
         }
 
         try {
+          // Fetch the sale record
           const { data: sale, error: saleError } = await supabase
             .from("sales")
             .select("*")
@@ -4686,43 +3535,49 @@
           if (saleError) throw saleError;
           if (!sale) throw new Error("Sale not found");
 
+          // Resolve seller full name from profiles/profile_names
           const cachedSale = (currentSalesData || []).find(
             (s) => String(s.id) === String(saleId),
           );
+
           sale.sold_by_name = await resolveSellerName(sale.sold_by, cachedSale);
 
+          // Fetch sale items and inventory items in parallel
           const [
             { data: items, error: itemsError },
             { data: inventory, error: invError },
           ] = await Promise.all([
             supabase.from("sale_items").select("*").eq("sale_id", saleId),
-            supabase.from("inventory_items").select("id,name,cost_price"),
+            supabase.from("inventory_items").select("id,name"),
           ]);
 
           if (itemsError) throw itemsError;
-          if (invError)
-            console.warn("Inventory fetch error:", invError.message);
+          console.log("Inventory fetch error:", invError);
+          console.log("Inventory data:", inventory);
 
+          // Build product name lookup map
           const productMap = {};
           (inventory || []).forEach((p) => {
-            productMap[String(p.id)] = p;
+            productMap[p.id] = p.name;
           });
 
           const dateStr = sale.created_at
             ? new Date(sale.created_at).toLocaleString("en-NG")
             : "-";
 
-          let totalCost = 0;
-          let grossProfit = 0;
           let itemsHTML = "";
-
           if (items && items.length > 0) {
+            console.log("First sale_item keys:", Object.keys(items[0]));
+            console.log("First sale_item:", items[0]);
+            console.log("Inventory map:", productMap);
+
             const rows = items
               .map((item) => {
-                const financials = getSaleItemFinancials(item, productMap);
-                totalCost += financials.totalCost;
-                grossProfit += financials.profit;
+                const qty = Number(item.quantity) || 0;
+                const price = Number(item.unit_price) || 0;
+                const total = Number(item.total_price) || qty * price;
 
+                // Try every possible column name for product name
                 let prodName =
                   item.product_name ||
                   item.name ||
@@ -4731,21 +3586,26 @@
                   item.title ||
                   item.description;
 
+                // If no direct name, try lookup by ID
                 if (!prodName) {
-                  const product = productMap[String(financials.productId)];
-                  prodName = product?.name;
+                  const id =
+                    item.product_id ||
+                    item.inventory_item_id ||
+                    item.item_id ||
+                    item.productId ||
+                    item.product;
+                  prodName = productMap[id];
                 }
 
+                // Final fallback
                 if (!prodName) prodName = "Unknown Product";
 
                 return `
                 <tr>
                   <td style="font-weight:700; color:var(--gray-900);">${prodName}</td>
-                  <td>${financials.qty.toLocaleString("en-NG")}</td>
-                  <td>${formatCurrency(financials.unitPrice)}</td>
-                  <td>${formatCurrency(financials.costPrice)}</td>
-                  <td style="font-weight:700; color:var(--gray-900);">${formatCurrency(financials.totalRevenue)}</td>
-                  <td style="font-weight:800; color:${financials.profit >= 0 ? "var(--secondary)" : "var(--danger)"};">${formatCurrency(financials.profit)}</td>
+                  <td>${qty.toLocaleString("en-NG")}</td>
+                  <td>${formatCurrency(price)}</td>
+                  <td style="font-weight:700; color:var(--gray-900);">${formatCurrency(total)}</td>
                 </tr>
               `;
               })
@@ -4760,9 +3620,7 @@
                       <th>Product</th>
                       <th>Qty</th>
                       <th>Unit Price</th>
-                      <th>Cost Price</th>
                       <th>Total</th>
-                      <th>Profit</th>
                     </tr>
                   </thead>
                   <tbody>${rows}</tbody>
@@ -4780,11 +3638,6 @@
                 </div>
               </div>
             `;
-          }
-
-          if (!items || !items.length) {
-            totalCost = Number(cachedSale?.total_cost) || 0;
-            grossProfit = Number(cachedSale?.gross_profit) || 0;
           }
 
           if (body) {
@@ -4809,14 +3662,6 @@
                 <div class="sale-detail-item">
                   <div class="sale-detail-label">Total Amount</div>
                   <div class="sale-detail-value" style="color:#c62828;">${formatCurrency(sale.total_amount)}</div>
-                </div>
-                <div class="sale-detail-item">
-                  <div class="sale-detail-label">Total Cost</div>
-                  <div class="sale-detail-value">${formatCurrency(totalCost)}</div>
-                </div>
-                <div class="sale-detail-item">
-                  <div class="sale-detail-label">Gross Profit</div>
-                  <div class="sale-detail-value" style="color:${grossProfit >= 0 ? "var(--secondary)" : "var(--danger)"};">${formatCurrency(grossProfit)}</div>
                 </div>
                 <div class="sale-detail-item">
                   <div class="sale-detail-label">Items Count</div>
@@ -4868,6 +3713,5 @@
         </div>
       </div>
     </div>
-      <script src="js/ui-enhancements.js"></script>
-</body>
+  </body>
 </html>

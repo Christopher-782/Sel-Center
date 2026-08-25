@@ -14,10 +14,10 @@
     />
     <style>
       :root {
-        --primary: #c62828;
-        --primary-dark: #8e0000;
-        --primary-light: #ff5f52;
-        --primary-accent: #ff867c;
+        --primary: #6b4423;
+        --primary-dark: #3d2517;
+        --primary-light: #8b5e3c;
+        --primary-accent: #a67b5b;
         --secondary: #10b981;
         --danger: #c03a2b;
         --warning: #f59e0b;
@@ -90,7 +90,11 @@
       /* Header */
       .pos-header {
         height: 56px;
-        background: linear-gradient(135deg, #8e0000, #c62828);
+        background: linear-gradient(
+          135deg,
+          var(--primary-dark),
+          var(--primary)
+        );
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -190,7 +194,7 @@
 
       .search-input:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
+        box-shadow: 0 0 0 3px rgba(107, 68, 35, 0.1);
         background: #fff;
       }
 
@@ -212,7 +216,7 @@
       }
       .date-input:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
+        box-shadow: 0 0 0 3px rgba(107, 68, 35, 0.1);
         background: #fff;
       }
 
@@ -262,7 +266,11 @@
       }
 
       .cart-badge {
-        background: linear-gradient(135deg, #c62828, #ff5f52);
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-light)
+        );
         color: #fff;
         font-size: 11px;
         font-weight: 700;
@@ -468,7 +476,7 @@
       .product-tab.active {
         color: var(--primary);
         border-bottom-color: var(--primary);
-        background: rgba(198, 40, 40, 0.05);
+        background: rgba(107, 68, 35, 0.05);
       }
 
       /* Product Grid */
@@ -503,7 +511,11 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: linear-gradient(90deg, #c62828, #ff5f52);
+        background: linear-gradient(
+          90deg,
+          var(--primary),
+          var(--primary-light)
+        );
         opacity: 0;
         transition: var(--transition);
         z-index: 1;
@@ -677,7 +689,7 @@
           var(--primary),
           var(--primary-dark)
         );
-        box-shadow: 0 4px 6px -1px rgba(198, 40, 40, 0.3);
+        box-shadow: 0 4px 6px -1px rgba(107, 68, 35, 0.3);
       }
 
       .payment-btn.card {
@@ -797,9 +809,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./js/supabaseClient.js"></script>
     <base target="_blank" />
-    <base target="_blank" />
-      <link rel="stylesheet" href="css/ui-enhancements.css" />
-</head>
+  </head>
   <body>
     <div class="pos-container">
       <!-- Header -->
@@ -1479,10 +1489,7 @@
           "@media print { body { margin: 0; } .no-print { display: none; } }" +
           "</style></head><body>" +
           '<div style="width:220px; font-family:monospace; padding:10px; margin:0 auto;">' +
-          '<div style="text-align:center; margin:0 0 8px;">' +
-          '<img src="https://res.cloudinary.com/deoqw88yb/image/upload/v1782220892/2sel_eh3a2m.avif" style="max-width:120px; height:auto; display:block; margin:0 auto;" />' +
-          '<h3 style="text-align:center; margin:0; font-size:14px;">*** SEL POS ***</h3>' +
-          "</div>" +
+          '<h3 style="text-align:center; margin:0 0 8px; font-size:14px;">*** SEL POS ***</h3>' +
           '<p style="text-align:center; margin:4px 0; font-size:10px;">Sale Ref: ' +
           saleRef +
           "</p>" +
@@ -1577,7 +1584,7 @@
           for (let i = 0; i < item.quantity; i++) {
             const ticketId = saleRef + "-T" + (idx + 1) + "-" + (i + 1);
             ticketContent +=
-              '<div class="ticket" style="width:280px; background: linear-gradient(135deg, #c62828, #8e0000); color: #fff; border-radius: 12px; padding: 20px; margin: 0 auto 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); position: relative; overflow: hidden;">' +
+              '<div class="ticket" style="width:280px; background: linear-gradient(135deg, #6B4423, #3D2517); color: #fff; border-radius: 12px; padding: 20px; margin: 0 auto 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); position: relative; overflow: hidden;">' +
               '<div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>' +
               '<div style="position: absolute; bottom: -20px; left: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>' +
               '<div style="text-align: center; position: relative; z-index: 1;">' +
@@ -1666,7 +1673,7 @@
 
         ticketContent +=
           '<div class="no-print" style="text-align:center; margin-top:20px;">' +
-          '<button onclick="window.print()" style="padding:10px 24px; cursor:pointer; background: linear-gradient(135deg, #c62828, #8e0000); color: #fff; border: none; border-radius: 8px; font-weight: 600;">Print Tickets</button>' +
+          '<button onclick="window.print()" style="padding:10px 24px; cursor:pointer; background: linear-gradient(135deg, #6B4423, #3D2517); color: #fff; border: none; border-radius: 8px; font-weight: 600;">Print Tickets</button>' +
           "</div></bo" +
           "dy></html>";
 
@@ -1838,6 +1845,5 @@
         loadProducts();
       });
     </script>
-      <script src="js/ui-enhancements.js"></script>
-</body>
+  </body>
 </html>
