@@ -3,7 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SEL POS - Ticket Admin</title>
+    <title>SEL POS - Ticket Admin</title><link rel="icon" type="image/avif" href="https://res.cloudinary.com/deoqw88yb/image/upload/v1782220892/1sel_yar5yk.avif"><style>
+  .sel-brand-image{display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit;}
+  .sel-wordmark-image{display:block;height:34px;width:auto;max-width:120px;object-fit:contain;}
+  .sel-logo-row{display:flex!important;align-items:center;gap:8px;}
+  .sel-login-logo{display:block;width:92px;max-width:45%;height:auto;max-height:76px;object-fit:contain;margin:0 auto 16px;}
+</style>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -807,11 +812,12 @@
     <script src="./js/supabaseClient.js"></script>
     <base target="_blank" />
       <link rel="stylesheet" href="css/ui-enhancements.css" />
+  <link rel="stylesheet" href="css/site-dynamic.css">
 </head>
   <body>
     <header class="header">
       <div class="brand">
-        <div class="logo"><i class="fas fa-ticket-alt"></i></div>
+        <div class="logo"><img src="https://res.cloudinary.com/deoqw88yb/image/upload/v1782220892/1sel_yar5yk.avif" alt="SEL Center logo" class="sel-brand-image"></div>
         <div class="brand-text">
           <h1>Ticket Admin</h1>
           <p>Create ticket packages and assign games</p>
@@ -1334,5 +1340,6 @@
       document.addEventListener("DOMContentLoaded", startTicketAdminWithRoleCheck);
     </script>
       <script src="js/ui-enhancements.js"></script>
+  <script src="js/site-dynamic.js"></script>
 </body>
 </html>

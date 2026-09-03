@@ -94,25 +94,28 @@ loginForm.addEventListener("submit", async (e) => {
     localStorage.setItem("userName", profile.full_name || "");
     localStorage.setItem("userRole", profile.role);
 
-    // Redirect based on role
-    const roleRedirects = {
-      sale_associate: "pos.html",
-      manager: "manager.html",
-      admin: "admin.html",
-    };
+    // Load effective permissions (role defaults + per-user overrides).
+    // The SQL upgrade creates get_my_permissions(). If the migration has not
+    // been applied yet, login still succeeds and the dashboard can use its
+    // compatibility fallback for the existing roles.
+    try {
+      const { data: permissionRows, error: permissionError } =
+        await window.supabase.rpc("get_my_permissions");
 
-    const redirectTo = roleRedirects[profile.role];
-
-    if (!redirectTo) {
-      await window.supabase.auth.signOut();
-
-      loginError.textContent =
-        "Unknown role: " + profile.role + ". Contact admin.";
-      loginError.className = "alert alert-error";
-      return;
+      if (!permissionError && Array.isArray(permissionRows)) {
+        const permissions = permissionRows
+          .map((row) =>
+            typeof row === "string" ? row : row && row.permission_key,
+          )
+          .filter(Boolean);
+        localStorage.setItem("userPermissions", JSON.stringify(permissions));
+      }
+    } catch (permissionLoadError) {
+      console.warn("Permissions will be loaded by the operations dashboard.", permissionLoadError);
     }
 
-    window.location.href = redirectTo;
+    // All authenticated users now enter the permission-aware operations hub.
+    window.location.href = "app.html";
   } catch (err) {
     console.error("Login error:", err);
 

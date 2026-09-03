@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SEL Center - Admin Dashboard</title><link rel="icon" type="image/avif" href="https://res.cloudinary.com/deoqw88yb/image/upload/v1782220892/1sel_yar5yk.avif"><style>
+  .sel-brand-image{display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit;}
+  .sel-wordmark-image{display:block;height:34px;width:auto;max-width:120px;object-fit:contain;}
+  .sel-logo-row{display:flex!important;align-items:center;gap:8px;}
+  .sel-login-logo{display:block;width:92px;max-width:45%;height:auto;max-height:76px;object-fit:contain;margin:0 auto 16px;}
+</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/operations.css">
+  <link rel="stylesheet" href="css/site-dynamic.css">
+</head>
+<body class="admin-body">
+  <div class="admin-app">
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo"><img src="https://res.cloudinary.com/deoqw88yb/image/upload/v1782220892/1sel_yar5yk.avif" alt="SEL Center logo" class="sel-brand-image"></div>
+        <div><strong>SEL Center</strong><span>Administration</span></div>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="sidebar-avatar"><i class="fa-solid fa-user-shield"></i></div>
+        <div><strong data-user-name>Administrator</strong><span>Admin account</span></div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-label">Overview</div>
+        <button class="side-link active" data-panel="dashboard"><i class="fa-solid fa-grid-2"></i><span>Dashboard</span></button>
+        <button class="side-link" data-panel="sales"><i class="fa-solid fa-receipt"></i><span>Sales</span></button>
+        <button class="side-link" data-panel="gate"><i class="fa-solid fa-door-open"></i><span>Gate Entry</span></button>
+        <button class="side-link" data-panel="tickets"><i class="fa-solid fa-ticket"></i><span>Tickets</span></button>
+        <button class="side-link" data-panel="expenses"><i class="fa-solid fa-wallet"></i><span>Expenses</span></button>
+        <button class="side-link" data-panel="finance"><i class="fa-solid fa-chart-line"></i><span>Profit & Reports</span></button>
+        <a class="side-link" href="reconciliation.html"><i class="fa-solid fa-scale-balanced"></i><span>Reconciliation</span></a>
+
+        <div class="sidebar-label">Operations</div>
+        <button class="side-link" data-panel="inventory"><i class="fa-solid fa-boxes-stacked"></i><span>Kitchen Inventory</span></button>
+        <button class="side-link" data-panel="audit"><i class="fa-solid fa-clock-rotate-left"></i><span>Audit Logs</span></button>
+        <button class="side-link" data-panel="users"><i class="fa-solid fa-users-gear"></i><span>Users & Access</span></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a class="side-link" href="app.html"><i class="fa-solid fa-arrow-left"></i><span>Operations Portal</span></a>
+        <button class="side-link danger" onclick="SELAccess.logout()"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
+      </div>
+    </aside>
+
+    <div class="admin-content">
+      <header class="admin-topbar">
+        <button class="mobile-menu" id="mobileMenu"><i class="fa-solid fa-bars"></i></button>
+        <div><h1 id="viewTitle">Dashboard</h1><p id="viewSubtitle">Business performance and operational overview.</p></div>
+        <div class="topbar-actions"><span class="admin-badge"><i class="fa-solid fa-shield-halved"></i> Admin only</span><span class="topbar-user" data-user-name>Administrator</span></div>
+      </header>
+
+      <main class="admin-workspace">
+        <div id="adminAlert" class="hidden"></div>
+
+        <!-- Dashboard -->
+        <section class="admin-view active" id="panel-dashboard">
+          <div class="view-toolbar">
+            <div><h2>Business Overview</h2><p>Financial position and operational activity for the selected period.</p></div>
+            <div class="toolbar-actions">
+              <select id="dashboardRange" class="compact-control"><option value="today">Today</option><option value="week">This Week</option><option value="month" selected>This Month</option><option value="year">This Year</option></select>
+              <button class="btn btn-secondary" id="refreshDashboard"><i class="fa-solid fa-rotate"></i> Refresh</button>
+            </div>
+          </div>
+
+          <div class="metric-row finance-metrics">
+            <div class="metric-cell"><span>Total Revenue</span><strong id="dashRevenue">₦0.00</strong><small>Kitchen + tickets + gate</small></div>
+            <div class="metric-cell"><span>Cost of Goods</span><strong id="dashCogs">₦0.00</strong><small>Historical sale costs</small></div>
+            <div class="metric-cell positive"><span>Gross Profit</span><strong id="dashGross">₦0.00</strong><small>Revenue − COGS</small></div>
+            <div class="metric-cell"><span>Expenses</span><strong id="dashExpenses">₦0.00</strong><small>Operating expenses</small></div>
+            <div class="metric-cell net"><span>Net Profit</span><strong id="dashNet">₦0.00</strong><small>Gross profit − expenses</small></div>
+          </div>
+
+          <div class="dashboard-columns">
+            <section class="surface">
+              <div class="surface-head"><div><h3>Revenue Breakdown</h3><p>Where income is coming from.</p></div></div>
+              <div class="breakdown-list">
+                <div><span><i class="fa-solid fa-utensils"></i> Kitchen Sales</span><strong id="dashKitchen">₦0.00</strong></div>
+                <div><span><i class="fa-solid fa-ticket"></i> Ticket Sales</span><strong id="dashTicket">₦0.00</strong></div>
+                <div><span><i class="fa-solid fa-door-open"></i> Gate Entry</span><strong id="dashGate">₦0.00</strong></div>
+              </div>
+            </section>
+            <section class="surface">
+              <div class="surface-head"><div><h3>Stock Attention</h3><p>Items that need replenishment.</p></div><button class="text-btn" data-jump="inventory">Manage stock</button></div>
+              <div id="lowStockList" class="activity-list"><div class="empty-line">Loading stock status…</div></div>
+            </section>
+          </div>
+
+          <section class="surface recent-surface">
+            <div class="surface-head"><div><h3>Recent Sales</h3><p>Latest recorded transactions.</p></div><button class="text-btn" data-jump="sales">View all sales</button></div>
+            <div class="table-wrap"><table class="table modern-table"><thead><tr><th>Reference</th><th>Date</th><th>Type</th><th>Payment</th><th>Amount</th></tr></thead><tbody id="dashRecentSales"></tbody></table></div>
+          </section>
+        </section>
+
+        <!-- Sales -->
+        <section class="admin-view" id="panel-sales">
+          <div class="view-toolbar">
+            <div><h2>Sales Management</h2><p>Create, review, correct or delete Kitchen and Ticket sales.</p></div>
+            <button class="btn btn-primary" id="newSale"><i class="fa-solid fa-plus"></i> New Sale</button>
+          </div>
+          <div class="filter-bar">
+            <input id="salesSearch" class="search-input" placeholder="Search reference, item or payment…">
+            <select id="salesTypeFilter" class="compact-control"><option value="all">All sale types</option><option value="kitchen">Kitchen</option><option value="ticket">Ticket</option></select>
+            <button class="btn btn-secondary" id="reloadSales"><i class="fa-solid fa-rotate"></i></button>
+          </div>
+          <section class="surface flush">
+            <div class="table-wrap"><table class="table modern-table"><thead><tr><th>Reference</th><th>Date</th><th>Type</th><th>Items</th><th>Payment</th><th>Total</th><th>Sold By</th><th></th></tr></thead><tbody id="salesRows"></tbody></table></div>
+          </section>
+        </section>
+
+        <!-- Gate Entry -->
+        <section class="admin-view" id="panel-gate">
+          <div class="view-toolbar">
+            <div><h2>Gate Entry Management</h2><p>Review gate-entry revenue and create, correct or delete gate records.</p></div>
+            <button class="btn btn-primary" id="newGateEntry"><i class="fa-solid fa-plus"></i> New Gate Entry</button>
+          </div>
+
+          <div class="filter-bar gate-admin-filters">
+            <select id="gateAdminRange" class="compact-control">
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly" selected>Monthly</option>
+              <option value="custom">Custom Range</option>
+            </select>
+            <div class="date-control gate-admin-custom hidden"><label>From</label><input id="gateAdminStart" type="date"></div>
+            <div class="date-control gate-admin-custom hidden"><label>To</label><input id="gateAdminEnd" type="date"></div>
+            <select id="gatePaymentFilter" class="compact-control"><option value="all">All payments</option><option value="cash">Cash</option><option value="card">Card/POS</option><option value="transfer">Transfer</option></select>
+            <input id="gateAdminSearch" class="search-input" placeholder="Search receipt, payer or notes…">
+            <button class="btn btn-secondary" id="reloadGateAdmin"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          </div>
+
+          <div class="metric-row gate-admin-metrics">
+            <div class="metric-cell"><span>Gate Revenue</span><strong id="gateAdminRevenue">₦0.00</strong><small>Selected period</small></div>
+            <div class="metric-cell"><span>Transactions</span><strong id="gateAdminTransactions">0</strong><small>Gate-entry records</small></div>
+            <div class="metric-cell"><span>Visitors</span><strong id="gateAdminVisitors">0</strong><small>Total persons admitted</small></div>
+            <div class="metric-cell"><span>Cash</span><strong id="gateAdminCash">₦0.00</strong><small>Net cash sales value</small></div>
+            <div class="metric-cell"><span>Card / POS</span><strong id="gateAdminCard">₦0.00</strong><small>Card transactions</small></div>
+            <div class="metric-cell"><span>Transfer</span><strong id="gateAdminTransfer">₦0.00</strong><small>Transfer transactions</small></div>
+          </div>
+
+          <section class="surface flush">
+            <div class="surface-head"><div><h3>Gate Entry Report</h3><p><span id="gateAdminRecordCount">0</span> records for the selected period.</p></div></div>
+            <div class="table-wrap"><table class="table modern-table"><thead><tr><th>Receipt</th><th>Date</th><th>Payer / Group</th><th>Visitors</th><th>Payment</th><th>Cash Received</th><th>Change</th><th>Amount</th><th>Recorded By</th><th></th></tr></thead><tbody id="gateAdminRows"></tbody></table></div>
+          </section>
+        </section>
+
+        <!-- Tickets -->
+        <section class="admin-view" id="panel-tickets">
+          <div class="view-toolbar">
+            <div><h2>Ticket Management</h2><p>Full CRUD for ticket types, selling prices and available quantities.</p></div>
+            <button class="btn btn-primary" id="newTicket"><i class="fa-solid fa-plus"></i> New Ticket</button>
+          </div>
+          <div class="filter-bar"><input id="ticketSearch" class="search-input" placeholder="Search ticket name, group or type…"><select id="ticketAudienceFilter" class="compact-control"><option value="all">All groups</option><option value="kids">Kids</option><option value="adult">Adults</option></select><button class="btn btn-secondary" id="reloadTickets"><i class="fa-solid fa-rotate"></i></button></div>
+          <section class="surface flush"><div class="table-wrap"><table class="table modern-table"><thead><tr><th>Ticket</th><th>Group</th><th>Type</th><th>Selling Price</th><th>Qty</th><th>Low Stock</th><th>Status</th><th></th></tr></thead><tbody id="ticketRows"></tbody></table></div></section>
+        </section>
+
+        <!-- Expenses -->
+        <section class="admin-view" id="panel-expenses">
+          <div class="view-toolbar">
+            <div><h2>Expenses</h2><p>Record and manage operating expenses used in net-profit calculation.</p></div>
+            <button class="btn btn-primary" id="newExpense"><i class="fa-solid fa-plus"></i> Record Expense</button>
+          </div>
+          <div class="filter-bar"><input id="expenseSearch" class="search-input" placeholder="Search category, section, description or reference…"><select id="expenseSectionFilter" class="compact-control"><option value="all">All sections</option><option value="general">General</option><option value="kitchen">Kitchen</option><option value="ticket">Tickets</option><option value="gate">Gate Entry</option></select><select id="expenseCategoryFilter" class="compact-control"><option value="all">All categories</option></select><button class="btn btn-secondary" id="reloadExpenses"><i class="fa-solid fa-rotate"></i></button></div>
+          <div class="metric-row compact-metrics"><div class="metric-cell"><span>Total Expenses</span><strong id="expenseTotal">₦0.00</strong></div><div class="metric-cell"><span>Entries</span><strong id="expenseCount">0</strong></div></div>
+          <section class="surface flush"><div class="table-wrap"><table class="table modern-table"><thead><tr><th>Reference</th><th>Date</th><th>Section</th><th>Category</th><th>Description</th><th>Payment</th><th>Amount</th><th></th></tr></thead><tbody id="expenseRows"></tbody></table></div></section>
+        </section>
+
+        <!-- Finance -->
+        <section class="admin-view" id="panel-finance">
+          <div class="view-toolbar"><div><h2>Profit & Reports</h2><p>Calculate revenue, gross profit and net profit by date range.</p></div></div>
+          <div class="filter-bar finance-filter">
+            <select id="financeReportType" class="compact-control"><option value="ticket">Ticket Sales</option><option value="kitchen">Kitchen Sales</option><option value="gate">Gate Entry</option><option value="expenses">Expenses</option></select>
+            <select id="financeRange" class="compact-control"><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly" selected>Monthly</option><option value="custom">Custom Range</option></select>
+            <div class="date-control finance-custom hidden"><label>From</label><input id="financeStart" type="date"></div>
+            <div class="date-control finance-custom hidden"><label>To</label><input id="financeEnd" type="date"></div>
+            <button class="btn btn-primary" id="runFinance"><i class="fa-solid fa-filter"></i> Calculate</button>
+          </div>
+          <div class="metric-row finance-metrics report-metrics">
+            <div class="metric-cell"><span>Total Revenue</span><strong id="finRevenue">₦0.00</strong></div>
+            <div class="metric-cell"><span>COGS</span><strong id="finCogs">₦0.00</strong></div>
+            <div class="metric-cell positive"><span>Gross Profit</span><strong id="finGross">₦0.00</strong></div>
+            <div class="metric-cell"><span>Expenses</span><strong id="finExpenses">₦0.00</strong></div>
+            <div class="metric-cell net"><span>Net Profit</span><strong id="finNet">₦0.00</strong></div>
+          </div>
+          <div class="dashboard-columns">
+            <section class="surface"><div class="surface-head"><div><h3>Income Sources</h3><p>Revenue split for the selected period.</p></div></div><div class="breakdown-list"><div><span>Kitchen</span><strong id="finKitchen">₦0.00</strong></div><div><span>Tickets</span><strong id="finTicket">₦0.00</strong></div><div><span>Gate Entry</span><strong id="finGate">₦0.00</strong></div></div></section>
+            <section class="surface"><div class="surface-head"><div><h3>Profit Formula</h3><p>How the figures are calculated.</p></div></div><div class="formula-box"><p><strong>Gross Profit</strong> = Total Revenue − Cost of Goods Sold</p><p><strong>Net Profit</strong> = Gross Profit − Operating Expenses</p><small>Kitchen product cost is stored on each Kitchen sale at the time it is completed. Tickets and Gate Entry have zero COGS, so their full selling value contributes to gross profit before expenses.</small></div></section>
+          </div>
+          <section class="surface report-surface">
+            <div class="surface-head"><div><h3 id="financeDetailTitle">Ticket Sales Report</h3><p><span id="financeRecordCount">0</span> records · <strong id="financeRecordTotal">₦0.00</strong></p></div></div>
+            <div class="table-wrap"><table class="table modern-table"><thead id="financeDetailHead"></thead><tbody id="financeDetailRows"></tbody></table></div>
+          </section>
+        </section>
+
+        <!-- Kitchen Inventory -->
+        <section class="admin-view" id="panel-inventory">
+          <div class="view-toolbar"><div><h2>Kitchen Inventory</h2><p>Manage Drinks, Meals and Desserts with cost and stock controls.</p></div><button class="btn btn-primary" id="newProduct"><i class="fa-solid fa-plus"></i> New Product</button></div>
+          <div class="filter-bar"><input id="inventorySearch" class="search-input" placeholder="Search name, SKU or category…"><select id="inventoryCategoryFilter" class="compact-control"><option value="all">All categories</option><option value="Drinks">Drinks</option><option value="Meals">Meals</option><option value="Desserts">Desserts</option></select><button class="btn btn-secondary" id="reloadInventory"><i class="fa-solid fa-rotate"></i></button></div>
+          <section class="surface flush"><div class="table-wrap"><table class="table modern-table"><thead><tr><th>Name</th><th>SKU</th><th>Category</th><th>Price</th><th>Cost</th><th>Qty</th><th>Status</th><th></th></tr></thead><tbody id="inventoryRows"></tbody></table></div></section>
+        </section>
+
+        <!-- Audit -->
+        <section class="admin-view" id="panel-audit">
+          <div class="view-toolbar"><div><h2>Audit Logs</h2><p>Track administrative changes to kitchen products and tickets.</p></div></div>
+          <div class="filter-bar"><select id="auditType" class="compact-control"><option value="inventory">Kitchen Inventory</option><option value="tickets">Tickets</option></select><input id="auditSearch" class="search-input" placeholder="Search item or action…"><button class="btn btn-secondary" id="reloadAudit"><i class="fa-solid fa-rotate"></i></button></div>
+          <section class="surface flush"><div class="table-wrap"><table class="table modern-table"><thead><tr><th>Date</th><th>Item</th><th>Action</th><th>Old Qty</th><th>New Qty</th><th>Changed By</th></tr></thead><tbody id="auditRows"></tbody></table></div></section>
+        </section>
+
+        <!-- Users -->
+        <section class="admin-view" id="panel-users">
+          <div class="view-toolbar"><div><h2>Users & Access</h2><p>Create staff accounts and control access to operational modules.</p></div><button class="btn btn-primary" id="newUser"><i class="fa-solid fa-user-plus"></i> Create User</button></div>
+          <section class="surface flush"><div class="table-wrap"><table class="table modern-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Permissions</th><th></th></tr></thead><tbody id="userRows"></tbody></table></div></section>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Shared right drawer -->
+  <div class="drawer-backdrop hidden" id="drawerBackdrop"></div>
+  <aside class="admin-drawer" id="adminDrawer" aria-hidden="true">
+    <div class="drawer-head"><div><h2 id="drawerTitle">Edit</h2><p id="drawerSubtitle"></p></div><button class="drawer-close" id="drawerClose"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/access-control.js"></script>
+  <script src="js/operations-admin.js"></script>
+  <script src="js/site-dynamic.js"></script>
+</body>
+</html>

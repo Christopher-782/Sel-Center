@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SEL Center - Operations</title><link rel="icon" type="image/avif" href="https://res.cloudinary.com/deoqw88yb/image/upload/v1782220892/1sel_yar5yk.avif"><style>
+  .sel-brand-image{display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit;}
+  .sel-wordmark-image{display:block;height:34px;width:auto;max-width:120px;object-fit:contain;}
+  .sel-logo-row{display:flex!important;align-items:center;gap:8px;}
+  .sel-login-logo{display:block;width:92px;max-width:45%;height:auto;max-height:76px;object-fit:contain;margin:0 auto 16px;}
+</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/operations.css">
+  <link rel="stylesheet" href="css/site-dynamic.css">
+</head>
+<body class="portal-body">
+  <div class="portal-app">
+    <aside class="portal-sidebar" id="portalSidebar">
+      <div class="sidebar-brand"><div class="sidebar-logo"><img src="https://res.cloudinary.com/deoqw88yb/image/upload/v1782220892/1sel_yar5yk.avif" alt="SEL Center logo" class="sel-brand-image"></div><div><strong>SEL Center</strong><span>Operations Portal</span></div></div>
+      <div class="sidebar-user"><div class="sidebar-avatar"><i class="fa-solid fa-user"></i></div><div><strong data-user-name>User</strong><span>Signed in</span></div></div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-label">Your Workspace</div>
+        <a class="side-link active" href="app.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a class="side-link" data-permission-link="gate_entry" href="gate-entry.html"><i class="fa-solid fa-person-walking-arrow-right"></i><span>Gate Entry</span></a>
+        <a class="side-link" data-permission-link="kitchen_pos" href="kitchen-pos.html"><i class="fa-solid fa-utensils"></i><span>Kitchen POS</span></a>
+        <a class="side-link" data-permission-link="ticket_pos" href="ticket-pos.html"><i class="fa-solid fa-ticket"></i><span>Ticket POS</span></a>
+        <a class="side-link" data-permission-link="reconcile_finance" href="reconciliation.html"><i class="fa-solid fa-scale-balanced"></i><span>Reconciliation</span></a>
+        <div data-permission-link="admin_dashboard">
+          <div class="sidebar-label">Administration</div>
+          <a class="side-link admin-link" href="operations-admin.html"><i class="fa-solid fa-chart-line"></i><span>Admin Dashboard</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-footer"><button class="side-link danger" onclick="SELAccess.logout()"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button></div>
+    </aside>
+
+    <main class="portal-content">
+      <header class="portal-topbar"><button class="mobile-menu" id="portalMenu"><i class="fa-solid fa-bars"></i></button><div><h1>Operations</h1><p>Use the sidebar to open the modules assigned to your account.</p></div><span class="topbar-user" data-user-name>User</span></header>
+      <section class="portal-welcome">
+        <div class="welcome-copy"><span class="eyebrow">SEL CENTER</span><h2>Welcome to the Operations Portal</h2><p>Your workspace is permission-based. Only the areas assigned to your account appear in the navigation.</p><div id="noAccess" class="alert alert-info hidden">No operational modules have been assigned to this account. Contact an administrator.</div></div>
+        <div class="welcome-visual"><i class="fa-solid fa-building-circle-check"></i><strong>One workspace.</strong><span>Gate, Kitchen, Tickets, Reconciliation and Administration.</span></div>
+      </section>
+      <section class="portal-help"><div><i class="fa-solid fa-shield-halved"></i><span><strong>Secure access</strong><small>Each module checks your Supabase permissions before loading.</small></span></div><div><i class="fa-solid fa-database"></i><span><strong>Live records</strong><small>Sales and stock changes are written directly to the operations database.</small></span></div><div><i class="fa-solid fa-clock-rotate-left"></i><span><strong>Audit ready</strong><small>Inventory and ticket administration changes are tracked for review.</small></span></div></section>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/access-control.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const ctx = await SELAccess.ensureAuth(); if (!ctx) return;
+      const visible = [...document.querySelectorAll('a[data-permission-link]')].some(x => !x.classList.contains('hidden'));
+      if (!visible && !ctx.permissions.includes('admin_dashboard')) document.getElementById('noAccess').classList.remove('hidden');
+      document.getElementById('portalMenu').onclick = () => document.getElementById('portalSidebar').classList.toggle('open');
+    });
+  </script>
+  <script src="js/site-dynamic.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SEL Center - Reconciliation</title>
+  <link rel="icon" type="image/avif" href="https://res.cloudinary.com/deoqw88yb/image/upload/v1782220892/1sel_yar5yk.avif">
+  <style>.sel-brand-image{display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/operations.css">
+  <link rel="stylesheet" href="css/site-dynamic.css">
+</head>
+<body class="admin-body">
+  <div class="admin-app">
+    <aside class="admin-sidebar" id="reconSidebar">
+      <div class="sidebar-brand"><div class="sidebar-logo"><img src="https://res.cloudinary.com/deoqw88yb/image/upload/v1782220892/1sel_yar5yk.avif" alt="SEL Center logo" class="sel-brand-image"></div><div><strong>SEL Center</strong><span>Finance Control</span></div></div>
+      <div class="sidebar-user"><div class="sidebar-avatar"><i class="fa-solid fa-calculator"></i></div><div><strong data-user-name>Accountant</strong><span>Reconciliation access</span></div></div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-label">Workspace</div>
+        <a class="side-link" href="app.html"><i class="fa-solid fa-house"></i><span>Operations Portal</span></a>
+        <a class="side-link active" href="reconciliation.html"><i class="fa-solid fa-scale-balanced"></i><span>Reconciliation</span></a>
+        <div class="sidebar-label">Operational Modules</div>
+        <a class="side-link" data-permission-link="gate_entry" href="gate-entry.html"><i class="fa-solid fa-person-walking-arrow-right"></i><span>Gate Entry</span></a>
+        <a class="side-link" data-permission-link="kitchen_pos" href="kitchen-pos.html"><i class="fa-solid fa-utensils"></i><span>Kitchen POS</span></a>
+        <a class="side-link" data-permission-link="ticket_pos" href="ticket-pos.html"><i class="fa-solid fa-ticket"></i><span>Ticket POS</span></a>
+        <div data-permission-link="admin_dashboard"><div class="sidebar-label">Administration</div><a class="side-link" href="operations-admin.html"><i class="fa-solid fa-chart-line"></i><span>Admin Dashboard</span></a></div>
+      </nav>
+      <div class="sidebar-footer"><button class="side-link danger" onclick="SELAccess.logout()"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button></div>
+    </aside>
+
+    <div class="admin-content">
+      <header class="admin-topbar">
+        <button class="mobile-menu" id="reconMenu"><i class="fa-solid fa-bars"></i></button>
+        <div><h1>Reconciliation</h1><p>View system-calculated Cash, Card/POS and Transfer totals for any selected period.</p></div>
+        <div class="topbar-actions"><span class="admin-badge finance-badge"><i class="fa-solid fa-shield-halved"></i> Finance control</span><span class="topbar-user" data-user-name>Accountant</span></div>
+      </header>
+
+      <main class="admin-workspace reconciliation-workspace">
+        <div id="reconAlert" class="hidden"></div>
+
+        <section class="surface recon-period-surface">
+          <div class="surface-head"><div><h3>Reconciliation Period</h3><p>Run a daily, weekly or custom-range reconciliation.</p></div><strong id="periodLabel" class="period-pill">Today</strong></div>
+          <div class="filter-bar recon-period-controls">
+            <div class="date-control"><label>Period</label><select id="reconRange" class="compact-control"><option value="daily" selected>Daily</option><option value="weekly">Weekly</option><option value="custom">Custom Range</option></select></div>
+            <div class="date-control"><label>Section</label><select id="reconSection" class="compact-control"><option value="all" selected>All Sections</option><option value="kitchen">Kitchen</option><option value="ticket">Tickets</option><option value="gate">Gate Entry</option></select></div>
+            <div class="date-control" id="dailyControl"><label>Date</label><input id="reconDate" type="date"></div>
+            <div class="date-control hidden" id="weeklyControl"><label>Week containing</label><input id="reconWeekDate" type="date"></div>
+            <div class="date-control hidden custom-recon"><label>From</label><input id="reconStart" type="date"></div>
+            <div class="date-control hidden custom-recon"><label>To</label><input id="reconEnd" type="date"></div>
+            <button class="btn btn-secondary" id="calculateRecon"><i class="fa-solid fa-rotate"></i> Refresh Totals</button>
+          </div>
+        </section>
+
+        <div class="metric-row recon-top-metrics">
+          <div class="metric-cell"><span>Transactions</span><strong id="reconTransactions">0</strong><small>Sales + gate entries</small></div>
+          <div class="metric-cell"><span>Expected Cash</span><strong id="reconExpectedCash">₦0.00</strong><small>After customer change & cash expenses</small></div>
+          <div class="metric-cell"><span>Expected Card</span><strong id="reconExpectedCard">₦0.00</strong><small>Recorded card receipts</small></div>
+          <div class="metric-cell"><span>Expected Transfer</span><strong id="reconExpectedTransfer">₦0.00</strong><small>Recorded transfers</small></div>
+        </div>
+
+        <div class="dashboard-columns recon-columns">
+          <section class="surface">
+            <div class="surface-head"><div><h3>Cash Movement</h3><p>Customer change is tracked separately from operating expenses.</p></div></div>
+            <div class="cash-waterfall">
+              <div><span><i class="fa-solid fa-money-bill-wave"></i> Gross cash received</span><strong id="grossCash">₦0.00</strong></div>
+              <div class="deduction"><span><i class="fa-solid fa-arrow-rotate-left"></i> Change returned to customers</span><strong id="customerChange">− ₦0.00</strong></div>
+              <div><span><i class="fa-solid fa-equals"></i> Net cash sales</span><strong id="netCashSales">₦0.00</strong></div>
+              <div class="deduction"><span><i class="fa-solid fa-wallet"></i> Cash expenses</span><strong id="cashExpenses">− ₦0.00</strong></div>
+              <div class="cash-waterfall-total"><span>Expected cash in hand</span><strong id="expectedCashFormula">₦0.00</strong></div>
+            </div>
+            <div class="cash-source-grid"><div><span>Kitchen cash</span><strong id="kitchenCash">₦0.00</strong></div><div><span>Ticket cash</span><strong id="ticketCash">₦0.00</strong></div><div><span>Gate cash</span><strong id="gateCash">₦0.00</strong></div></div>
+          </section>
+
+          <section class="surface">
+            <div class="surface-head"><div><h3>How Cash Change Works</h3><p>Example of a customer collecting change.</p></div></div>
+            <div class="formula-box recon-formula"><p>Sale total: <strong>₦4,500</strong></p><p>Customer gives: <strong>₦5,000</strong></p><p>Change returned: <strong>₦500</strong></p><p class="formula-result">Drawer increase: <strong>₦4,500</strong></p><small>The POS stores both ₦5,000 received and ₦500 change. Reconciliation therefore expects only ₦4,500 from that transaction.</small></div>
+          </section>
+        </div>
+
+        <section class="surface recon-entry-surface">
+          <div class="surface-head"><div><h3>System Expected Receipts</h3><p>These figures are calculated automatically from recorded transactions for the selected range. No manual amount entry is required.</p></div><span id="autoReconStatus" class="recon-status balanced"><i class="fa-solid fa-circle-check"></i>&nbsp; System calculated</span></div>
+          <div class="recon-method-grid auto-recon-grid">
+            <article class="recon-method-card auto-total-card">
+              <div class="recon-method-icon"><i class="fa-solid fa-money-bill"></i></div>
+              <div class="recon-method-title"><strong>Cash</strong><span>Expected physical cash after customer change and cash expenses</span></div>
+              <div class="auto-recon-amount" id="cashExpectedCard">₦0.00</div>
+              <div class="auto-recon-detail"><span>Gross cash received</span><strong id="cashCardGross">₦0.00</strong></div>
+              <div class="auto-recon-detail"><span>Customer change</span><strong id="cashCardChange">− ₦0.00</strong></div>
+              <div class="auto-recon-detail"><span>Cash expenses</span><strong id="cashCardExpenses">− ₦0.00</strong></div>
+            </article>
+            <article class="recon-method-card auto-total-card">
+              <div class="recon-method-icon"><i class="fa-solid fa-credit-card"></i></div>
+              <div class="recon-method-title"><strong>Card / POS</strong><span>Expected value of all recorded card transactions</span></div>
+              <div class="auto-recon-amount" id="cardExpectedCard">₦0.00</div>
+              <div class="auto-recon-caption"><i class="fa-solid fa-wand-magic-sparkles"></i> Pulled automatically from Kitchen, Ticket and Gate transactions marked as Card.</div>
+            </article>
+            <article class="recon-method-card auto-total-card">
+              <div class="recon-method-icon"><i class="fa-solid fa-building-columns"></i></div>
+              <div class="recon-method-title"><strong>Transfer</strong><span>Expected value of all recorded transfer transactions</span></div>
+              <div class="auto-recon-amount" id="transferExpectedCard">₦0.00</div>
+              <div class="auto-recon-caption"><i class="fa-solid fa-wand-magic-sparkles"></i> Pulled automatically from Kitchen, Ticket and Gate transactions marked as Transfer.</div>
+            </article>
+          </div>
+          <div class="auto-recon-summary">
+            <div><span>Total expected receipts</span><strong id="totalExpectedReceipts">₦0.00</strong></div>
+            <div><span>Selected period</span><strong id="summaryPeriodLabel">Today</strong></div>
+            <div><span>Selected section</span><strong id="summarySectionLabel">All Sections</strong></div>
+            <div><span>Last calculated</span><strong id="lastCalculated">—</strong></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/access-control.js"></script>
+  <script src="js/reconciliation.js"></script>
+  <script src="js/site-dynamic.js"></script>
+</body>
+</html>
