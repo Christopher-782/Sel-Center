@@ -1,0 +1,1 @@
+Updated Kitchen Inventory HTML with Import Excel button and Sales page total sales metric. Replace frontend html/js files.

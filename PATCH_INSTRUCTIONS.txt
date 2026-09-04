@@ -1,0 +1,20 @@
+SEL Center Kitchen Inventory Excel Import Patch
+
+Added:
+- Import Excel handler
+- Duplicate product skipping
+- Mapping:
+  Product Name -> name
+  Category -> category
+  Cost Price -> cost_price
+  Selling Price -> price
+  Quantity -> quantity
+
+Before using:
+Add this button/input to Kitchen Inventory HTML:
+
+<button id="importInventoryExcel">Import Excel</button>
+<input id="inventoryExcelInput" type="file" accept=".xlsx,.xls" hidden>
+
+Also load XLSX:
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>

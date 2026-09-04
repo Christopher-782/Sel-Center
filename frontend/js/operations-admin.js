@@ -474,6 +474,9 @@ async function renderSales() {
         norm(`${s.sale_reference} ${s.payment_mode} ${items}`).includes(search))
     );
   });
+  const filteredSalesTotal = rows.reduce((sum, s) => sum + Number(s.total_amount || 0), 0);
+  if (q("salesTotalValue")) q("salesTotalValue").textContent = money(filteredSalesTotal);
+  if (q("salesTotalCount")) q("salesTotalCount").textContent = rows.length.toLocaleString("en-NG");
   const names = await profileMap(rows.map((s) => s.sold_by));
   q("salesRows").innerHTML = rows.length
     ? rows
@@ -1378,6 +1381,103 @@ async function deleteProduct(id) {
   await loadInventory();
 }
 
+
+// -----------------------------------------------------------------------------
+// Kitchen inventory Excel import
+// -----------------------------------------------------------------------------
+function normalizeImportCategory(value) {
+  const v = norm(value);
+  if (v === "drink" || v === "drinks") return "Drinks";
+  if (v === "meal" || v === "meals" || v === "food" || v === "foods") return "Meals";
+  if (v === "dessert" || v === "desserts") return "Desserts";
+  return String(value || "Drinks").trim() || "Drinks";
+}
+
+async function importKitchenInventoryExcel(event) {
+  const input = event?.target || q("inventoryExcelInput");
+  const file = input?.files?.[0];
+  if (!file) return;
+
+  try {
+    if (!window.XLSX) throw new Error("Excel reader is not available. Refresh the page and try again.");
+
+    const buffer = await file.arrayBuffer();
+    const workbook = XLSX.read(buffer, { type: "array" });
+    if (!workbook.SheetNames.length) throw new Error("The workbook does not contain a worksheet.");
+
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+    if (!rows.length) throw new Error("No product rows were found in the Excel file.");
+
+    const required = ["Product Name", "Category", "Cost Price", "Selling Price", "Quantity"];
+    const headers = Object.keys(rows[0] || {});
+    const missing = required.filter((h) => !headers.includes(h));
+    if (missing.length) {
+      throw new Error(`Missing Excel column${missing.length > 1 ? "s" : ""}: ${missing.join(", ")}.`);
+    }
+
+    const existingNames = new Set(inventory.map((p) => norm(p.name)));
+    const seenInFile = new Set();
+    const newProducts = [];
+    let skipped = 0;
+    let invalid = 0;
+
+    for (const row of rows) {
+      const name = String(row["Product Name"] || "").trim();
+      const key = norm(name);
+      const price = Number(row["Selling Price"] || 0);
+      const cost = Number(row["Cost Price"] || 0);
+      const quantity = Number(row["Quantity"] || 0);
+
+      if (!name || !Number.isFinite(price) || !Number.isFinite(cost) || !Number.isFinite(quantity) || quantity < 0) {
+        invalid++;
+        continue;
+      }
+
+      if (existingNames.has(key) || seenInFile.has(key)) {
+        skipped++;
+        continue;
+      }
+
+      seenInFile.add(key);
+      newProducts.push({
+        name,
+        category: normalizeImportCategory(row["Category"]),
+        department: "kitchen",
+        price,
+        cost_price: cost,
+        quantity: Math.trunc(quantity),
+        low_stock_threshold: 5,
+        is_active: true,
+        created_by: adminCtx.user.id,
+        updated_at: new Date().toISOString(),
+      });
+    }
+
+    if (!newProducts.length) {
+      notify(`Nothing new to import. ${skipped} duplicate(s) skipped${invalid ? ` and ${invalid} invalid row(s) ignored` : ""}.`, "info");
+      return;
+    }
+
+    const ok = confirm(
+      `Import ${newProducts.length} new Kitchen product(s)?\n\n` +
+      `${skipped} duplicate(s) will be skipped.` +
+      `${invalid ? `\n${invalid} invalid row(s) will be ignored.` : ""}`
+    );
+    if (!ok) return;
+
+    const { error } = await SELAccess.db().from("inventory_items").insert(newProducts);
+    if (error) throw error;
+
+    await loadInventory();
+    notify(`Excel import complete: ${newProducts.length} added, ${skipped} duplicate(s) skipped${invalid ? `, ${invalid} invalid row(s) ignored` : ""}.`);
+  } catch (err) {
+    notify(err.message || "Could not import the Excel file.", "error");
+  } finally {
+    if (input) input.value = "";
+  }
+}
+
 // -----------------------------------------------------------------------------
 // Audits
 // -----------------------------------------------------------------------------
@@ -1461,7 +1561,6 @@ function renderUsers() {
 
 function permissionGrid(selected = [], disableAll = false) {
   return Object.entries(SELAccess.labels)
-    .filter(([key]) => key !== "admin_dashboard")
     .map(
       ([key, label]) => `
     <label class="permission-check"><input type="checkbox" value="${key}" ${selected.includes(key) ? "checked" : ""} ${disableAll ? "disabled" : ""}><span><strong>${esc(label)}</strong><small>${esc(key)}</small></span></label>`,
@@ -1547,9 +1646,7 @@ function openAccessEditor(id) {
   q("cancelAccess").onclick = closeDrawer;
   q("saveAccess").onclick = async () => {
     const selected = new Set(checkedPermissions(q("editPermissionGrid")));
-    const keys = Object.keys(SELAccess.labels).filter(
-      (k) => k !== "admin_dashboard",
-    );
+    const keys = Object.keys(SELAccess.labels);
     const rows = keys.map((k) => ({
       user_id: id,
       permission_key: k,
@@ -1634,6 +1731,8 @@ function bindEvents() {
   q("reloadInventory").onclick = loadInventory;
   q("inventorySearch").oninput = renderInventory;
   q("inventoryCategoryFilter").onchange = renderInventory;
+  if (q("importInventoryExcel")) q("importInventoryExcel").onclick = () => q("inventoryExcelInput")?.click();
+  if (q("inventoryExcelInput")) q("inventoryExcelInput").onchange = importKitchenInventoryExcel;
   q("auditType").onchange = loadAudit;
   q("auditSearch").oninput = renderAudit;
   q("reloadAudit").onclick = loadAudit;
@@ -1666,3 +1765,5 @@ window.openProductEditor = openProductEditor;
 window.openStockAdder = openStockAdder;
 window.deleteProduct = deleteProduct;
 window.openAccessEditor = openAccessEditor;
+
+window.importKitchenInventoryExcel = importKitchenInventoryExcel;

@@ -1,0 +1,17 @@
+SEL Center Combined Inventory + Sales Patch
+
+Included fixes/features:
+- Restores Super Admin-only Reduce Stock button and modal.
+- Preserves Add Stock, Edit and Delete inventory actions.
+- Adds visible Import Excel button beside New Product.
+- Adds Excel importer with duplicate skipping and column validation.
+- Adds Total Sales + Transactions summary to Sales Management; totals follow search/type filters.
+- Keeps admin_dashboard permission assignable in Users & Access.
+
+Files to replace:
+- frontend/operations-admin.html
+- frontend/dist/operations-admin.html
+- frontend/js/operations-admin.js
+- frontend/dist/js/operations-admin.js
+
+No SQL migration is required by this UI patch. The existing reduce_inventory_stock RPC must already be installed in Supabase.

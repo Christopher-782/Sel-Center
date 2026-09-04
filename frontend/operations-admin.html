@@ -110,6 +110,10 @@
             <select id="salesTypeFilter" class="compact-control"><option value="all">All sale types</option><option value="kitchen">Kitchen</option><option value="ticket">Ticket</option></select>
             <button class="btn btn-secondary" id="reloadSales"><i class="fa-solid fa-rotate"></i></button>
           </div>
+          <div class="metric-row compact-metrics sales-summary-metrics">
+            <div class="metric-cell"><span>Total Sales</span><strong id="salesTotalValue">₦0.00</strong><small>Current sales filter</small></div>
+            <div class="metric-cell"><span>Transactions</span><strong id="salesTotalCount">0</strong><small>Matching sales records</small></div>
+          </div>
           <section class="surface flush">
             <div class="table-wrap"><table class="table modern-table"><thead><tr><th>Reference</th><th>Date</th><th>Type</th><th>Items</th><th>Payment</th><th>Total</th><th>Sold By</th><th></th></tr></thead><tbody id="salesRows"></tbody></table></div>
           </section>
@@ -201,7 +205,14 @@
 
         <!-- Kitchen Inventory -->
         <section class="admin-view" id="panel-inventory">
-          <div class="view-toolbar"><div><h2>Kitchen Inventory</h2><p>Manage Drinks, Meals and Desserts with cost and stock controls.</p></div><button class="btn btn-primary" id="newProduct"><i class="fa-solid fa-plus"></i> New Product</button></div>
+          <div class="view-toolbar">
+            <div><h2>Kitchen Inventory</h2><p>Manage Drinks, Meals and Desserts with cost and stock controls.</p></div>
+            <div class="row-actions inventory-toolbar-actions">
+              <button class="btn btn-secondary" id="importInventoryExcel" type="button"><i class="fa-solid fa-file-excel"></i> Import Excel</button>
+              <input id="inventoryExcelInput" type="file" accept=".xlsx,.xls" hidden>
+              <button class="btn btn-primary" id="newProduct" type="button"><i class="fa-solid fa-plus"></i> New Product</button>
+            </div>
+          </div>
           <div class="filter-bar"><input id="inventorySearch" class="search-input" placeholder="Search name, SKU or category…"><select id="inventoryCategoryFilter" class="compact-control"><option value="all">All categories</option><option value="Drinks">Drinks</option><option value="Meals">Meals</option><option value="Desserts">Desserts</option></select><button class="btn btn-secondary" id="reloadInventory"><i class="fa-solid fa-rotate"></i></button></div>
           <section class="surface flush"><div class="table-wrap"><table class="table modern-table"><thead><tr><th>Name</th><th>SKU</th><th>Category</th><th>Price</th><th>Cost</th><th>Qty</th><th>Status</th><th></th></tr></thead><tbody id="inventoryRows"></tbody></table></div></section>
         </section>
@@ -232,7 +243,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabaseClient.js"></script>
   <script src="js/access-control.js"></script>
-  <script src="js/operations-admin.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="js/operations-admin.js"></script>
   <script src="js/site-dynamic.js"></script>
 </body>
 </html>
