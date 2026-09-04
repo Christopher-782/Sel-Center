@@ -732,6 +732,7 @@ function renderInventory() {
         <td><span class="badge ${p.is_active ? 'green' : 'red'}">${p.is_active ? 'Active' : 'Inactive'}</span></td>
         <td><div class="row-actions">
           <button class="action-btn stock-add" type="button" title="Add stock" data-product-stock="${esc(String(p.id))}"><i class="fa-solid fa-boxes-stacked"></i></button>
+          ${((localStorage.getItem("userRole")||"").toLowerCase()==="super_admin") ? `<button class="action-btn danger" type="button" title="Reduce stock" data-product-reduce="${esc(String(p.id))}"><i class="fa-solid fa-minus"></i></button>` : ""}
           <button class="action-btn" type="button" title="Edit product" data-product-edit="${esc(String(p.id))}"><i class="fa-solid fa-pen"></i></button>
           <button class="action-btn danger" type="button" title="Delete product" data-product-delete="${esc(String(p.id))}"><i class="fa-solid fa-trash"></i></button>
         </div></td>
@@ -741,6 +742,75 @@ function renderInventory() {
   q('inventoryRows').querySelectorAll('[data-product-stock]').forEach(btn => btn.onclick = () => openStockAdder(btn.dataset.productStock));
   q('inventoryRows').querySelectorAll('[data-product-edit]').forEach(btn => btn.onclick = () => openProductEditor(btn.dataset.productEdit));
   q('inventoryRows').querySelectorAll('[data-product-delete]').forEach(btn => btn.onclick = () => deleteProduct(btn.dataset.productDelete));
+}
+
+
+function openStockReducer(id) {
+  const p = findInventoryProduct(id);
+  if (!p) return notify("Product could not be found.", "error");
+
+  const current = Number(p.quantity || 0);
+
+  openDrawer(
+    "Reduce Kitchen Stock",
+    "Remove stock with a reason. This action is restricted to Super Admin.",
+    `
+    <form id="stockReduceForm" class="drawer-form">
+      <input id="reduceProductId" type="hidden" value="${esc(String(p.id))}">
+      <div class="stock-product-card">
+        <div><span>Product</span><strong>${esc(p.name)}</strong></div>
+        <div class="stock-current"><span>Current Stock</span><strong>${current.toLocaleString("en-NG")}</strong></div>
+      </div>
+      <div class="field">
+        <label>Quantity to Remove</label>
+        <input id="stockReduceQty" type="number" min="1" max="${current}" required>
+      </div>
+      <div class="field">
+        <label>Reason</label>
+        <select id="stockReduceReason">
+          <option value="Damaged goods">Damaged goods</option>
+          <option value="Expired stock">Expired stock</option>
+          <option value="Stock adjustment">Stock adjustment</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Notes</label>
+        <input id="stockReduceNote" maxlength="180">
+      </div>
+      <div class="drawer-actions">
+        <button class="btn btn-danger" type="submit">Reduce Stock</button>
+        <button class="btn btn-secondary" type="button" id="cancelStockReduce">Cancel</button>
+      </div>
+    </form>`
+  );
+
+  q("stockReduceForm").onsubmit = reduceInventoryStock;
+  q("cancelStockReduce").onclick = closeDrawer;
+}
+
+async function reduceInventoryStock(e){
+  e.preventDefault();
+
+  const quantity = Number(q("stockReduceQty").value || 0);
+  const id = q("reduceProductId").value;
+  const reason = q("stockReduceReason").value;
+  const note = q("stockReduceNote").value.trim();
+
+  if(!Number.isInteger(quantity) || quantity <= 0)
+    return notify("Enter a valid quantity.", "error");
+
+  const {error} = await SELAccess.db().rpc("reduce_inventory_stock", {
+    p_product_id: id,
+    p_quantity: quantity,
+    p_reason: `${reason}${note ? " - " + note : ""}`
+  });
+
+  if(error) return notify(error.message, "error");
+
+  closeDrawer();
+  notify("Stock reduced successfully.");
+  await loadInventory();
 }
 
 function findInventoryProduct(id) {
@@ -890,7 +960,7 @@ async function loadUserData() {
 }
 
 function effectivePermissions(user) {
-  if (norm(user.role) === 'admin') return Object.keys(SELAccess.labels);
+  if (norm(user.role) === 'admin' || norm(user.role) === 'super_admin') return Object.keys(SELAccess.labels);
   const base = rolePermissions.filter(r => r.role === user.role).map(r => r.permission_key);
   const over = userOverrides.filter(o => o.user_id === user.id);
   const set = new Set(base); over.forEach(o => o.granted ? set.add(o.permission_key) : set.delete(o.permission_key)); return [...set];
@@ -899,7 +969,7 @@ function effectivePermissions(user) {
 function renderUsers() {
   q('userRows').innerHTML = users.length ? users.map(u => {
     const perms = effectivePermissions(u);
-    return `<tr><td><strong>${esc(u.full_name || '—')}</strong></td><td>${esc(u.email || '—')}</td><td><span class="badge ${norm(u.role) === 'admin' ? 'blue' : ''}">${esc(u.role || '—')}</span></td><td>${perms.length} permissions</td><td><button class="btn btn-secondary btn-small" onclick="openAccessEditor('${u.id}')"><i class="fa-solid fa-key"></i> Manage Access</button></td></tr>`;
+    return `<tr><td><strong>${esc(u.full_name || '—')}</strong></td><td>${esc(u.email || '—')}</td><td><span class="badge ${(norm(u.role) === 'admin' || norm(u.role) === 'super_admin') ? 'blue' : ''}">${esc(u.role || '—')}</span></td><td>${perms.length} permissions</td><td><button class="btn btn-secondary btn-small" onclick="openAccessEditor('${u.id}')"><i class="fa-solid fa-key"></i> Manage Access</button></td></tr>`;
   }).join('') : '<tr><td colspan="5" class="empty">No user profiles found.</td></tr>';
 }
 
@@ -918,7 +988,7 @@ function openCreateUser() {
     <form id="createUserForm" class="drawer-form"><div class="field"><label>Full Name</label><input id="newUserName" required></div><div class="field"><label>Email</label><input id="newUserEmail" type="email" required></div><div class="form-grid"><div class="field"><label>Temporary Password</label><input id="newUserPassword" type="password" minlength="8" required></div><div class="field"><label>Role</label><select id="newUserRole"><option value="sale_associate">Sale Associate</option><option value="manager">Manager</option><option value="admin">Admin</option></select></div></div><label class="section-label">Assigned Access</label><div class="permission-grid" id="createPermissionGrid">${permissionGrid(roleDefaultPermissions('sale_associate'))}</div><div class="drawer-actions"><button class="btn btn-primary" type="submit"><i class="fa-solid fa-user-plus"></i> Create User</button><button class="btn btn-secondary" type="button" id="cancelUser">Cancel</button></div></form>`);
   q('newUserRole').onchange = e => {
     const role = e.target.value;
-    q('createPermissionGrid').innerHTML = permissionGrid(role === 'admin' ? Object.keys(SELAccess.labels) : roleDefaultPermissions(role), role === 'admin');
+    q('createPermissionGrid').innerHTML = permissionGrid((role === 'admin' || role === 'super_admin') ? Object.keys(SELAccess.labels) : roleDefaultPermissions(role), role === 'admin');
   };
   q('createUserForm').onsubmit = createUser; q('cancelUser').onclick = closeDrawer;
 }
@@ -936,9 +1006,9 @@ async function createUser(e) {
 
 function openAccessEditor(id) {
   const u = users.find(x => x.id === id); if (!u) return;
-  const isAdmin = norm(u.role) === 'admin';
+  const isAdmin = norm(u.role) === 'admin' || norm(u.role) === 'super_admin';
   openDrawer('Manage Access', `${u.full_name || u.email} · ${u.role}`, `
-    ${isAdmin ? '<div class="alert alert-info">Administrators always retain every permission, including access to this dashboard.</div>' : ''}
+    ${isAdmin ? '<div class="alert alert-info">Administrators and Super Administrators always retain every permission, including access to this dashboard.</div>' : ''}
     <div class="permission-grid" id="editPermissionGrid">${permissionGrid(effectivePermissions(u), isAdmin)}</div>
     <div class="drawer-actions"><button class="btn btn-primary" id="saveAccess" ${isAdmin ? 'disabled' : ''}>Save Access</button><button class="btn btn-secondary" id="cancelAccess">Cancel</button></div>`);
   q('cancelAccess').onclick = closeDrawer;
