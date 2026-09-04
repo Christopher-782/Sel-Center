@@ -261,3 +261,6 @@ If migrations 001-007 are already installed, run only:
 `database/008_gate_entry_admin_crud.sql`
 
 Then redeploy the contents of `frontend/dist`. No Edge Function redeployment is required.
+
+## Kitchen Inventory stock replenishment (migration 009)
+Run `database/009_professional_inventory_stock.sql` after migration 008. Existing products are preserved. The Admin Kitchen Inventory page now uses a dedicated **Add Stock** action instead of editing existing quantity directly. Stock additions are atomic and stored in `inventory_stock_movements` with before/after balances, quantity added, note, user, and timestamp. Existing UUID-style inventory IDs are handled as strings throughout the Admin CRUD flow.

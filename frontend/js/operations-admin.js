@@ -716,40 +716,142 @@ function renderInventory() {
   const search = norm(q('inventorySearch').value);
   const cat = q('inventoryCategoryFilter').value;
   const rows = inventory.filter(p => (cat === 'all' || p.category === cat) && (!search || norm(`${p.name} ${p.sku} ${p.category}`).includes(search)));
-  q('inventoryRows').innerHTML = rows.length ? rows.map(p => `
-    <tr><td><strong>${esc(p.name)}</strong></td><td>${esc(p.sku || '—')}</td><td>${esc(p.category || '—')}</td><td>${money(p.price)}</td><td>${money(p.cost_price || 0)}</td><td><strong>${Number(p.quantity || 0).toLocaleString('en-NG')}</strong></td><td><span class="badge ${p.is_active ? 'green' : 'red'}">${p.is_active ? 'Active' : 'Inactive'}</span></td><td><div class="row-actions"><button class="action-btn" onclick="openProductEditor(${p.id})"><i class="fa-solid fa-pen"></i></button><button class="action-btn danger" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button></div></td></tr>
-  `).join('') : '<tr><td colspan="8" class="empty">No kitchen products found.</td></tr>';
+  q('inventoryRows').innerHTML = rows.length ? rows.map(p => {
+    const qty = Number(p.quantity || 0);
+    const low = Number(p.low_stock_threshold || 0);
+    const stockClass = qty <= 0 ? 'out' : qty <= low ? 'low' : 'ok';
+    const stockLabel = qty <= 0 ? 'Out of stock' : qty <= low ? 'Low stock' : 'In stock';
+    return `
+      <tr>
+        <td><strong>${esc(p.name)}</strong></td>
+        <td>${esc(p.sku || '—')}</td>
+        <td>${esc(p.category || '—')}</td>
+        <td>${money(p.price)}</td>
+        <td>${money(p.cost_price || 0)}</td>
+        <td><div class="inventory-qty"><strong>${qty.toLocaleString('en-NG')}</strong><span class="inventory-stock-state ${stockClass}">${stockLabel}</span></div></td>
+        <td><span class="badge ${p.is_active ? 'green' : 'red'}">${p.is_active ? 'Active' : 'Inactive'}</span></td>
+        <td><div class="row-actions">
+          <button class="action-btn stock-add" type="button" title="Add stock" data-product-stock="${esc(String(p.id))}"><i class="fa-solid fa-boxes-stacked"></i></button>
+          <button class="action-btn" type="button" title="Edit product" data-product-edit="${esc(String(p.id))}"><i class="fa-solid fa-pen"></i></button>
+          <button class="action-btn danger" type="button" title="Delete product" data-product-delete="${esc(String(p.id))}"><i class="fa-solid fa-trash"></i></button>
+        </div></td>
+      </tr>`;
+  }).join('') : '<tr><td colspan="8" class="empty">No kitchen products found.</td></tr>';
+
+  q('inventoryRows').querySelectorAll('[data-product-stock]').forEach(btn => btn.onclick = () => openStockAdder(btn.dataset.productStock));
+  q('inventoryRows').querySelectorAll('[data-product-edit]').forEach(btn => btn.onclick = () => openProductEditor(btn.dataset.productEdit));
+  q('inventoryRows').querySelectorAll('[data-product-delete]').forEach(btn => btn.onclick = () => deleteProduct(btn.dataset.productDelete));
+}
+
+function findInventoryProduct(id) {
+  return inventory.find(x => String(x.id) === String(id));
 }
 
 function openProductEditor(id = null) {
-  const p = id ? inventory.find(x => Number(x.id) === Number(id)) : null;
-  openDrawer(p ? 'Edit Kitchen Product' : 'New Kitchen Product', 'Manage pricing, cost, category and stock.', `
-    <form id="productForm" class="drawer-form"><input id="productId" type="hidden" value="${p?.id || ''}">
+  const p = id ? findInventoryProduct(id) : null;
+  openDrawer(p ? 'Edit Kitchen Product' : 'New Kitchen Product', p ? 'Update product details. Use Add Stock for replenishment.' : 'Create a Kitchen product and set its opening stock.', `
+    <form id="productForm" class="drawer-form"><input id="productId" type="hidden" value="${esc(String(p?.id || ''))}">
       <div class="field"><label>Product Name</label><input id="productName" required value="${esc(p?.name || '')}"></div>
-      <div class="form-grid"><div class="field"><label>SKU</label><input id="productSku" value="${esc(p?.sku || '')}"></div><div class="field"><label>Category</label><select id="productCategory"><option value="Drinks" ${p?.category === 'Drinks' ? 'selected' : ''}>Drinks</option><option value="Meals" ${p?.category === 'Meals' ? 'selected' : ''}>Meals</option><option value="Desserts" ${p?.category === 'Desserts' ? 'selected' : ''}>Desserts</option></select></div><div class="field"><label>Selling Price (₦)</label><input id="productPrice" type="number" min="0" step="0.01" required value="${Number(p?.price || 0)}"></div><div class="field"><label>Cost Price (₦)</label><input id="productCost" type="number" min="0" step="0.01" value="${Number(p?.cost_price || 0)}"></div><div class="field"><label>Quantity</label><input id="productQty" type="number" min="0" required value="${Number(p?.quantity || 0)}"></div><div class="field"><label>Low Stock Alert</label><input id="productLow" type="number" min="0" value="${Number(p?.low_stock_threshold || 5)}"></div></div>
+      <div class="form-grid">
+        <div class="field"><label>SKU</label><input id="productSku" value="${esc(p?.sku || '')}"></div>
+        <div class="field"><label>Category</label><select id="productCategory"><option value="Drinks" ${p?.category === 'Drinks' ? 'selected' : ''}>Drinks</option><option value="Meals" ${p?.category === 'Meals' ? 'selected' : ''}>Meals</option><option value="Desserts" ${p?.category === 'Desserts' ? 'selected' : ''}>Desserts</option></select></div>
+        <div class="field"><label>Selling Price (₦)</label><input id="productPrice" type="number" min="0" step="0.01" required value="${Number(p?.price || 0)}"></div>
+        <div class="field"><label>Cost Price (₦)</label><input id="productCost" type="number" min="0" step="0.01" value="${Number(p?.cost_price || 0)}"></div>
+        ${p ? `<div class="field"><label>Current Stock</label><div class="stock-readonly"><strong>${Number(p.quantity || 0).toLocaleString('en-NG')}</strong><span>Use Add Stock to replenish this product.</span></div></div>` : `<div class="field"><label>Opening Quantity</label><input id="productQty" type="number" min="0" step="1" required value="0"></div>`}
+        <div class="field"><label>Low Stock Alert</label><input id="productLow" type="number" min="0" step="1" value="${Number(p?.low_stock_threshold || 5)}"></div>
+      </div>
       <div class="field"><label>Description</label><textarea id="productDescription" rows="3">${esc(p?.description || '')}</textarea></div>
       <label class="toggle-row"><input id="productActive" type="checkbox" ${p?.is_active === false ? '' : 'checked'}><span>Product is active and available in Kitchen POS</span></label>
-      <div class="drawer-actions"><button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Product</button><button class="btn btn-secondary" type="button" id="cancelProduct">Cancel</button></div>
+      <div class="drawer-actions"><button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Product</button>${p ? `<button class="btn btn-success" type="button" id="addStockFromEditor"><i class="fa-solid fa-boxes-stacked"></i> Add Stock</button>` : ''}<button class="btn btn-secondary" type="button" id="cancelProduct">Cancel</button></div>
     </form>`);
-  q('productForm').onsubmit = saveProduct; q('cancelProduct').onclick = closeDrawer;
+  q('productForm').onsubmit = saveProduct;
+  q('cancelProduct').onclick = closeDrawer;
+  if (p) q('addStockFromEditor').onclick = () => openStockAdder(p.id);
 }
 
 async function saveProduct(e) {
-  e.preventDefault(); const btn = e.submitter; btn.disabled = true;
+  e.preventDefault();
+  const btn = e.submitter; btn.disabled = true;
   const id = q('productId').value;
-  const payload = { name: q('productName').value.trim(), sku: q('productSku').value.trim() || null, category: q('productCategory').value, department: 'kitchen', price: Number(q('productPrice').value || 0), cost_price: Number(q('productCost').value || 0), quantity: Number(q('productQty').value || 0), low_stock_threshold: Number(q('productLow').value || 0), description: q('productDescription').value.trim() || null, is_active: q('productActive').checked, updated_at: new Date().toISOString() };
-  const query = id ? SELAccess.db().from('inventory_items').update(payload).eq('id', Number(id)) : SELAccess.db().from('inventory_items').insert(payload);
-  const { error } = await query; btn.disabled = false;
+  const payload = {
+    name: q('productName').value.trim(),
+    sku: q('productSku').value.trim() || null,
+    category: q('productCategory').value,
+    department: 'kitchen',
+    price: Number(q('productPrice').value || 0),
+    cost_price: Number(q('productCost').value || 0),
+    low_stock_threshold: Number(q('productLow').value || 0),
+    description: q('productDescription').value.trim() || null,
+    is_active: q('productActive').checked,
+    updated_at: new Date().toISOString()
+  };
+  if (!id) payload.quantity = Number(q('productQty').value || 0);
+  const query = id
+    ? SELAccess.db().from('inventory_items').update(payload).eq('id', id)
+    : SELAccess.db().from('inventory_items').insert(payload);
+  const { error } = await query;
+  btn.disabled = false;
   if (error) return notify(error.message, 'error');
-  closeDrawer(); notify(id ? 'Product updated.' : 'Product created.'); await loadInventory();
+  closeDrawer();
+  notify(id ? 'Product details updated.' : 'Product created successfully.');
+  await loadInventory();
+}
+
+function openStockAdder(id) {
+  const p = findInventoryProduct(id);
+  if (!p) return notify('Product could not be found. Refresh inventory and try again.', 'error');
+  const current = Number(p.quantity || 0);
+  openDrawer('Add Kitchen Stock', 'Record a new stock delivery without overwriting the existing quantity.', `
+    <form id="stockAddForm" class="drawer-form">
+      <input id="stockProductId" type="hidden" value="${esc(String(p.id))}">
+      <div class="stock-product-card">
+        <div><span>Product</span><strong>${esc(p.name)}</strong><small>${esc(p.sku || p.category || 'Kitchen inventory')}</small></div>
+        <div class="stock-current"><span>Current Stock</span><strong id="stockCurrentQty">${current.toLocaleString('en-NG')}</strong></div>
+      </div>
+      <div class="field"><label>Quantity to Add</label><input id="stockAddQty" type="number" min="1" step="1" inputmode="numeric" required placeholder="e.g. 24"></div>
+      <div class="stock-balance-preview"><span>New Stock Balance</span><strong id="stockNewBalance">${current.toLocaleString('en-NG')}</strong></div>
+      <div class="field"><label>Delivery / Restock Note <small>(optional)</small></label><input id="stockAddNote" maxlength="180" placeholder="e.g. Supplier delivery INV-1042"></div>
+      <div class="alert alert-info"><i class="fa-solid fa-circle-info"></i> Stock additions are recorded separately for audit purposes. Sales will continue reducing stock automatically.</div>
+      <div class="drawer-actions"><button class="btn btn-primary" type="submit"><i class="fa-solid fa-plus"></i> Add to Stock</button><button class="btn btn-secondary" type="button" id="cancelStockAdd">Cancel</button></div>
+    </form>`);
+  const qtyInput = q('stockAddQty');
+  qtyInput.oninput = () => {
+    const add = Math.max(0, Number(qtyInput.value || 0));
+    q('stockNewBalance').textContent = (current + add).toLocaleString('en-NG');
+  };
+  q('stockAddForm').onsubmit = addInventoryStock;
+  q('cancelStockAdd').onclick = closeDrawer;
+  setTimeout(() => qtyInput.focus(), 60);
+}
+
+async function addInventoryStock(e) {
+  e.preventDefault();
+  const btn = e.submitter;
+  const id = q('stockProductId').value;
+  const quantity = Number(q('stockAddQty').value || 0);
+  const note = q('stockAddNote').value.trim() || null;
+  if (!Number.isInteger(quantity) || quantity <= 0) return notify('Enter a whole quantity greater than zero.', 'error');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding Stock…';
+  const { data, error } = await SELAccess.db().rpc('add_inventory_stock', { p_product_id: id, p_quantity: quantity, p_note: note });
+  if (error) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-plus"></i> Add to Stock';
+    return notify(error.message, 'error');
+  }
+  const result = Array.isArray(data) ? data[0] : data;
+  closeDrawer();
+  notify(`Stock added successfully. New balance: ${Number(result?.new_quantity ?? 0).toLocaleString('en-NG')}.`);
+  await loadInventory();
 }
 
 async function deleteProduct(id) {
-  const p = inventory.find(x => Number(x.id) === Number(id));
+  const p = findInventoryProduct(id);
   if (!p || !confirm(`Delete ${p.name}? Historical sale records remain available.`)) return;
-  const { error } = await SELAccess.db().from('inventory_items').delete().eq('id', id);
+  const { error } = await SELAccess.db().from('inventory_items').delete().eq('id', String(id));
   if (error) return notify(error.message, 'error');
-  notify('Product deleted.'); await loadInventory();
+  notify('Product deleted.');
+  await loadInventory();
 }
 
 // -----------------------------------------------------------------------------
@@ -889,5 +991,6 @@ window.deleteTicket = deleteTicket;
 window.openExpenseEditor = openExpenseEditor;
 window.deleteExpense = deleteExpense;
 window.openProductEditor = openProductEditor;
+window.openStockAdder = openStockAdder;
 window.deleteProduct = deleteProduct;
 window.openAccessEditor = openAccessEditor;
