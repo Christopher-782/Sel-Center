@@ -1,10 +1,8 @@
--- SEL Center role permission update
-insert into public.permissions(permission_key, description)
-values
-('view_profit_reports','View gross profit and net profit reports'),
-('manage_expenses','Record and manage operating expenses'),
-('edit_sales','Edit sales records')
-on conflict (permission_key) do nothing;
-
--- Existing admin role keeps operational access but not profit visibility.
--- Assign view_profit_reports only to super admin users.
+INSERT INTO public.permissions(permission_key, label)
+VALUES
+('view_profit_reports', 'View Gross Profit and Net Profit Reports'),
+('manage_expenses', 'Create and Manage Expenses'),
+('edit_sales', 'Edit Sales Transactions'),
+('reduce_stock', 'Reduce Inventory Stock'),
+('view_stock_history', 'View Inventory Stock History')
+ON CONFLICT (permission_key) DO NOTHING;

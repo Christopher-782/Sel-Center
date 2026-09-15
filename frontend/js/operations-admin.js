@@ -447,19 +447,69 @@ async function deleteGateEntry(id) {
 // -----------------------------------------------------------------------------
 // Sales CRUD
 // -----------------------------------------------------------------------------
+function selectedSalesDayBounds() {
+  const value = q("salesDayFilter")?.value;
+  if (!value) return null;
+
+  const start = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(start.getTime())) return null;
+
+  const end = new Date(start);
+  end.setDate(end.getDate() + 1);
+  return { start, end };
+}
+
 async function loadSales(render = true) {
-  const { data, error } = await SELAccess.db()
-    .from("sales")
-    .select(
-      "id,sale_reference,payment_mode,total_amount,cash_received,change_given,sold_by,sale_type,sale_date,created_at,sale_items(id,product_type,product_id,item_name,quantity,unit_price,unit_cost,total_price)",
-    )
-    .order("sale_date", { ascending: false })
-    .limit(1000);
-  if (error) {
-    if (render) notify(error.message, "error");
-    return;
+  const columns =
+    "id,sale_reference,payment_mode,total_amount,cash_received,change_given,sold_by,sale_type,sale_date,created_at,sale_items(id,product_type,product_id,item_name,quantity,unit_price,unit_cost,total_price)";
+  const dayBounds = selectedSalesDayBounds();
+
+  if (dayBounds) {
+    const startIso = dayBounds.start.toISOString();
+    const endIso = dayBounds.end.toISOString();
+    const [datedSales, legacySales] = await Promise.all([
+      SELAccess.db()
+        .from("sales")
+        .select(columns)
+        .gte("sale_date", startIso)
+        .lt("sale_date", endIso)
+        .order("sale_date", { ascending: false })
+        .limit(5000),
+      SELAccess.db()
+        .from("sales")
+        .select(columns)
+        .is("sale_date", null)
+        .gte("created_at", startIso)
+        .lt("created_at", endIso)
+        .order("created_at", { ascending: false })
+        .limit(5000),
+    ]);
+
+    const error = datedSales.error || legacySales.error;
+    if (error) {
+      if (render) notify(error.message, "error");
+      return;
+    }
+
+    sales = [...(datedSales.data || []), ...(legacySales.data || [])].sort(
+      (a, b) =>
+        new Date(b.sale_date || b.created_at).getTime() -
+        new Date(a.sale_date || a.created_at).getTime(),
+    );
+  } else {
+    const { data, error } = await SELAccess.db()
+      .from("sales")
+      .select(columns)
+      .order("sale_date", { ascending: false })
+      .limit(1000);
+
+    if (error) {
+      if (render) notify(error.message, "error");
+      return;
+    }
+    sales = data || [];
   }
-  sales = data || [];
+
   if (render) await renderSales();
 }
 
@@ -1141,7 +1191,7 @@ function renderInventory() {
         <td><span class="badge ${p.is_active ? "green" : "red"}">${p.is_active ? "Active" : "Inactive"}</span></td>
         <td><div class="row-actions">
           <button class="action-btn stock-add" type="button" title="Add stock" data-product-stock="${esc(String(p.id))}"><i class="fa-solid fa-boxes-stacked"></i></button>
-          ${((localStorage.getItem("userRole")||"").toLowerCase()==="super_admin") ? `<button class="action-btn danger" type="button" title="Reduce stock" data-product-reduce="${esc(String(p.id))}"><i class="fa-solid fa-minus"></i></button>` : ""}
+          ${canReduceStock() ? `<button class="action-btn danger" type="button" title="Reduce stock" aria-label="Reduce stock for ${esc(p.name)}" data-product-reduce="${esc(String(p.id))}"><i class="fa-solid fa-minus"></i></button>` : ""}
           <button class="action-btn" type="button" title="Edit product" data-product-edit="${esc(String(p.id))}"><i class="fa-solid fa-pen"></i></button>
           <button class="action-btn danger" type="button" title="Delete product" data-product-delete="${esc(String(p.id))}"><i class="fa-solid fa-trash"></i></button>
         </div></td>
@@ -1173,7 +1223,18 @@ function renderInventory() {
 }
 
 
+function canReduceStock() {
+  return Boolean(
+    adminCtx &&
+      (adminCtx.role === "super_admin" ||
+        adminCtx.permissions?.includes("reduce_stock")),
+  );
+}
+
 function openStockReducer(id) {
+  if (!canReduceStock())
+    return notify("You do not have permission to reduce stock.", "error");
+
   const p = findInventoryProduct(id);
   if (!p) return notify("Product could not be found.", "error");
 
@@ -1181,7 +1242,7 @@ function openStockReducer(id) {
 
   openDrawer(
     "Reduce Kitchen Stock",
-    "Remove stock with a reason. This action is restricted to Super Admin.",
+    "Remove stock with a reason. Only users with Reduce Inventory Stock permission can perform this action.",
     `
     <form id="stockReduceForm" class="drawer-form">
       <input id="reduceProductId" type="hidden" value="${esc(String(p.id))}">
@@ -1225,8 +1286,17 @@ async function reduceInventoryStock(e){
   const reason = q("stockReduceReason").value;
   const note = q("stockReduceNote").value.trim();
 
+  if (!canReduceStock())
+    return notify("You do not have permission to reduce stock.", "error");
+
   if(!Number.isInteger(quantity) || quantity <= 0)
     return notify("Enter a valid quantity.", "error");
+
+  const product = findInventoryProduct(id);
+  const current = Number(product?.quantity || 0);
+  if (!product) return notify("Product could not be found.", "error");
+  if (quantity > current)
+    return notify(`You cannot remove more than the current stock (${current.toLocaleString("en-NG")}).`, "error");
 
   const {error} = await SELAccess.db().rpc("reduce_inventory_stock", {
     p_product_id: id,
@@ -1682,6 +1752,12 @@ function bindEvents() {
   q("reloadSales").onclick = loadSales;
   q("salesSearch").oninput = renderSales;
   q("salesTypeFilter").onchange = renderSales;
+  if (q("salesDayFilter")) q("salesDayFilter").onchange = () => loadSales();
+  if (q("clearSalesDay"))
+    q("clearSalesDay").onclick = () => {
+      q("salesDayFilter").value = "";
+      loadSales();
+    };
   q("newGateEntry").onclick = () => openGateEditor();
   q("reloadGateAdmin").onclick = loadGateAdmin;
   q("gateAdminSearch").oninput = renderGateAdmin;

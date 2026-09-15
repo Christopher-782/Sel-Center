@@ -105,10 +105,15 @@
             <div><h2>Sales Management</h2><p>Create, review, correct or delete Kitchen and Ticket sales.</p></div>
             <button class="btn btn-primary" id="newSale"><i class="fa-solid fa-plus"></i> New Sale</button>
           </div>
-          <div class="filter-bar">
+          <div class="filter-bar sales-filter-bar">
             <input id="salesSearch" class="search-input" placeholder="Search reference, item or payment…">
             <select id="salesTypeFilter" class="compact-control"><option value="all">All sale types</option><option value="kitchen">Kitchen</option><option value="ticket">Ticket</option></select>
-            <button class="btn btn-secondary" id="reloadSales"><i class="fa-solid fa-rotate"></i></button>
+            <div class="date-control sales-day-control">
+              <label for="salesDayFilter">Sales day</label>
+              <input id="salesDayFilter" type="date" aria-label="Filter sales by day">
+            </div>
+            <button class="btn btn-secondary" id="clearSalesDay" type="button" title="Show all recent sales"><i class="fa-solid fa-calendar-xmark"></i> Clear day</button>
+            <button class="btn btn-secondary" id="reloadSales" type="button" title="Reload sales"><i class="fa-solid fa-rotate"></i></button>
           </div>
           <div class="metric-row compact-metrics sales-summary-metrics">
             <div class="metric-cell"><span>Total Sales</span><strong id="salesTotalValue">₦0.00</strong><small>Current sales filter</small></div>
