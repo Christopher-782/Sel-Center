@@ -10,6 +10,11 @@ let rolePermissions = [];
 let audits = [];
 let saleDraftItems = [];
 let saleDraftType = "kitchen";
+let salesSellerNames = {};
+let salesCurrentPage = 1;
+let salesFullyLoaded = false;
+let salesLoading = false;
+const SALES_FETCH_PAGE_SIZE = 1000;
 
 const q = (id) => document.getElementById(id);
 const esc = (v) => SELAccess.esc(v);
@@ -445,91 +450,297 @@ async function deleteGateEntry(id) {
 }
 
 // -----------------------------------------------------------------------------
-// Sales CRUD
+// Sales CRUD + management reporting
 // -----------------------------------------------------------------------------
-function selectedSalesDayBounds() {
-  const value = q("salesDayFilter")?.value;
-  if (!value) return null;
+const SALES_REPORT_LOGO_URL =
+  "https://res.cloudinary.com/deoqw88yb/image/upload/f_png,q_auto/v1782220892/1sel_yar5yk.avif";
 
-  const start = new Date(`${value}T00:00:00`);
-  if (Number.isNaN(start.getTime())) return null;
+function formatSalesReportDate(value, options = {}) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("en-NG", {
+    day: "2-digit",
+    month: options.short ? "short" : "long",
+    year: "numeric",
+  });
+}
 
-  const end = new Date(start);
+function localDateKey(value = new Date()) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function selectedSalesDateBounds() {
+  const range = q("salesDateRange")?.value || "all";
+  if (range === "all") return null;
+  if (range === "today") return rangeBounds("today");
+  if (range === "week") return rangeBounds("week");
+  if (range === "month") return rangeBounds("month");
+
+  const startValue = q("salesStartDate")?.value;
+  const endValue = q("salesEndDate")?.value;
+  if (!startValue || !endValue)
+    throw new Error("Choose both the start and end dates for the custom sales range.");
+
+  const start = new Date(`${startValue}T00:00:00`);
+  const end = new Date(`${endValue}T00:00:00`);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()))
+    throw new Error("Choose a valid custom sales date range.");
+  if (end < start)
+    throw new Error("The custom sales end date cannot be before the start date.");
+
   end.setDate(end.getDate() + 1);
   return { start, end };
+}
+
+function buildSalesQuery(columns) {
+  return SELAccess.db().from("sales").select(columns);
+}
+
+async function fetchAllSalesPages(queryFactory) {
+  const rows = [];
+  let from = 0;
+
+  while (true) {
+    const to = from + SALES_FETCH_PAGE_SIZE - 1;
+    const { data, error } = await queryFactory().range(from, to);
+    if (error) throw error;
+
+    const page = data || [];
+    rows.push(...page);
+    if (page.length < SALES_FETCH_PAGE_SIZE) break;
+    from += SALES_FETCH_PAGE_SIZE;
+  }
+
+  return rows;
+}
+
+function saleQuantity(sale) {
+  return (sale.sale_items || []).reduce(
+    (sum, item) => sum + Number(item.quantity || 0),
+    0,
+  );
+}
+
+function filteredSalesRows() {
+  const search = norm(q("salesSearch")?.value);
+  const type = q("salesTypeFilter")?.value || "all";
+  const payment = q("salesPaymentFilter")?.value || "all";
+
+  return sales.filter((s) => {
+    const items = (s.sale_items || []).map((i) => i.item_name).join(" ");
+    const seller = salesSellerNames[s.sold_by] || "User";
+    const haystack = norm(
+      `${s.sale_reference} ${s.payment_mode} ${s.sale_type} ${seller} ${items}`,
+    );
+    return (
+      (type === "all" || s.sale_type === type) &&
+      (payment === "all" || norm(s.payment_mode) === payment) &&
+      (!search || haystack.includes(search))
+    );
+  });
+}
+
+function salesReportScopeLabel() {
+  const range = q("salesDateRange")?.value || "all";
+  if (range === "all") return "All recorded sales";
+
+  try {
+    const bounds = selectedSalesDateBounds();
+    if (!bounds) return "All recorded sales";
+    const inclusiveEnd = new Date(bounds.end);
+    inclusiveEnd.setDate(inclusiveEnd.getDate() - 1);
+
+    if (range === "today") return `Sales date: ${formatSalesReportDate(bounds.start)}`;
+    if (range === "month")
+      return `Sales period: ${bounds.start.toLocaleDateString("en-NG", { month: "long", year: "numeric" })}`;
+    return `Sales period: ${formatSalesReportDate(bounds.start)} to ${formatSalesReportDate(inclusiveEnd)}`;
+  } catch (_) {
+    return "Custom sales period";
+  }
+}
+
+function salesActualDateCoverage(rows) {
+  const dates = rows
+    .map((s) => new Date(s.sale_date || s.created_at))
+    .filter((d) => !Number.isNaN(d.getTime()))
+    .sort((a, b) => a.getTime() - b.getTime());
+  if (!dates.length) return "No dated sales";
+  const first = formatSalesReportDate(dates[0], { short: true });
+  const last = formatSalesReportDate(dates[dates.length - 1], { short: true });
+  return first === last ? first : `${first} to ${last}`;
+}
+
+function salesReportTotals(rows) {
+  const totalSales = rows.reduce(
+    (sum, s) => sum + Number(s.total_amount || 0),
+    0,
+  );
+  const paymentTotal = (modes) =>
+    rows.reduce(
+      (sum, s) =>
+        modes.includes(norm(s.payment_mode))
+          ? sum + Number(s.total_amount || 0)
+          : sum,
+      0,
+    );
+  const cashTotal = paymentTotal(["cash"]);
+  const cardTotal = paymentTotal(["card", "pos"]);
+  const transferTotal = paymentTotal(["transfer", "bank transfer"]);
+  const averageSale = rows.length ? totalSales / rows.length : 0;
+  return { totalSales, cashTotal, cardTotal, transferTotal, averageSale };
 }
 
 async function loadSales(render = true) {
   const columns =
     "id,sale_reference,payment_mode,total_amount,cash_received,change_given,sold_by,sale_type,sale_date,created_at,sale_items(id,product_type,product_id,item_name,quantity,unit_price,unit_cost,total_price)";
-  const dayBounds = selectedSalesDayBounds();
+  let dateBounds = null;
 
-  if (dayBounds) {
-    const startIso = dayBounds.start.toISOString();
-    const endIso = dayBounds.end.toISOString();
-    const [datedSales, legacySales] = await Promise.all([
-      SELAccess.db()
-        .from("sales")
-        .select(columns)
-        .gte("sale_date", startIso)
-        .lt("sale_date", endIso)
+  try {
+    dateBounds = selectedSalesDateBounds();
+  } catch (error) {
+    if (render) notify(error.message, "error");
+    return;
+  }
+
+  if (render) {
+    salesLoading = true;
+    salesFullyLoaded = false;
+    if (q("salesLoadedCount"))
+      q("salesLoadedCount").textContent = "Loading complete sales register…";
+    if (q("exportSalesExcel")) q("exportSalesExcel").disabled = true;
+    if (q("exportSalesPDF")) q("exportSalesPDF").disabled = true;
+  }
+
+  try {
+    if (!render && !dateBounds) {
+      const { data, error } = await buildSalesQuery(columns)
         .order("sale_date", { ascending: false })
-        .limit(5000),
-      SELAccess.db()
-        .from("sales")
-        .select(columns)
-        .is("sale_date", null)
-        .gte("created_at", startIso)
-        .lt("created_at", endIso)
         .order("created_at", { ascending: false })
-        .limit(5000),
-    ]);
+        .limit(100);
+      if (error) throw error;
+      sales = data || [];
+    } else if (dateBounds) {
+      const startIso = dateBounds.start.toISOString();
+      const endIso = dateBounds.end.toISOString();
+      const [datedSales, legacySales] = await Promise.all([
+        fetchAllSalesPages(() =>
+          buildSalesQuery(columns)
+            .gte("sale_date", startIso)
+            .lt("sale_date", endIso)
+            .order("sale_date", { ascending: false }),
+        ),
+        fetchAllSalesPages(() =>
+          buildSalesQuery(columns)
+            .is("sale_date", null)
+            .gte("created_at", startIso)
+            .lt("created_at", endIso)
+            .order("created_at", { ascending: false }),
+        ),
+      ]);
 
-    const error = datedSales.error || legacySales.error;
-    if (error) {
-      if (render) notify(error.message, "error");
-      return;
+      sales = [...datedSales, ...legacySales].sort(
+        (a, b) =>
+          new Date(b.sale_date || b.created_at).getTime() -
+          new Date(a.sale_date || a.created_at).getTime(),
+      );
+    } else {
+      sales = await fetchAllSalesPages(() =>
+        buildSalesQuery(columns)
+          .order("sale_date", { ascending: false })
+          .order("created_at", { ascending: false }),
+      );
     }
 
-    sales = [...(datedSales.data || []), ...(legacySales.data || [])].sort(
+    sales.sort(
       (a, b) =>
         new Date(b.sale_date || b.created_at).getTime() -
         new Date(a.sale_date || a.created_at).getTime(),
     );
-  } else {
-    const { data, error } = await SELAccess.db()
-      .from("sales")
-      .select(columns)
-      .order("sale_date", { ascending: false })
-      .limit(1000);
 
-    if (error) {
-      if (render) notify(error.message, "error");
-      return;
+    salesSellerNames = await profileMap(sales.map((s) => s.sold_by));
+    salesCurrentPage = 1;
+    if (render) {
+      salesFullyLoaded = true;
+      renderSales();
     }
-    sales = data || [];
+  } catch (error) {
+    if (render) notify(error.message || "Could not load sales.", "error");
+  } finally {
+    if (render) {
+      salesLoading = false;
+      if (q("exportSalesExcel"))
+        q("exportSalesExcel").disabled = !salesFullyLoaded;
+      if (q("exportSalesPDF")) q("exportSalesPDF").disabled = !salesFullyLoaded;
+    }
   }
-
-  if (render) await renderSales();
 }
 
-async function renderSales() {
-  const search = norm(q("salesSearch").value);
-  const type = q("salesTypeFilter").value;
-  const rows = sales.filter((s) => {
-    const items = (s.sale_items || []).map((i) => i.item_name).join(" ");
-    return (
-      (type === "all" || s.sale_type === type) &&
-      (!search ||
-        norm(`${s.sale_reference} ${s.payment_mode} ${items}`).includes(search))
-    );
-  });
-  const filteredSalesTotal = rows.reduce((sum, s) => sum + Number(s.total_amount || 0), 0);
-  if (q("salesTotalValue")) q("salesTotalValue").textContent = money(filteredSalesTotal);
-  if (q("salesTotalCount")) q("salesTotalCount").textContent = rows.length.toLocaleString("en-NG");
-  const names = await profileMap(rows.map((s) => s.sold_by));
-  q("salesRows").innerHTML = rows.length
-    ? rows
+function updateSalesPagination(totalRows) {
+  const select = q("salesPageSize");
+  const sizeValue = select?.value || "50";
+  const pageSize = sizeValue === "all" ? "all" : Number(sizeValue) || 50;
+  const totalPages =
+    pageSize === "all" ? 1 : Math.max(1, Math.ceil(totalRows / pageSize));
+
+  if (salesCurrentPage > totalPages) salesCurrentPage = totalPages;
+  const startRow =
+    totalRows === 0
+      ? 0
+      : pageSize === "all"
+        ? 1
+        : (salesCurrentPage - 1) * pageSize + 1;
+  const endRow =
+    totalRows === 0
+      ? 0
+      : pageSize === "all"
+        ? totalRows
+        : Math.min(salesCurrentPage * pageSize, totalRows);
+
+  if (q("salesPaginationInfo")) {
+    q("salesPaginationInfo").textContent = totalRows
+      ? `Showing ${startRow.toLocaleString("en-NG")}–${endRow.toLocaleString("en-NG")} of ${totalRows.toLocaleString("en-NG")} matching sales`
+      : "Showing 0 sales";
+  }
+  if (q("salesPageNumber")) {
+    q("salesPageNumber").textContent = `Page ${salesCurrentPage.toLocaleString("en-NG")} of ${totalPages.toLocaleString("en-NG")}`;
+  }
+  if (q("salesPrevBtn")) q("salesPrevBtn").disabled = salesCurrentPage <= 1;
+  if (q("salesNextBtn"))
+    q("salesNextBtn").disabled = salesCurrentPage >= totalPages;
+
+  return { pageSize, totalPages };
+}
+
+function renderSales() {
+  const rows = filteredSalesRows();
+  const totals = salesReportTotals(rows);
+  const { pageSize } = updateSalesPagination(rows.length);
+
+  if (q("salesTotalValue")) q("salesTotalValue").textContent = money(totals.totalSales);
+  if (q("salesCashValue")) q("salesCashValue").textContent = money(totals.cashTotal);
+  if (q("salesCardValue")) q("salesCardValue").textContent = money(totals.cardTotal);
+  if (q("salesTransferValue"))
+    q("salesTransferValue").textContent = money(totals.transferTotal);
+  if (q("salesTotalCount"))
+    q("salesTotalCount").textContent = rows.length.toLocaleString("en-NG");
+  if (q("salesAverageValue"))
+    q("salesAverageValue").textContent = money(totals.averageSale);
+  if (q("salesLoadedCount"))
+    q("salesLoadedCount").textContent = `${sales.length.toLocaleString("en-NG")} sales loaded · ${salesReportScopeLabel()}`;
+
+  const pageRows =
+    pageSize === "all"
+      ? rows
+      : rows.slice(
+          (salesCurrentPage - 1) * pageSize,
+          salesCurrentPage * pageSize,
+        );
+
+  q("salesRows").innerHTML = pageRows.length
+    ? pageRows
         .map((s) => {
           const itemText =
             (s.sale_items || [])
@@ -542,12 +753,439 @@ async function renderSales() {
       <td class="item-summary" title="${esc(itemText)}">${esc(itemText)}</td>
       <td>${esc(s.payment_mode)}</td>
       <td><strong>${money(s.total_amount)}</strong></td>
-      <td>${esc(names[s.sold_by] || "User")}</td>
+      <td>${esc(salesSellerNames[s.sold_by] || "User")}</td>
       <td><div class="row-actions"><button class="action-btn" onclick="openSaleEditor(${s.id})" title="Edit"><i class="fa-solid fa-pen"></i></button><button class="action-btn danger" onclick="deleteSale(${s.id})" title="Delete"><i class="fa-solid fa-trash"></i></button></div></td>
     </tr>`;
         })
         .join("")
-    : '<tr><td colspan="8" class="empty">No sales found.</td></tr>';
+    : '<tr><td colspan="8" class="empty">No sales match the current report filters.</td></tr>';
+}
+
+function salesExportFileStem() {
+  const range = q("salesDateRange")?.value || "all";
+  if (range === "all") return "sel-center-sales-management-all-sales";
+
+  try {
+    const bounds = selectedSalesDateBounds();
+    if (!bounds) return "sel-center-sales-management-all-sales";
+    const inclusiveEnd = new Date(bounds.end);
+    inclusiveEnd.setDate(inclusiveEnd.getDate() - 1);
+    return `sel-center-sales-management-${localDateKey(bounds.start)}-to-${localDateKey(inclusiveEnd)}`;
+  } catch (_) {
+    return "sel-center-sales-management-report";
+  }
+}
+
+function loadSalesReportLogo() {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+    image.referrerPolicy = "no-referrer";
+    image.onload = () => {
+      try {
+        const maxWidth = 420;
+        const scale = Math.min(1, maxWidth / Math.max(1, image.naturalWidth));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve({
+          dataUrl: canvas.toDataURL("image/png"),
+          width: canvas.width,
+          height: canvas.height,
+        });
+      } catch (error) {
+        reject(error);
+      }
+    };
+    image.onerror = () => reject(new Error("SEL Center logo could not be loaded."));
+    image.src = SALES_REPORT_LOGO_URL;
+  });
+}
+
+function fitReportLogo(logo, maxWidth, maxHeight) {
+  const ratio = Math.min(maxWidth / logo.width, maxHeight / logo.height);
+  return {
+    width: logo.width * ratio,
+    height: logo.height * ratio,
+  };
+}
+
+function styleExcelHeaderRow(row) {
+  row.font = { bold: true, color: { argb: "FFFFFFFF" } };
+  row.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF8B0000" } };
+  row.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
+  row.height = 25;
+}
+
+function styleExcelCurrencyCell(cell) {
+  cell.numFmt = '₦#,##0.00;[Red]-₦#,##0.00';
+}
+
+function addExcelReportHeader(sheet, workbook, logo, title, period, generated) {
+  const logoId = workbook.addImage({
+    base64: logo.dataUrl.split(",")[1],
+    extension: "png",
+  });
+  const fitted = fitReportLogo(logo, 120, 55);
+  sheet.addImage(logoId, {
+    tl: { col: 0.15, row: 0.2 },
+    ext: { width: fitted.width, height: fitted.height },
+  });
+  sheet.mergeCells("C1:H1");
+  sheet.getCell("C1").value = "SEL CENTER";
+  sheet.getCell("C1").font = { bold: true, size: 18, color: { argb: "FF8B0000" } };
+  sheet.mergeCells("C2:H2");
+  sheet.getCell("C2").value = title;
+  sheet.getCell("C2").font = { bold: true, size: 13, color: { argb: "FF1F2937" } };
+  sheet.mergeCells("C3:H3");
+  sheet.getCell("C3").value = period;
+  sheet.getCell("C3").font = { size: 10, color: { argb: "FF4B5563" } };
+  sheet.mergeCells("C4:H4");
+  sheet.getCell("C4").value = `Exported: ${generated.toLocaleString("en-NG")}`;
+  sheet.getCell("C4").font = { size: 9, color: { argb: "FF6B7280" } };
+  sheet.getRow(1).height = 24;
+  sheet.getRow(2).height = 20;
+  sheet.getRow(3).height = 18;
+  sheet.getRow(4).height = 18;
+}
+
+async function exportSalesExcel() {
+  if (salesLoading || !salesFullyLoaded)
+    return notify("The complete sales register has not finished loading.", "error");
+  const rows = filteredSalesRows();
+  if (!rows.length) return notify("No sales match the current filters.", "error");
+  if (!window.ExcelJS)
+    return notify("Professional Excel export library is unavailable.", "error");
+
+  let logo;
+  try {
+    logo = await loadSalesReportLogo();
+  } catch (error) {
+    return notify(error.message || "The report logo could not be loaded.", "error");
+  }
+
+  const totals = salesReportTotals(rows);
+  const generated = new Date();
+  const typeFilter = q("salesTypeFilter")?.value || "all";
+  const paymentFilter = q("salesPaymentFilter")?.value || "all";
+  const searchFilter = q("salesSearch")?.value?.trim() || "None";
+  const period = salesReportScopeLabel();
+  const actualCoverage = salesActualDateCoverage(rows);
+
+  const workbook = new ExcelJS.Workbook();
+  workbook.creator = "SEL Center";
+  workbook.company = "SEL Center";
+  workbook.created = generated;
+  workbook.modified = generated;
+
+  const summary = workbook.addWorksheet("Executive Summary", {
+    pageSetup: { orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0 },
+  });
+  summary.columns = [
+    { width: 22 }, { width: 18 }, { width: 22 }, { width: 18 },
+    { width: 22 }, { width: 18 }, { width: 18 }, { width: 18 },
+  ];
+  addExcelReportHeader(summary, workbook, logo, "SALES MANAGEMENT REPORT", period, generated);
+  summary.mergeCells("A6:H6");
+  summary.getCell("A6").value = `Sales included in export: ${actualCoverage}`;
+  summary.getCell("A6").font = { italic: true, color: { argb: "FF4B5563" } };
+
+  const kpis = [
+    ["Total Sales", totals.totalSales],
+    ["Total Cash", totals.cashTotal],
+    ["Total Card", totals.cardTotal],
+    ["Total Transfer", totals.transferTotal],
+    ["Transactions", rows.length],
+    ["Average Sale", totals.averageSale],
+  ];
+  const positions = ["A8", "C8", "E8", "A11", "C11", "E11"];
+  kpis.forEach(([label, value], index) => {
+    const labelCell = summary.getCell(positions[index]);
+    const valueCell = summary.getCell(positions[index].replace("8", "9").replace("11", "12"));
+    summary.mergeCells(`${labelCell.address}:${String.fromCharCode(labelCell.col + 64 + 1)}${labelCell.row}`);
+    summary.mergeCells(`${valueCell.address}:${String.fromCharCode(valueCell.col + 64 + 1)}${valueCell.row}`);
+    labelCell.value = label;
+    labelCell.font = { bold: true, size: 9, color: { argb: "FF6B7280" } };
+    labelCell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFF3F4F6" } };
+    valueCell.value = value;
+    valueCell.font = { bold: true, size: 15, color: { argb: "FF111827" } };
+    valueCell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFFFFFF" } };
+    if (label !== "Transactions") styleExcelCurrencyCell(valueCell);
+  });
+
+  summary.getCell("A15").value = "Report Filters";
+  summary.getCell("A15").font = { bold: true, size: 12, color: { argb: "FF8B0000" } };
+  const filterRows = [
+    ["Sale type", typeFilter === "all" ? "All sale types" : typeFilter],
+    ["Payment", paymentFilter === "all" ? "All payment modes" : paymentFilter],
+    ["Search", searchFilter],
+  ];
+  filterRows.forEach((values, index) => {
+    const row = 16 + index;
+    summary.getCell(`A${row}`).value = values[0];
+    summary.getCell(`B${row}`).value = values[1];
+    summary.getCell(`A${row}`).font = { bold: true, color: { argb: "FF4B5563" } };
+  });
+
+  summary.getCell("A21").value = "Sales by Payment Method";
+  summary.getCell("A21").font = { bold: true, size: 12, color: { argb: "FF8B0000" } };
+  const paymentHeader = summary.getRow(22);
+  paymentHeader.values = ["Payment Method", "Transactions", "Sales Value"];
+  styleExcelHeaderRow(paymentHeader);
+  const paymentModes = [
+    ["Cash", ["cash"]],
+    ["Card/POS", ["card", "pos"]],
+    ["Transfer", ["transfer", "bank transfer"]],
+  ];
+  paymentModes.forEach(([label, modes], index) => {
+    const subset = rows.filter((s) => modes.includes(norm(s.payment_mode)));
+    const row = summary.getRow(23 + index);
+    row.values = [
+      label,
+      subset.length,
+      subset.reduce((sum, s) => sum + Number(s.total_amount || 0), 0),
+    ];
+    styleExcelCurrencyCell(row.getCell(3));
+  });
+
+  const detail = workbook.addWorksheet("Sales Detail", {
+    pageSetup: { orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0 },
+    views: [{ state: "frozen", ySplit: 6 }],
+  });
+  detail.columns = [
+    { width: 7 }, { width: 24 }, { width: 23 }, { width: 12 },
+    { width: 15 }, { width: 48 }, { width: 10 }, { width: 16 }, { width: 24 },
+  ];
+  addExcelReportHeader(detail, workbook, logo, "SALES DETAIL", period, generated);
+  const detailHeader = detail.getRow(6);
+  detailHeader.values = [
+    "S/N", "Sale Reference", "Date / Time", "Type", "Payment Mode",
+    "Items", "Units", "Total Sale", "Sold By",
+  ];
+  styleExcelHeaderRow(detailHeader);
+  rows.forEach((sale, index) => {
+    const row = detail.getRow(7 + index);
+    row.values = [
+      index + 1,
+      sale.sale_reference || "",
+      new Date(sale.sale_date || sale.created_at).toLocaleString("en-NG"),
+      sale.sale_type || "",
+      sale.payment_mode || "",
+      (sale.sale_items || [])
+        .map((item) => `${item.item_name} × ${item.quantity}`)
+        .join(", "),
+      saleQuantity(sale),
+      Number(sale.total_amount || 0),
+      salesSellerNames[sale.sold_by] || "User",
+    ];
+    styleExcelCurrencyCell(row.getCell(8));
+  });
+  detail.autoFilter = { from: "A6", to: `I${Math.max(6, rows.length + 6)}` };
+
+  const items = workbook.addWorksheet("Sale Items", {
+    pageSetup: { orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0 },
+    views: [{ state: "frozen", ySplit: 6 }],
+  });
+  items.columns = [
+    { width: 24 }, { width: 23 }, { width: 12 }, { width: 34 },
+    { width: 10 }, { width: 14 }, { width: 14 }, { width: 24 },
+  ];
+  addExcelReportHeader(items, workbook, logo, "SALE ITEMS", period, generated);
+  const itemHeader = items.getRow(6);
+  itemHeader.values = [
+    "Sale Reference", "Sale Date", "Sale Type", "Item", "Quantity",
+    "Unit Price", "Line Total", "Sold By",
+  ];
+  styleExcelHeaderRow(itemHeader);
+  let itemRowNumber = 7;
+  rows.forEach((sale) => {
+    (sale.sale_items || []).forEach((item) => {
+      const row = items.getRow(itemRowNumber++);
+      row.values = [
+        sale.sale_reference || "",
+        new Date(sale.sale_date || sale.created_at).toLocaleString("en-NG"),
+        sale.sale_type || "",
+        item.item_name || "",
+        Number(item.quantity || 0),
+        Number(item.unit_price || 0),
+        Number(item.total_price || Number(item.unit_price || 0) * Number(item.quantity || 0)),
+        salesSellerNames[sale.sold_by] || "User",
+      ];
+      styleExcelCurrencyCell(row.getCell(6));
+      styleExcelCurrencyCell(row.getCell(7));
+    });
+  });
+  if (itemRowNumber > 7)
+    items.autoFilter = { from: "A6", to: `H${itemRowNumber - 1}` };
+
+  [summary, detail, items].forEach((sheet) => {
+    sheet.properties.defaultRowHeight = 18;
+    sheet.pageSetup.margins = { left: 0.3, right: 0.3, top: 0.5, bottom: 0.5, header: 0.2, footer: 0.2 };
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${salesExportFileStem()}.xlsx`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  notify(`Excel report exported with ${rows.length.toLocaleString("en-NG")} sales.`);
+}
+
+async function exportSalesPDF() {
+  if (salesLoading || !salesFullyLoaded)
+    return notify("The complete sales register has not finished loading.", "error");
+  const rows = filteredSalesRows();
+  if (!rows.length) return notify("No sales match the current filters.", "error");
+  if (!window.jspdf?.jsPDF)
+    return notify("PDF export library is unavailable.", "error");
+
+  let logo;
+  try {
+    logo = await loadSalesReportLogo();
+  } catch (error) {
+    return notify(error.message || "The report logo could not be loaded.", "error");
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  if (typeof doc.autoTable !== "function")
+    return notify("PDF table export library is unavailable.", "error");
+
+  const totals = salesReportTotals(rows);
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const generated = new Date();
+  const period = salesReportScopeLabel();
+  const actualCoverage = salesActualDateCoverage(rows);
+  const currency = (value) =>
+    `NGN ${Number(value || 0).toLocaleString("en-NG", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+
+  doc.setFillColor(139, 0, 0);
+  doc.rect(0, 0, pageWidth, 27, "F");
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(12, 4, 30, 19, 2, 2, "F");
+  const fitted = fitReportLogo(logo, 25, 15);
+  doc.addImage(
+    logo.dataUrl,
+    "PNG",
+    14 + (25 - fitted.width) / 2,
+    6 + (15 - fitted.height) / 2,
+    fitted.width,
+    fitted.height,
+  );
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(17);
+  doc.text("SEL CENTER", 47, 10);
+  doc.setFontSize(10);
+  doc.text("SALES MANAGEMENT REPORT", 47, 17);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.text(period, 47, 22);
+  doc.text(`Exported: ${generated.toLocaleString("en-NG")}`, pageWidth - 14, 10, {
+    align: "right",
+  });
+  doc.text(`Sales included: ${actualCoverage}`, pageWidth - 14, 17, {
+    align: "right",
+  });
+
+  const cards = [
+    ["TOTAL SALES", currency(totals.totalSales)],
+    ["TOTAL CASH", currency(totals.cashTotal)],
+    ["TOTAL CARD", currency(totals.cardTotal)],
+    ["TOTAL TRANSFER", currency(totals.transferTotal)],
+    ["TRANSACTIONS", rows.length.toLocaleString("en-NG")],
+    ["AVERAGE SALE", currency(totals.averageSale)],
+  ];
+  const margin = 14;
+  const gap = 3;
+  const cardWidth = (pageWidth - margin * 2 - gap * 5) / 6;
+  cards.forEach(([label, value], index) => {
+    const x = margin + index * (cardWidth + gap);
+    doc.setDrawColor(225, 225, 225);
+    doc.setFillColor(249, 250, 251);
+    doc.roundedRect(x, 32, cardWidth, 18, 2, 2, "FD");
+    doc.setTextColor(100, 100, 100);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.4);
+    doc.text(label, x + 3, 38);
+    doc.setTextColor(25, 25, 25);
+    doc.setFontSize(8.7);
+    doc.text(String(value), x + 3, 45);
+  });
+
+  const body = rows.map((s, index) => [
+    index + 1,
+    s.sale_reference || "",
+    new Date(s.sale_date || s.created_at).toLocaleString("en-NG", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+    s.sale_type || "",
+    s.payment_mode || "",
+    (s.sale_items || [])
+      .map((item) => `${item.item_name} x${item.quantity}`)
+      .join(", "),
+    currency(s.total_amount),
+    salesSellerNames[s.sold_by] || "User",
+  ]);
+
+  doc.autoTable({
+    startY: 56,
+    head: [["#", "Reference", "Date / Time", "Type", "Payment", "Items", "Total Sale", "Sold By"]],
+    body,
+    theme: "grid",
+    margin: { left: 14, right: 14, bottom: 15 },
+    styles: { font: "helvetica", fontSize: 6.5, cellPadding: 2, valign: "middle" },
+    headStyles: { fillColor: [139, 0, 0], textColor: 255, fontStyle: "bold" },
+    alternateRowStyles: { fillColor: [249, 250, 251] },
+    columnStyles: {
+      0: { cellWidth: 8, halign: "right" },
+      1: { cellWidth: 31 },
+      2: { cellWidth: 34 },
+      3: { cellWidth: 17 },
+      4: { cellWidth: 21 },
+      5: { cellWidth: 92 },
+      6: { cellWidth: 31, halign: "right" },
+      7: { cellWidth: 35 },
+    },
+    didDrawPage: () => {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(7);
+      doc.setTextColor(125, 125, 125);
+      doc.text("SEL Center Sales Management", 14, doc.internal.pageSize.getHeight() - 6);
+    },
+  });
+
+  const pageCount = doc.getNumberOfPages();
+  for (let page = 1; page <= pageCount; page += 1) {
+    doc.setPage(page);
+    doc.setFontSize(7);
+    doc.setTextColor(125, 125, 125);
+    doc.text(
+      `Page ${page} of ${pageCount}`,
+      pageWidth - 14,
+      doc.internal.pageSize.getHeight() - 6,
+      { align: "right" },
+    );
+  }
+
+  doc.save(`${salesExportFileStem()}.pdf`);
+  notify(`PDF report exported with ${rows.length.toLocaleString("en-NG")} sales.`);
 }
 
 async function ensureSaleCatalog(type) {
@@ -1750,14 +2388,62 @@ function bindEvents() {
   q("refreshDashboard").onclick = loadDashboard;
   q("newSale").onclick = () => openSaleEditor();
   q("reloadSales").onclick = loadSales;
-  q("salesSearch").oninput = renderSales;
-  q("salesTypeFilter").onchange = renderSales;
-  if (q("salesDayFilter")) q("salesDayFilter").onchange = () => loadSales();
-  if (q("clearSalesDay"))
-    q("clearSalesDay").onclick = () => {
-      q("salesDayFilter").value = "";
-      loadSales();
+  q("salesSearch").oninput = () => {
+    salesCurrentPage = 1;
+    renderSales();
+  };
+  q("salesTypeFilter").onchange = () => {
+    salesCurrentPage = 1;
+    renderSales();
+  };
+  if (q("salesPaymentFilter"))
+    q("salesPaymentFilter").onchange = () => {
+      salesCurrentPage = 1;
+      renderSales();
     };
+  if (q("salesDateRange"))
+    q("salesDateRange").onchange = () => {
+      const custom = q("salesDateRange").value === "custom";
+      document
+        .querySelectorAll(".sales-custom-range")
+        .forEach((el) => el.classList.toggle("hidden", !custom));
+      if (custom) {
+        const today = new Date();
+        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        if (q("salesStartDate") && !q("salesStartDate").value)
+          q("salesStartDate").value = localDateKey(monthStart);
+        if (q("salesEndDate") && !q("salesEndDate").value)
+          q("salesEndDate").value = localDateKey(today);
+      } else {
+        loadSales();
+      }
+    };
+  if (q("applySalesRange"))
+    q("applySalesRange").onclick = () => loadSales();
+  if (q("salesPageSize"))
+    q("salesPageSize").onchange = () => {
+      salesCurrentPage = 1;
+      renderSales();
+    };
+  if (q("salesPrevBtn"))
+    q("salesPrevBtn").onclick = () => {
+      if (salesCurrentPage <= 1) return;
+      salesCurrentPage -= 1;
+      renderSales();
+    };
+  if (q("salesNextBtn"))
+    q("salesNextBtn").onclick = () => {
+      const rows = filteredSalesRows();
+      const size = q("salesPageSize")?.value || "50";
+      if (size === "all") return;
+      const pageSize = Number(size) || 50;
+      const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+      if (salesCurrentPage >= totalPages) return;
+      salesCurrentPage += 1;
+      renderSales();
+    };
+  if (q("exportSalesExcel")) q("exportSalesExcel").onclick = exportSalesExcel;
+  if (q("exportSalesPDF")) q("exportSalesPDF").onclick = exportSalesPDF;
   q("newGateEntry").onclick = () => openGateEditor();
   q("reloadGateAdmin").onclick = loadGateAdmin;
   q("gateAdminSearch").oninput = renderGateAdmin;

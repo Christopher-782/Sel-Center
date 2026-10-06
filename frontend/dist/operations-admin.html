@@ -34,8 +34,8 @@
         <button class="side-link" data-panel="sales"><i class="fa-solid fa-receipt"></i><span>Sales</span></button>
         <button class="side-link" data-panel="gate"><i class="fa-solid fa-door-open"></i><span>Gate Entry</span></button>
         <button class="side-link" data-panel="tickets"><i class="fa-solid fa-ticket"></i><span>Tickets</span></button>
-        <button class="side-link" data-panel="expenses"><i class="fa-solid fa-wallet"></i><span>Expenses</span></button>
-        <button class="side-link" data-panel="finance"><i class="fa-solid fa-chart-line"></i><span>Profit & Reports</span></button>
+        <button class="side-link" data-panel="expenses" data-permission-link="manage_expenses"><i class="fa-solid fa-wallet"></i><span>Expenses</span></button>
+        <button class="side-link" data-panel="finance" data-permission-link="view_profit_reports"><i class="fa-solid fa-chart-line"></i><span>Profit & Reports</span></button>
         <a class="side-link" href="reconciliation.html"><i class="fa-solid fa-scale-balanced"></i><span>Reconciliation</span></a>
 
         <div class="sidebar-label">Operations</div>
@@ -101,26 +101,58 @@
 
         <!-- Sales -->
         <section class="admin-view" id="panel-sales">
-          <div class="view-toolbar">
-            <div><h2>Sales Management</h2><p>Create, review, correct or delete Kitchen and Ticket sales.</p></div>
-            <button class="btn btn-primary" id="newSale"><i class="fa-solid fa-plus"></i> New Sale</button>
+          <div class="view-toolbar sales-management-toolbar">
+            <div>
+              <h2>Sales Management</h2>
+              <p>Review every Kitchen and Ticket sale, apply management filters, and export complete reports.</p>
+              <div class="sales-loaded-note"><i class="fa-solid fa-database"></i> <span id="salesLoadedCount">0 sales loaded</span></div>
+            </div>
+            <div class="row-actions sales-report-actions">
+              <button class="btn btn-secondary" id="exportSalesPDF" type="button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+              <button class="btn btn-secondary" id="exportSalesExcel" type="button"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+              <button class="btn btn-primary" id="newSale"><i class="fa-solid fa-plus"></i> New Sale</button>
+            </div>
           </div>
           <div class="filter-bar sales-filter-bar">
-            <input id="salesSearch" class="search-input" placeholder="Search reference, item or payment…">
+            <input id="salesSearch" class="search-input" placeholder="Search reference, item, seller or payment…">
             <select id="salesTypeFilter" class="compact-control"><option value="all">All sale types</option><option value="kitchen">Kitchen</option><option value="ticket">Ticket</option></select>
-            <div class="date-control sales-day-control">
-              <label for="salesDayFilter">Sales day</label>
-              <input id="salesDayFilter" type="date" aria-label="Filter sales by day">
+            <select id="salesPaymentFilter" class="compact-control"><option value="all">All payments</option><option value="cash">Cash</option><option value="card">Card/POS</option><option value="transfer">Transfer</option></select>
+            <select id="salesDateRange" class="compact-control" aria-label="Sales date range">
+              <option value="all" selected>All dates</option>
+              <option value="today">Today</option>
+              <option value="week">This week</option>
+              <option value="month">This month</option>
+              <option value="custom">Custom range</option>
+            </select>
+            <div class="date-control sales-custom-range hidden">
+              <label for="salesStartDate">From</label>
+              <input id="salesStartDate" type="date" aria-label="Sales range start date">
             </div>
-            <button class="btn btn-secondary" id="clearSalesDay" type="button" title="Show all recent sales"><i class="fa-solid fa-calendar-xmark"></i> Clear day</button>
-            <button class="btn btn-secondary" id="reloadSales" type="button" title="Reload sales"><i class="fa-solid fa-rotate"></i></button>
+            <div class="date-control sales-custom-range hidden">
+              <label for="salesEndDate">To</label>
+              <input id="salesEndDate" type="date" aria-label="Sales range end date">
+            </div>
+            <button class="btn btn-primary sales-custom-range hidden" id="applySalesRange" type="button"><i class="fa-solid fa-filter"></i> Apply range</button>
+            <button class="btn btn-secondary" id="reloadSales" type="button" title="Reload matching sales"><i class="fa-solid fa-rotate"></i></button>
           </div>
-          <div class="metric-row compact-metrics sales-summary-metrics">
-            <div class="metric-cell"><span>Total Sales</span><strong id="salesTotalValue">₦0.00</strong><small>Current sales filter</small></div>
+          <div class="metric-row sales-summary-metrics">
+            <div class="metric-cell"><span>Total Sales</span><strong id="salesTotalValue">₦0.00</strong><small>Current report filters</small></div>
+            <div class="metric-cell"><span>Total Cash</span><strong id="salesCashValue">₦0.00</strong><small>Cash sales collected</small></div>
+            <div class="metric-cell"><span>Total Card</span><strong id="salesCardValue">₦0.00</strong><small>Card and POS sales</small></div>
+            <div class="metric-cell"><span>Total Transfer</span><strong id="salesTransferValue">₦0.00</strong><small>Bank transfer sales</small></div>
             <div class="metric-cell"><span>Transactions</span><strong id="salesTotalCount">0</strong><small>Matching sales records</small></div>
+            <div class="metric-cell"><span>Average Sale</span><strong id="salesAverageValue">₦0.00</strong><small>Sales value per transaction</small></div>
           </div>
-          <section class="surface flush">
+          <section class="surface flush sales-report-surface">
+            <div class="surface-head sales-table-head">
+              <div><h3>Sales Register</h3><p>Exports always include all matching sales and the selected sales period, even when the table is paged.</p></div>
+              <div class="sales-page-size"><label for="salesPageSize">Rows</label><select id="salesPageSize" class="compact-control"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="250">250</option><option value="all">All</option></select></div>
+            </div>
             <div class="table-wrap"><table class="table modern-table"><thead><tr><th>Reference</th><th>Date</th><th>Type</th><th>Items</th><th>Payment</th><th>Total</th><th>Sold By</th><th></th></tr></thead><tbody id="salesRows"></tbody></table></div>
+            <div class="sales-pagination">
+              <span id="salesPaginationInfo">Showing 0 sales</span>
+              <div class="sales-pagination-actions"><button class="btn btn-secondary btn-small" id="salesPrevBtn" type="button"><i class="fa-solid fa-chevron-left"></i> Previous</button><span id="salesPageNumber">Page 1 of 1</span><button class="btn btn-secondary btn-small" id="salesNextBtn" type="button">Next <i class="fa-solid fa-chevron-right"></i></button></div>
+            </div>
           </section>
         </section>
 
@@ -249,6 +281,9 @@
   <script src="js/supabaseClient.js"></script>
   <script src="js/access-control.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
 <script src="js/operations-admin.js"></script>
   <script src="js/site-dynamic.js"></script>
 </body>
