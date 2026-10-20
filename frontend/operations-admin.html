@@ -265,6 +265,12 @@
         <section class="admin-view" id="panel-users">
           <div class="view-toolbar"><div><h2>Users & Access</h2><p>Create staff accounts and control access to operational modules.</p></div><button class="btn btn-primary" id="newUser"><i class="fa-solid fa-user-plus"></i> Create User</button></div>
           <section class="surface flush"><div class="table-wrap"><table class="table modern-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Permissions</th><th></th></tr></thead><tbody id="userRows"></tbody></table></div></section>
+          <section class="surface" style="margin-top:20px">
+            <div class="surface-head"><div><h3>Default Sales Access by Role</h3><p>Applies to all users with this role unless individually overridden. Admin access remains separate.</p></div></div>
+            <div class="field" style="max-width:320px;margin-bottom:12px"><label for="salesRoleEditor">Staff role</label><select id="salesRoleEditor" class="compact-control"><option value="sale_associate">Sales Associate</option><option value="manager">Manager</option></select></div>
+            <div id="salesRolePermissions" class="permission-grid"></div>
+            <div style="margin-top:12px"><button class="btn btn-primary" id="saveSalesRoleDefaults" type="button">Save role defaults</button></div>
+          </section>
         </section>
       </main>
     </div>

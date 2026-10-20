@@ -2240,6 +2240,7 @@ async function loadUserData() {
   userOverrides = u.data || [];
   rolePermissions = r.data || [];
   renderUsers();
+  renderSalesRoleDefaults();
 }
 
 function effectivePermissions(user) {
@@ -2269,6 +2270,7 @@ function renderUsers() {
 
 function permissionGrid(selected = [], disableAll = false) {
   return Object.entries(SELAccess.labels)
+    .filter(([key]) => disableAll || !["admin_dashboard", "manage_users"].includes(key))
     .map(
       ([key, label]) => `
     <label class="permission-check"><input type="checkbox" value="${key}" ${selected.includes(key) ? "checked" : ""} ${disableAll ? "disabled" : ""}><span><strong>${esc(label)}</strong><small>${esc(key)}</small></span></label>`,
@@ -2368,6 +2370,47 @@ function openAccessEditor(id) {
     notify("User access updated.");
     await loadUserData();
   };
+}
+
+// Admin-only editor for default Sales permissions on staff roles.
+const SALES_PERMISSION_KEYS = [
+  "sales.dashboard.view", "sales.create", "sales.read", "sales.update", "sales.delete",
+];
+function renderSalesRoleDefaults() {
+  const grid = q("salesRolePermissions");
+  if (!grid) return;
+  const role = q("salesRoleEditor").value;
+  const assigned = new Set(rolePermissions.filter(r => r.role === role).map(r => r.permission_key));
+  grid.innerHTML = SALES_PERMISSION_KEYS.map(key => `
+    <label class="permission-check"><input type="checkbox" value="${key}" ${assigned.has(key) ? "checked" : ""}>
+      <span><strong>${esc(SELAccess.labels[key])}</strong><small>${esc(key)}</small></span>
+    </label>`).join("");
+}
+async function saveSalesRoleDefaults() {
+  const role = q("salesRoleEditor").value;
+  const selected = new Set(checkedPermissions(q("salesRolePermissions")));
+  const current = new Set(rolePermissions.filter(r => r.role === role).map(r => r.permission_key));
+  const toInsert = SALES_PERMISSION_KEYS.filter(p => selected.has(p) && !current.has(p));
+  const toRemove = SALES_PERMISSION_KEYS.filter(p => !selected.has(p) && current.has(p));
+  const btn = q("saveSalesRoleDefaults");
+  btn.disabled = true;
+  try {
+    if (toInsert.length) {
+      const { error } = await SELAccess.db().from("role_permissions").insert(
+        toInsert.map(permission_key => ({ role, permission_key })));
+      if (error) throw error;
+    }
+    for (const permission_key of toRemove) {
+      const { error } = await SELAccess.db().from("role_permissions")
+        .delete().eq("role", role).eq("permission_key", permission_key);
+      if (error) throw error;
+    }
+    await loadUserData();
+    notify("Sales role defaults updated. Staff access changes apply on their next access check.");
+  } catch (e) {
+    notify("Could not save role access: " + e.message, "error");
+    await loadUserData();
+  } finally { btn.disabled = false; }
 }
 
 // -----------------------------------------------------------------------------
@@ -2499,6 +2542,8 @@ function bindEvents() {
   q("auditSearch").oninput = renderAudit;
   q("reloadAudit").onclick = loadAudit;
   q("newUser").onclick = openCreateUser;
+  q("salesRoleEditor").onchange = renderSalesRoleDefaults;
+  q("saveSalesRoleDefaults").onclick = saveSalesRoleDefaults;
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

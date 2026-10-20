@@ -26,6 +26,7 @@
         <a class="side-link" data-permission-link="gate_entry" href="gate-entry.html"><i class="fa-solid fa-person-walking-arrow-right"></i><span>Gate Entry</span></a>
         <a class="side-link" data-permission-link="kitchen_pos" href="kitchen-pos.html"><i class="fa-solid fa-utensils"></i><span>Kitchen POS</span></a>
         <a class="side-link" data-permission-link="ticket_pos" href="ticket-pos.html"><i class="fa-solid fa-ticket"></i><span>Ticket POS</span></a>
+        <a class="side-link hidden" data-permission-link="sales.dashboard.view" href="sales-dashboard.html"><i class="fa-solid fa-chart-column"></i><span>Sales Dashboard</span></a>
         <a class="side-link" data-permission-link="reconcile_finance" href="reconciliation.html"><i class="fa-solid fa-scale-balanced"></i><span>Reconciliation</span></a>
         <div data-permission-link="admin_dashboard">
           <div class="sidebar-label">Administration</div>
@@ -51,7 +52,7 @@
     document.addEventListener('DOMContentLoaded', async () => {
       const ctx = await SELAccess.ensureAuth(); if (!ctx) return;
       const visible = [...document.querySelectorAll('a[data-permission-link]')].some(x => !x.classList.contains('hidden'));
-      if (!visible && !ctx.permissions.includes('admin_dashboard')) document.getElementById('noAccess').classList.remove('hidden');
+      if (!visible && !ctx.permissions.includes('admin_dashboard') && !ctx.permissions.includes('sales.dashboard.view')) document.getElementById('noAccess').classList.remove('hidden');
       document.getElementById('portalMenu').onclick = () => document.getElementById('portalSidebar').classList.toggle('open');
     });
   </script>

@@ -20,7 +20,12 @@
 
     manage_expenses: "Record and manage operating expenses",
 
-    edit_sales: "Edit sales records",
+    edit_sales: "Edit sales records (legacy)",
+    "sales.dashboard.view": "Open Sales Dashboard",
+    "sales.create": "Create Sales",
+    "sales.read": "View Sales Register",
+    "sales.update": "Edit Sales",
+    "sales.delete": "Delete Sales",
 
     admin_dashboard: "Open admin dashboard",
 
@@ -75,95 +80,18 @@
     return data;
   }
 
-  async function getPermissions(force = false) {
-    const profile = await getProfile();
-
-    const role = (
-      profile?.role ||
-      localStorage.getItem("userRole") ||
-      ""
-    ).toLowerCase();
-
-    /*
-      SUPER ADMIN BYPASS
-
-      Super Admin always gets every permission.
-    */
-
-    if (role === "super_admin") {
-      localStorage.setItem("userPermissions", JSON.stringify(ALL));
-
-      return ALL;
-    }
-
-    if (!force) {
-      try {
-        const cached = JSON.parse(
-          localStorage.getItem("userPermissions") || "[]",
-        );
-
-        if (Array.isArray(cached) && cached.length) {
-          return cached;
-        }
-      } catch (e) {}
-    }
-
+  // Never trust localStorage or role fallbacks to determine authorization.
+  // The server always resolves permissions from Postgres for the current user.
+  async function getPermissions() {
     const user = await currentUser();
-
-    if (!user) {
-      return [];
-    }
-
-    try {
-      const { data, error } = await db().rpc("get_my_permissions");
-
-      if (error) {
-        throw error;
-      }
-
-      const permissions = (data || [])
-        .map((r) => (typeof r === "string" ? r : r.permission_key))
-        .filter(Boolean);
-
-      localStorage.setItem("userPermissions", JSON.stringify(permissions));
-
-      return permissions;
-    } catch (err) {
-      console.warn("Permission RPC failed", err.message);
-
-      /*
-        ADMIN FALLBACK
-
-        Admin can operate but
-        cannot view profit.
-      */
-
-      if (role === "admin") {
-        const adminPermissions = ALL.filter(
-          (p) => p !== "view_profit_reports" && p !== "reduce_stock",
-        );
-
-        localStorage.setItem(
-          "userPermissions",
-          JSON.stringify(adminPermissions),
-        );
-
-        return adminPermissions;
-      }
-
-      if (role === "sale_associate") {
-        const salesPermissions = ["gate_entry", "kitchen_pos", "ticket_pos"];
-
-        localStorage.setItem(
-          "userPermissions",
-          JSON.stringify(salesPermissions),
-        );
-
-        return salesPermissions;
-      }
-
-      return [];
-    }
+    if (!user) return [];
+    const { data, error } = await db().rpc("get_my_permissions");
+    if (error) throw new Error("Could not verify your access rights. Please try again.");
+    const permissions = (data || [])
+      .map((r) => (typeof r === "string" ? r : r.permission_key))
+      .filter(Boolean);
+    localStorage.setItem("userPermissions", JSON.stringify(permissions));
+    return permissions;
   }
 
   async function ensureAuth(required) {
@@ -175,13 +103,23 @@
       return null;
     }
 
-    const permissions = await getPermissions(true);
+    let permissions;
+    try {
+      permissions = await getPermissions();
+    } catch (error) {
+      document.body.textContent = error.message;
+      return null;
+    }
 
     const profile = await getProfile();
+    if (!profile) {
+      document.body.textContent = "Could not verify your account profile.";
+      return null;
+    }
 
     const role = (profile?.role || "").toLowerCase();
 
-    const allowed = role === "super_admin" || permissions.includes(required);
+    const allowed = !required || permissions.includes(required);
 
     if (required && !allowed) {
       document.body.innerHTML = `
@@ -230,8 +168,7 @@
 
     if (
       required.length &&
-      !required.some((p) => ctx.permissions.includes(p)) &&
-      ctx.role !== "super_admin"
+      !required.some((p) => ctx.permissions.includes(p))
     ) {
       document.body.innerHTML = `
 
@@ -267,7 +204,7 @@
     document.querySelectorAll("[data-permission-link]").forEach((el) => {
       const permission = el.dataset.permissionLink;
 
-      if (role === "super_admin" || permissions.includes(permission)) {
+      if (permissions.includes(permission)) {
         el.classList.remove("hidden");
       } else {
         el.classList.add("hidden");

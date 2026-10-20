@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SEL Center - Sales Dashboard</title>
+  <link rel="icon" type="image/avif" href="https://res.cloudinary.com/deoqw88yb/image/upload/v1782220892/1sel_yar5yk.avif">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/operations.css">
+  <style>
+    .standalone-sales .admin-workspace{max-width:1680px;padding:28px;}
+    .standalone-sales .admin-topbar{position:sticky;padding-inline:28px;gap:16px;}
+    .standalone-sales .sales-navigation{margin-left:auto;display:flex;align-items:center;gap:12px;}
+    .standalone-sales .sales-warning{padding:14px 16px;border:1px solid #ffd6ab;background:#fff5eb;border-radius:11px;margin-bottom:16px;font-size:13px;color:#8a3e0a;}
+    .standalone-sales .sales-status{min-height:0;font-size:12px;margin-bottom:8px;}
+    .standalone-sales .sales-status:empty{display:none;}
+    .standalone-sales .sales-status.error{color:#b42318;}
+    .standalone-sales .sales-status.ok{color:#027a48;}
+    .standalone-sales .sales-dialog{border:0;border-radius:14px;width:min(590px,96vw);max-height:92vh;padding:0;box-shadow:0 24px 75px rgba(16,24,40,.30)}
+    .standalone-sales .sales-dialog::backdrop{background:rgba(17,24,39,.50)}
+    .standalone-sales .sales-dialog .dialog-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid #eef0f2}
+    .standalone-sales .sales-dialog .dialog-head h2{font-size:18px;margin:0;}
+    .standalone-sales .sales-dialog form{padding:22px;display:grid;gap:13px;max-height:80vh;overflow:auto;}
+    .standalone-sales .sales-dialog label{display:grid;gap:6px;color:#374151;font-size:12px;font-weight:700;}
+    .standalone-sales .sales-dialog input,.standalone-sales .sales-dialog select{border:1px solid #d0d5dd;border-radius:9px;padding:11px;background:#fff;width:100%;}
+    .standalone-sales .sales-dialog .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .standalone-sales .sale-line{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #eef0f2;font-size:12px;}
+    .standalone-sales .sale-line span{flex:1;}
+    .standalone-sales .sale-line button{padding:6px 9px;}
+    .standalone-sales .sale-form-total{display:flex;justify-content:space-between;align-items:center;border-radius:10px;background:#111827;color:white;padding:13px 15px;}
+    .standalone-sales .dialog-controls{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;}
+    .standalone-sales .sale-item-add{display:grid;grid-template-columns:minmax(0,1fr) 90px auto;gap:9px;align-items:end}
+    .standalone-sales .sale-dialog #cashReceivedField[hidden]{display:none;}
+    .standalone-sales [hidden]{display:none!important}
+    @media(max-width:820px){.standalone-sales .admin-workspace{padding:18px 14px}.standalone-sales .admin-topbar{padding-inline:14px}.standalone-sales .sales-navigation{gap:8px}}
+    @media(max-width:620px){.standalone-sales .sales-dialog .two{grid-template-columns:1fr}.standalone-sales .sale-item-add{grid-template-columns:1fr 75px}.standalone-sales .sale-item-add button{grid-column:1/-1}}
+  </style>
+</head>
+<body class="admin-body standalone-sales">
+  <div id="salesMain" hidden>
+    <header class="admin-topbar">
+      <div><h1>Sales Dashboard</h1><p>Sales management and transaction reporting</p></div>
+      <div class="sales-navigation"><span class="topbar-user" data-user-name>Staff</span><a class="btn btn-secondary" href="app.html"><i class="fa-solid fa-arrow-left"></i> Operations Home</a><button class="btn btn-primary" id="createSaleNoRead" hidden><i class="fa-solid fa-plus"></i> New Sale</button></div>
+    </header>
+    <main class="admin-workspace">
+      <p id="salesStatus" class="sales-status" role="status" aria-live="polite"></p>
+      <div id="salesNoRead" class="sales-warning" hidden>You can open the Sales Dashboard, but your account is missing <strong>Sales Read</strong> permission. Ask an administrator to enable <code>sales.read</code> to see sales reports and totals.</div>
+      <div id="salesReadable" hidden>
+
+        <section class="admin-view active" id="panel-sales">
+          <div class="view-toolbar sales-management-toolbar">
+            <div>
+              <h2>Sales Management</h2>
+              <p>Review every Kitchen and Ticket sale, apply management filters, and export complete reports.</p>
+              <div class="sales-loaded-note"><i class="fa-solid fa-database"></i> <span id="salesLoadedCount">0 sales loaded</span></div>
+            </div>
+            <div class="row-actions sales-report-actions">
+              <button class="btn btn-secondary" id="exportSalesPDF" type="button"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+              <button class="btn btn-secondary" id="exportSalesExcel" type="button"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+              <button class="btn btn-primary" id="newSale"><i class="fa-solid fa-plus"></i> New Sale</button>
+            </div>
+          </div>
+          <div class="filter-bar sales-filter-bar">
+            <input id="salesSearch" class="search-input" placeholder="Search reference, item, seller or payment…">
+            <select id="salesTypeFilter" class="compact-control"><option value="all">All sale types</option><option value="kitchen">Kitchen</option><option value="ticket">Ticket</option></select>
+            <select id="salesPaymentFilter" class="compact-control"><option value="all">All payments</option><option value="cash">Cash</option><option value="card">Card/POS</option><option value="transfer">Transfer</option></select>
+            <select id="salesDateRange" class="compact-control" aria-label="Sales date range">
+              <option value="all" selected>All dates</option>
+              <option value="today">Today</option>
+              <option value="week">This week</option>
+              <option value="month">This month</option>
+              <option value="custom">Custom range</option>
+            </select>
+            <div class="date-control sales-custom-range hidden">
+              <label for="salesStartDate">From</label>
+              <input id="salesStartDate" type="date" aria-label="Sales range start date">
+            </div>
+            <div class="date-control sales-custom-range hidden">
+              <label for="salesEndDate">To</label>
+              <input id="salesEndDate" type="date" aria-label="Sales range end date">
+            </div>
+            <button class="btn btn-primary sales-custom-range hidden" id="applySalesRange" type="button"><i class="fa-solid fa-filter"></i> Apply range</button>
+            <button class="btn btn-secondary" id="reloadSales" type="button" title="Reload matching sales"><i class="fa-solid fa-rotate"></i></button>
+          </div>
+          <div class="metric-row sales-summary-metrics">
+            <div class="metric-cell"><span>Total Sales</span><strong id="salesTotalValue">₦0.00</strong><small>Current report filters</small></div>
+            <div class="metric-cell"><span>Total Cash</span><strong id="salesCashValue">₦0.00</strong><small>Cash sales collected</small></div>
+            <div class="metric-cell"><span>Total Card</span><strong id="salesCardValue">₦0.00</strong><small>Card and POS sales</small></div>
+            <div class="metric-cell"><span>Total Transfer</span><strong id="salesTransferValue">₦0.00</strong><small>Bank transfer sales</small></div>
+            <div class="metric-cell"><span>Transactions</span><strong id="salesTotalCount">0</strong><small>Matching sales records</small></div>
+            <div class="metric-cell"><span>Average Sale</span><strong id="salesAverageValue">₦0.00</strong><small>Sales value per transaction</small></div>
+          </div>
+          <section class="surface flush sales-report-surface">
+            <div class="surface-head sales-table-head">
+              <div><h3>Sales Register</h3><p>Exports always include all matching sales and the selected sales period, even when the table is paged.</p></div>
+              <div class="sales-page-size"><label for="salesPageSize">Rows</label><select id="salesPageSize" class="compact-control"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="250">250</option><option value="all">All</option></select></div>
+            </div>
+            <div class="table-wrap"><table class="table modern-table"><thead><tr><th>Reference</th><th>Date</th><th>Type</th><th>Items</th><th>Payment</th><th>Total</th><th>Sold By</th><th></th></tr></thead><tbody id="salesRows"></tbody></table></div>
+            <div class="sales-pagination">
+              <span id="salesPaginationInfo">Showing 0 sales</span>
+              <div class="sales-pagination-actions"><button class="btn btn-secondary btn-small" id="salesPrevBtn" type="button"><i class="fa-solid fa-chevron-left"></i> Previous</button><span id="salesPageNumber">Page 1 of 1</span><button class="btn btn-secondary btn-small" id="salesNextBtn" type="button">Next <i class="fa-solid fa-chevron-right"></i></button></div>
+            </div>
+          </section>
+        </section>
+
+
+      </div>
+    </main>
+  </div>
+  <dialog id="saleDialog" class="sales-dialog" aria-labelledby="saleDialogHeading">
+    <div class="dialog-head"><h2 id="saleDialogHeading">New Sale</h2><button class="btn btn-secondary" type="button" id="cancelDialogX" aria-label="Close dialog"><i class="fa-solid fa-xmark"></i></button></div>
+    <form id="saleForm">
+      <div class="two"><label>Sale Type<select id="saleTypeInput"><option value="kitchen">Kitchen</option><option value="ticket">Ticket</option></select></label><label>Payment<select id="salePaymentInput"><option value="cash">Cash</option><option value="card">Card / POS</option><option value="transfer">Transfer</option></select></label></div>
+      <label>Sale Date &amp; Time<input id="saleDateInput" type="datetime-local" required></label>
+      <div class="sale-item-add"><label>Product<select id="saleProductInput"></select></label><label>Quantity<input id="saleQtyInput" type="number" min="1" max="100000" step="1" value="1"></label><button type="button" class="btn btn-secondary" id="addSaleItem"><i class="fa-solid fa-plus"></i> Add</button></div>
+      <div id="saleItems" aria-live="polite"></div>
+      <div class="sale-form-total"><span>Calculated Total</span><strong id="saleTotal">₦0.00</strong></div>
+      <small>Products, availability and final prices are verified by the database.</small>
+      <label id="cashReceivedField">Cash Received (₦)<input id="cashReceivedInput" type="number" min="0" step="0.01" placeholder="Leave empty to use sale total"></label>
+      <div class="dialog-controls"><button type="button" id="cancelSale" class="btn btn-secondary">Cancel</button><button id="saveSale" type="submit" class="btn btn-primary">Save Sale</button></div>
+    </form>
+  </dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/access-control.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+  <script src="js/sales-dashboard.js"></script>
+</body>
+</html>
